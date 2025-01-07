@@ -1,0 +1,10 @@
+- key: emc_unity_storage
+  title: "emc_unity_storage"
+  release: beta
+  description: >
+    emc_unity_storage module
+  fields:
+    - name: emc_unity_storage
+      type: group
+      description: >
+      fields:

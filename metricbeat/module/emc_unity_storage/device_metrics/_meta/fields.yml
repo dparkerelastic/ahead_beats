@@ -1,0 +1,10 @@
+- name: device_metrics
+  type: group
+  release: beta
+  description: >
+    device_metrics
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field
