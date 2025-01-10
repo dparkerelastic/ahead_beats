@@ -971,6 +971,14 @@ metricbeat.modules:
 #    params:
 #      query: "some_value"
 
+#----------------------------- Purestorage Module -----------------------------
+- module: purestorage
+  metricsets: ["arrays"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #------------------------------- RabbitMQ Module -------------------------------
 - module: rabbitmq
   metricsets: ["node", "queue", "connection", "exchange", "shovel"]

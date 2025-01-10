@@ -1,0 +1,9 @@
+# Module: purestorage
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-purestorage.html
+
+- module: purestorage
+  metricsets: ["arrays"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

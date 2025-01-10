@@ -1,0 +1,10 @@
+- name: arrays
+  type: group
+  release: beta
+  description: >
+    arrays
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

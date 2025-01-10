@@ -1,0 +1,10 @@
+- key: purestorage
+  title: "purestorage"
+  release: beta
+  description: >
+    purestorage module
+  fields:
+    - name: purestorage
+      type: group
+      description: >
+      fields:
