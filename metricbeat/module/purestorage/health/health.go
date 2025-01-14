@@ -73,8 +73,16 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 		name string
 		fn   func(*MetricSet) ([]mb.Event, error)
 	}{
-		//{"certificates", getCertificateEvents},
-
+		{"arrayControllers", getArrayControllersEvents},
+		{"arrayMonitor", getArrayMonitorEvents},
+		{"arraySpace", getArraySpaceEvents},
+		{"hardware", getHardwareEvents},
+		{"drive", getDriveEvents},
+		{"pgroup", getPGroupEvents},
+		{"volumeMonitor", getVolumeMonitorEvents},
+		{"volumeSpace", getVolumeSpaceEvents},
+		{"array", getArrayEvents},
+		{"volume", getVolumeEvents},
 	}
 
 	for _, fetcher := range eventFetchers {
