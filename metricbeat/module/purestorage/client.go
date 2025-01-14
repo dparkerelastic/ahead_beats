@@ -1,0 +1,167 @@
+// Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+// or more contributor license agreements. Licensed under the Elastic License;
+// you may not use this file except in compliance with the Elastic License.
+
+package purestorage
+
+import (
+	"crypto/tls"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/elastic/beats/v7/metricbeat/mb"
+)
+
+type PurestorageClient struct {
+	config  *Config
+	baseUrl string
+	client  *http.Client
+	headers map[string]string
+}
+
+func GetClient(config *Config, base mb.BaseMetricSet) (*PurestorageClient, error) {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+
+	psClient := PurestorageClient{
+		config:  config,
+		baseUrl: fmt.Sprintf("https://%s/api/%s/", config.HostIp, config.ApiVersion),
+		client:  &http.Client{Transport: tr},
+	}
+
+	// Get the session cookie
+	cookie, err := getSessionCookie(config.HostIp, config.ApiVersion, config.ApiKey)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing PureStorage client: %w", err)
+	}
+	psClient.headers = map[string]string{
+		"Cookie":       cookie,
+		"Content-Type": "application/json",
+	}
+
+	return &psClient, nil
+}
+
+func getSessionCookie(hostName, apiVersion, apiToken string) (string, error) {
+	var cookie string
+	fileName := fmt.Sprintf("tmp/%s-sessionCookie.dat", hostName)
+
+	// first try to get cookie data from cache file
+	os.MkdirAll("tmp", os.ModePerm)
+	sessionFile := fileName
+
+	// If there is a session file, return the contents
+	if _, err := os.Stat(sessionFile); err == nil {
+		data, err := os.ReadFile(sessionFile)
+		if err != nil {
+			return "", err
+		}
+		cookie = strings.TrimSpace(string(data))
+		if isCookieValid(cookie) {
+			return cookie, nil
+		}
+	}
+
+	// cached cookie is invalid, so get a new session from the server
+	apiURL := fmt.Sprintf("https://%s/api/%s/auth/session", hostName, apiVersion)
+	headers := map[string]string{"Content-Type": "application/json"}
+	data := map[string]string{"api_token": apiToken}
+	jsonData, _ := json.Marshal(data)
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(string(jsonData)))
+	if err != nil {
+		return "", err
+	}
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("error %d: %s", resp.StatusCode, string(body))
+	}
+
+	// loop through http header fields
+	cookie = resp.Header.Get("Set-Cookie")
+
+	// is our new cookie valid (it must be)?
+	if !isCookieValid(cookie) {
+		return "", fmt.Errorf("error retrieving valid session cookie")
+	}
+
+	// replace the session cache file contents & return the cookie
+	err = os.WriteFile(sessionFile, []byte(cookie), 0644)
+	if err != nil {
+		return "", err
+	}
+	return cookie, nil
+}
+
+func isCookieValid(cookie string) bool {
+	dateFormat := "Mon, 02-Jan-2006 15:04:05 MST"
+	dateFormatNoDash := "Mon, 02 Jan 2006 15:04:05 MST"
+	now := time.Now()
+
+	if cookie == "" || !strings.Contains(cookie, "; ") {
+		return false
+	}
+	cookieContents := strings.Split(cookie, "; ")
+	expireObj := cookieContents[1]
+	if !strings.Contains(expireObj, "=") {
+		return false
+	}
+
+	expireDateElement := strings.Split(expireObj, "=")
+	expireDate := expireDateElement[1]
+	var parsedExpireDate time.Time
+	var err error
+	if strings.Contains(expireDate, "-") {
+		parsedExpireDate, err = time.Parse(dateFormat, expireDate)
+	} else {
+		parsedExpireDate, err = time.Parse(dateFormatNoDash, expireDate)
+	}
+	if err != nil {
+		return false
+	}
+	return now.Before(parsedExpireDate)
+}
+
+func (c *PurestorageClient) Get(endpoint string) (string, error) {
+	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
+	if err != nil {
+		return "", err
+	}
+	for key, value := range c.headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+
+}
