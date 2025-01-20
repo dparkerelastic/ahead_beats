@@ -11,7 +11,7 @@ const (
 type Config struct {
 	HostIp     string `config:"host_ip" validate:"required"`
 	ApiKey     string `config:"api_key" validate:"required"`
-	ApiVersion string `config:"api_key" validate:"required"`
+	ApiVersion string `config:"api_version" validate:"required"`
 	Port       uint   `config:"port"`
 	DebugMode  string `config:"api_debug_mode"`
 }

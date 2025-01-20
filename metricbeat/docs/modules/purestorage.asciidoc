@@ -41,6 +41,10 @@ The following metricsets are available:
 
 * <<metricbeat-metricset-purestorage-arrays,arrays>>
 
+* <<metricbeat-metricset-purestorage-health,health>>
+
 include::purestorage/arrays.asciidoc[]
+
+include::purestorage/health.asciidoc[]
 
 :edit_url!:

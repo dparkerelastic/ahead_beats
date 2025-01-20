@@ -4,7 +4,317 @@
   description: >
     health
   fields:
-    - name: example
-      type: keyword
-      description: >
-        Example field
+    - name: array_controller
+      type: group
+      fields:
+        - name: status
+          type: keyword
+          description: >
+            Status of the health check
+        - name: name
+          type: keyword
+          description: >
+            Name of the entity
+        - name: version
+          type: keyword
+          description: >
+            Version information
+        - name: mode
+          type: keyword
+          description: >
+            Mode of operation
+        - name: model
+          type: keyword
+          description: >
+            Model identifier
+    - name: array_monitor.
+      type: group
+      fields:
+        - name: writes_per_sec
+          type: long
+          description: >
+            Number of writes per second
+        - name: usec_per_write_op
+          type: long
+          description: >
+            Microseconds per write operation
+        - name: output_per_sec
+          type: long
+          description: >
+            Output per second
+        - name: reads_per_sec
+          type: long
+          description: >
+            Number of reads per second
+        - name: input_per_sec
+          type: long
+          description: >
+            Input per second
+        - name: time
+          type: date
+          description: >
+            Timestamp of the health check
+        - name: usec_per_read_op
+          type: long
+          description: >
+            Microseconds per read operation
+        - name: queue_depth
+          type: long
+          description: >
+            Queue depth
+    - name: array_space
+      type: group
+      fields:
+        - name: capacity
+          type: long
+          description: >
+            Capacity information
+        - name: hostname
+          type: keyword
+          description: >
+            Hostname of the system
+        - name: system
+          type: keyword
+          description: >
+            System identifier
+        - name: snapshots
+          type: long
+          description: >
+            Number of snapshots
+        - name: volumes
+          type: long
+          description: >
+            Number of volumes
+        - name: data_reduction
+          type: float
+          description: >
+            Data reduction ratio
+        - name: total
+          type: long
+          description: >
+            Total capacity
+        - name: shared_space
+          type: long
+          description: >
+            Shared space capacity
+        - name: thin_provisioning
+          type: float
+          description: >
+            Thin provisioning ratio
+        - name: total_reduction
+          type: float
+          description: >
+            Total reduction ratio
+    - name: hardware
+      type: group
+      fields:
+        - name: status
+          type: keyword
+          description: >
+            Status of the health check
+        - name: slot
+          type: keyword
+          description: >
+            Slot identifier
+        - name: name
+          type: keyword
+          description: >
+            Name of the entity
+        - name: temperature
+          type: float
+          description: >
+            Temperature reading
+        - name: index
+          type: long
+          description: >
+            Index number
+        - name: identify
+          type: boolean
+          description: >
+            Identify flag
+        - name: speed
+          type: long
+          description: >
+            Speed measurement
+        - name: details
+          type: text
+          description: >
+            Additional details
+    - name: drive
+      type: group
+      fields:
+        - name: status
+          type: keyword
+          description: >
+            Status of the health check
+        - name: capacity
+          type: long
+          description: >
+            Capacity information
+        - name: type
+          type: keyword
+          description: >
+            Type of entity
+        - name: name
+          type: keyword
+          description: >
+            Name of the entity
+    - name: pgroup
+      type: group
+      fields:
+        - name: name
+          type: keyword
+          description: >
+            Name of prgroup
+        - name: physical_bytes_written
+          type: long
+          description: >
+            Physical bytes written
+        - name: started
+          type: date
+          description: >
+            Start time
+        - name: completed
+          type: date
+          description: >
+            Completion time
+        - name: created
+          type: date
+          description: >
+            Creation time
+        - name: source
+          type: keyword
+          description: >
+            Source identifier
+        - name: time_remaining
+          type: long
+          description: >
+            Time remaining
+        - name: progress
+          type: float
+          description: >
+            Progress percentage
+        - name: data_transferred
+          type: long
+          description: >
+            Data transferred
+    - name: volume_monitor
+      type: group
+      fields:
+        - name: writes_per_sec
+          type: long
+          description: >
+            Number of writes per second
+        - name: usec_per_write_op
+          type: long
+          description: >
+            Microseconds per write operation
+        - name: output_per_sec
+          type: long
+          description: >
+            Output per second
+        - name: reads_per_sec
+          type: long
+          description: >
+            Number of reads per second
+        - name: input_per_sec
+          type: long
+          description: >
+            Input per second
+        - name: time
+          type: date
+          description: >
+            Timestamp of the health check
+        - name: usec_per_read_op
+          type: long
+          description: >
+            Microseconds per read operation
+        - name: name
+          type: keyword
+          description: >
+            Volume name
+    - name: volume_space
+      type: group
+      fields:
+        - name: size
+          type: long
+          description: >
+            Capacity information
+        - name: name
+          type: keyword
+          description: >
+            Hostname of the system
+        - name: system
+          type: keyword
+          description: >
+            System identifier
+        - name: snapshots
+          type: long
+          description: >
+            Number of snapshots
+        - name: volumes
+          type: long
+          description: >
+            Number of volumes
+        - name: data_reduction
+          type: float
+          description: >
+            Data reduction ratio
+        - name: total
+          type: long
+          description: >
+            Total capacity
+        - name: shared_space
+          type: long
+          description: >
+            Shared space capacity
+        - name: thin_provisioning
+          type: float
+          description: >
+            Thin provisioning ratio
+        - name: total_reduction
+          type: float
+          description: >
+            Total reduction ratio
+    - name: array
+      type: group
+      fields:
+        - name: revision
+          type: keyword
+          description: >
+            Revision identifier
+        - name: version
+          type: keyword
+          description: >
+            Version information
+        - name: array_name
+          type: keyword
+          description: >
+            Array name
+        - name: id
+          type: keyword
+          description: >
+            Unique identifier
+    - name: volume
+      type: group
+      fields:
+        - name: name
+          type: keyword
+          description: >
+            Volume name
+        - name: created
+          type: date
+          description: >
+            Creation time
+        - name: source
+          type: keyword
+          description: >
+            Source identifier
+        - name: serial
+          type: keyword
+          description: >
+            Serial number
+        - name: size
+          type: long
+          description: >
+            Volume size

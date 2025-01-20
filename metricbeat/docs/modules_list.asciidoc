@@ -87,6 +87,8 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-couchbase-node,node>>   
 |<<metricbeat-module-couchdb,CouchDB>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .1+| .1+|  |<<metricbeat-metricset-couchdb-server,server>>   
+|<<metricbeat-module-daptest,daptest>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.1+| .1+|  |<<metricbeat-metricset-daptest-test,test>> beta[]  
 |<<metricbeat-module-docker,Docker>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .10+| .10+|  |<<metricbeat-metricset-docker-container,container>>   
 |<<metricbeat-metricset-docker-cpu,cpu>>   
@@ -268,7 +270,8 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-prometheus-query,query>>   
 |<<metricbeat-metricset-prometheus-remote_write,remote_write>>   
 |<<metricbeat-module-purestorage,purestorage>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
-.1+| .1+|  |<<metricbeat-metricset-purestorage-arrays,arrays>> beta[]  
+.2+| .2+|  |<<metricbeat-metricset-purestorage-arrays,arrays>> beta[]  
+|<<metricbeat-metricset-purestorage-health,health>> beta[]  
 |<<metricbeat-module-rabbitmq,RabbitMQ>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .5+| .5+|  |<<metricbeat-metricset-rabbitmq-connection,connection>>   
 |<<metricbeat-metricset-rabbitmq-exchange,exchange>>   
@@ -359,6 +362,7 @@ include::modules/containerd.asciidoc[]
 include::modules/coredns.asciidoc[]
 include::modules/couchbase.asciidoc[]
 include::modules/couchdb.asciidoc[]
+include::modules/daptest.asciidoc[]
 include::modules/docker.asciidoc[]
 include::modules/dropwizard.asciidoc[]
 include::modules/elasticsearch.asciidoc[]

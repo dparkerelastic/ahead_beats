@@ -107,7 +107,7 @@ type Array struct {
 type Volume struct {
 	Name    string    `json:"name"`
 	Created time.Time `json:"created"`
-	Source  *string   `json:"source"`
+	Source  string    `json:"source"`
 	Serial  string    `json:"serial"`
 	Size    int64     `json:"size"`
 }

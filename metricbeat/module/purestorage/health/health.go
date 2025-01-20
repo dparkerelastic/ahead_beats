@@ -14,12 +14,34 @@ const (
 	metricsetName = "health"
 )
 
+var endpoints map[string]Endpoint
+
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
+	endpoints = map[string]Endpoint{
+		"ArrayControllers": {Name: "ArrayControllers", Endpoint: "array?controllers=true", ReturnType: ArrayController{}, Fn: getArrayControllersEvents},
+		"ArrayMonitor":     {Name: "ArrayMonitor", Endpoint: "array?action=monitor", ReturnType: ArrayMonitor{}, Fn: getArrayMonitorEvents},
+		"ArraySpace":       {Name: "ArraySpace", Endpoint: "array?space=true", ReturnType: ArraySpace{}, Fn: getArraySpaceEvents},
+		"Hardware":         {Name: "Hardware", Endpoint: "hardware", ReturnType: Hardware{}, Fn: getHardwareEvents},
+		"Drive":            {Name: "Drive", Endpoint: "drive", ReturnType: Drive{}, Fn: getDriveEvents},
+		"PGroup":           {Name: "PGroup", Endpoint: "pgroup?snap=true&transfer=true&pending=true", ReturnType: PGroup{}, Fn: getPGroupEvents},
+		"VolumeMonitor":    {Name: "VolumeMonitor", Endpoint: "volume?action=monitor", ReturnType: VolumeMonitor{}, Fn: getVolumeMonitorEvents},
+		"VolumeSpace":      {Name: "VolumeSpace", Endpoint: "volume?space=true", ReturnType: VolumeSpace{}, Fn: getVolumeSpaceEvents},
+		"Array":            {Name: "Array", Endpoint: "array", ReturnType: Array{}, Fn: getArrayEvents},
+		"Volume":           {Name: "Volume", Endpoint: "volume", ReturnType: Volume{}, Fn: getVolumeEvents},
+	}
 	mb.Registry.MustAddMetricSet(purestorage.ModuleName, metricsetName, New)
+}
+
+func getEndpoint(name string) (Endpoint, error) {
+	endpoint, ok := endpoints[name]
+	if !ok {
+		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
+	}
+	return endpoint, nil
 }
 
 // MetricSet holds any configuration or state information. It must implement
@@ -69,26 +91,13 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	// stop processing events if one of the fetches fails
 	var errs []error
 
-	eventFetchers := []struct {
-		name string
-		fn   func(*MetricSet) ([]mb.Event, error)
-	}{
-		{"arrayControllers", getArrayControllersEvents},
-		{"arrayMonitor", getArrayMonitorEvents},
-		{"arraySpace", getArraySpaceEvents},
-		{"hardware", getHardwareEvents},
-		{"drive", getDriveEvents},
-		{"pgroup", getPGroupEvents},
-		{"volumeMonitor", getVolumeMonitorEvents},
-		{"volumeSpace", getVolumeSpaceEvents},
-		{"array", getArrayEvents},
-		{"volume", getVolumeEvents},
-	}
+	for _, endpoint := range endpoints {
+		m.logger.Debugf("Calling endpoint %s ....", endpoint.Name)
+		events, err := endpoint.Fn(m)
+		m.logger.Debugf("Fetched %d %s events", len(events), endpoint.Name)
 
-	for _, fetcher := range eventFetchers {
-		events, err := fetcher.fn(m)
 		if err != nil {
-			m.logger.Errorf("Error getting %s events: %s", fetcher.name, err)
+			m.logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
 			errs = append(errs, err)
 		} else {
 			for _, event := range events {

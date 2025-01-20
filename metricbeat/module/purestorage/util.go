@@ -26,10 +26,7 @@ func StringToBool(s string) (bool, error) {
 
 func MakeRootFields(HostIp string) mapstr.M {
 	return mapstr.M{
-		"observer.ip":     HostIp,
-		"host.ip":         HostIp,
-		"observer.vendor": "Palo Alto",
-		"observer.type":   "firewall",
+		"host.ip": HostIp,
 	}
 }
 
