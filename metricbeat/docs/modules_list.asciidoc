@@ -87,8 +87,6 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-couchbase-node,node>>   
 |<<metricbeat-module-couchdb,CouchDB>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .1+| .1+|  |<<metricbeat-metricset-couchdb-server,server>>   
-|<<metricbeat-module-daptest,daptest>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
-.1+| .1+|  |<<metricbeat-metricset-daptest-test,test>> beta[]  
 |<<metricbeat-module-docker,Docker>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .10+| .10+|  |<<metricbeat-metricset-docker-container,container>>   
 |<<metricbeat-metricset-docker-cpu,cpu>>   
@@ -362,7 +360,6 @@ include::modules/containerd.asciidoc[]
 include::modules/coredns.asciidoc[]
 include::modules/couchbase.asciidoc[]
 include::modules/couchdb.asciidoc[]
-include::modules/daptest.asciidoc[]
 include::modules/docker.asciidoc[]
 include::modules/dropwizard.asciidoc[]
 include::modules/elasticsearch.asciidoc[]

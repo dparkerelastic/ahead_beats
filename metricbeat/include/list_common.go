@@ -50,8 +50,6 @@ import (
 	_ "github.com/elastic/beats/v7/metricbeat/module/couchbase/node"
 	_ "github.com/elastic/beats/v7/metricbeat/module/couchdb"
 	_ "github.com/elastic/beats/v7/metricbeat/module/couchdb/server"
-	_ "github.com/elastic/beats/v7/metricbeat/module/daptest"
-	_ "github.com/elastic/beats/v7/metricbeat/module/daptest/test"
 	_ "github.com/elastic/beats/v7/metricbeat/module/dropwizard"
 	_ "github.com/elastic/beats/v7/metricbeat/module/dropwizard/collector"
 	_ "github.com/elastic/beats/v7/metricbeat/module/elasticsearch"

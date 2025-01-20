@@ -34,7 +34,6 @@ grouped in the following categories:
 * <<exported-fields-coredns>>
 * <<exported-fields-couchbase>>
 * <<exported-fields-couchdb>>
-* <<exported-fields-daptest>>
 * <<exported-fields-docker-processor>>
 * <<exported-fields-docker>>
 * <<exported-fields-dropwizard>>
@@ -13510,36 +13509,6 @@ Number of file descriptors CouchDB has open
 
 
 type: long
-
---
-
-[[exported-fields-daptest]]
-== daptest fields
-
-daptest module
-
-
-
-[float]
-=== daptest
-
-
-
-
-[float]
-=== test
-
-test
-
-
-
-*`daptest.test.example`*::
-+
---
-Example field
-
-
-type: keyword
 
 --
 
