@@ -27,7 +27,7 @@
           type: keyword
           description: >
             Model identifier
-    - name: array_monitor.
+    - name: array_monitor
       type: group
       fields:
         - name: writes_per_sec

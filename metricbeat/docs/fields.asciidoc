@@ -59176,7 +59176,7 @@ type: keyword
 --
 
 
-*`purestorage.health.array_monitor..writes_per_sec`*::
+*`purestorage.health.array_monitor.writes_per_sec`*::
 +
 --
 Number of writes per second
@@ -59186,7 +59186,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..usec_per_write_op`*::
+*`purestorage.health.array_monitor.usec_per_write_op`*::
 +
 --
 Microseconds per write operation
@@ -59196,7 +59196,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..output_per_sec`*::
+*`purestorage.health.array_monitor.output_per_sec`*::
 +
 --
 Output per second
@@ -59206,7 +59206,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..reads_per_sec`*::
+*`purestorage.health.array_monitor.reads_per_sec`*::
 +
 --
 Number of reads per second
@@ -59216,7 +59216,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..input_per_sec`*::
+*`purestorage.health.array_monitor.input_per_sec`*::
 +
 --
 Input per second
@@ -59226,7 +59226,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..time`*::
+*`purestorage.health.array_monitor.time`*::
 +
 --
 Timestamp of the health check
@@ -59236,7 +59236,7 @@ type: date
 
 --
 
-*`purestorage.health.array_monitor..usec_per_read_op`*::
+*`purestorage.health.array_monitor.usec_per_read_op`*::
 +
 --
 Microseconds per read operation
@@ -59246,7 +59246,7 @@ type: long
 
 --
 
-*`purestorage.health.array_monitor..queue_depth`*::
+*`purestorage.health.array_monitor.queue_depth`*::
 +
 --
 Queue depth
