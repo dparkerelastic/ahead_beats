@@ -6,13 +6,13 @@
     },
     "metricset":{
         "host":"localhost",
-        "module":"emc_unity_storage",
-        "name":"device_metrics",
+        "module":"emcunity",
+        "name":"storage_health",
         "rtt":44269
     },
-    "emc_unity_storage":{
-        "device_metrics":{
-            "example": "device_metrics"
+    "emcunity":{
+        "storage_health":{
+            "example": "storage_health"
         }
     },
     "type":"metricsets"

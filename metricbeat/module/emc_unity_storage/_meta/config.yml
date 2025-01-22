@@ -1,6 +1,0 @@
-- module: emc_unity_storage
-  metricsets: ["device_metrics"]
-  enabled: false
-  period: 10s
-  hosts: ["localhost"]
-

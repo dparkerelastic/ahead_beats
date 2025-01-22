@@ -1,0 +1,10 @@
+- key: emcunity
+  title: "emcunity"
+  release: beta
+  description: >
+    emcunity module
+  fields:
+    - name: emcunity
+      type: group
+      description: >
+      fields:

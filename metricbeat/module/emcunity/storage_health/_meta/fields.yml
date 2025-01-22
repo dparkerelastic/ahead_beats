@@ -1,8 +1,8 @@
-- name: device_metrics
+- name: storage_health
   type: group
   release: beta
   description: >
-    device_metrics
+    storage_health
   fields:
     - name: example
       type: keyword

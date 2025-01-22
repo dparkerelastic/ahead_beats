@@ -1,2 +1,0 @@
-This is the emc_unity_storage module.
-

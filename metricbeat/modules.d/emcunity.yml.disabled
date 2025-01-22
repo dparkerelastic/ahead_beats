@@ -1,0 +1,15 @@
+# Module: emc_unity_storage
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-emc_unity_storage.html
+
+- module: emcunity
+  metricsets: ["storage_health"]
+  enabled: true
+  period: 30s
+  #hosts: ["https://emc_unity_hostA","https://emc_unity_hostb"]
+  hosts: ["https://emc_unity_hostA"]
+  username: "${EMC_UNITY_USER}"
+  password: "${EMC_UNITY_PWD}"
+  debug: true
+  # EMC Unity - Specifies the number of resource type instances that form a page.
+  per_page: 2000
+
