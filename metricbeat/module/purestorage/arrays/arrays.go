@@ -18,9 +18,18 @@
 package arrays
 
 import (
+	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/v7/metricbeat/mb"
-	"github.com/elastic/elastic-agent-libs/mapstr"
+	"github.com/elastic/beats/v7/metricbeat/module/purestorage"
+	"github.com/elastic/elastic-agent-libs/logp"
+)
+
+const (
+	metricsetName = "arrays"
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -28,7 +37,8 @@ import (
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
-	mb.Registry.MustAddMetricSet("purestorage", "arrays", New)
+	mb.Registry.MustAddMetricSet(purestorage.ModuleName, metricsetName, New)
+
 }
 
 // MetricSet holds any configuration or state information. It must implement
@@ -37,22 +47,35 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	counter int
+	config   *purestorage.Config
+	logger   *logp.Logger
+	psClient *PureSnmpClient
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
 // any MetricSet specific configuration options if there are any.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Beta("The purestorage arrays metricset is beta.")
+	config, err := purestorage.NewConfig(base)
+	if err != nil {
+		return nil, err
+	}
 
-	config := struct{}{}
-	if err := base.Module().UnpackConfig(&config); err != nil {
+	logger := logp.NewLogger(base.FullyQualifiedName())
+
+	// Get the session cookie
+	psClient, err := GetSnmpClient(config, base)
+
+	if err != nil {
+		logger.Errorf("Failed to get session cookie: %v", err)
 		return nil, err
 	}
 
 	return &MetricSet{
 		BaseMetricSet: base,
-		counter:       1,
+		config:        config,
+		logger:        logger,
+		psClient:      psClient,
 	}, nil
 }
 
@@ -60,12 +83,45 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) error {
-	report.Event(mb.Event{
-		MetricSetFields: mapstr.M{
-			"counter": m.counter,
-		},
-	})
-	m.counter++
+	timestamp := time.Now().UTC()
 
+	results, err := m.psClient.Get()
+	if err != nil {
+		errstr := fmt.Sprintf("failed to get SNMP data: %v", err)
+		m.logger.Errorf(errstr)
+		return fmt.Errorf("%s", errstr)
+	}
+
+	for _, result := range results {
+		// All of the OID values are supposed to be integers, according to the MIB. If the conversion fails,
+		// we log an error, report and event with error.message, and continue to the next OID.
+		value, err := strconv.Atoi(result.Value)
+		if err != nil {
+			errstr := fmt.Sprintf("failed to convert SNMP value to integer: %v for oid %s", err, result.OIDName)
+			m.logger.Errorf(errstr)
+			errevent := mb.Event{
+				Timestamp: timestamp,
+				MetricSetFields: map[string]interface{}{
+					"snmp.oid_name": result.OIDName,
+					"snmp.oid":      result.OID,
+				},
+				RootFields: purestorage.MakeErrorFields(errstr, m.config.HostIp),
+			}
+			report.Event(errevent)
+			continue
+		}
+
+		event := mb.Event{
+			Timestamp: timestamp,
+			MetricSetFields: map[string]interface{}{
+				"snmp.oid_name": result.OIDName,
+				"snmp.oid":      result.OID,
+				"snmp.value":    value,
+			},
+			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+		}
+
+		report.Event(event)
+	}
 	return nil
 }

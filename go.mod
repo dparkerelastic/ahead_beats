@@ -479,6 +479,7 @@ require (
 	github.com/PaloAltoNetworks/pango v0.10.2
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/gosnmp/gosnmp v1.38.0
 	github.com/moby/term v0.5.0 // indirect
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 )

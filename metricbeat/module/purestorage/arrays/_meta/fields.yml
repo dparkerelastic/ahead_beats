@@ -4,7 +4,18 @@
   description: >
     arrays
   fields:
-    - name: example
-      type: keyword
-      description: >
-        Example field
+    - name: snmp
+      type: group
+      fields:
+        - name: oid_name
+          type: keyword
+          description: >
+            Name of the SNMP field
+        - name: oid
+          type: keyword
+          description: >
+            The OID of the SNMP field
+        - name: value
+          type: integer
+          description: >
+            Version information

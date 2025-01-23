@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package purestorage
+package health
 
 import (
 	"crypto/tls"
@@ -28,21 +28,22 @@ import (
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/beats/v7/metricbeat/module/purestorage"
 )
 
-type PurestorageClient struct {
-	config  *Config
+type PureRestClient struct {
+	config  *purestorage.Config
 	baseUrl string
 	client  *http.Client
 	headers map[string]string
 }
 
-func GetClient(config *Config, base mb.BaseMetricSet) (*PurestorageClient, error) {
+func GetClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureRestClient, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 
-	psClient := PurestorageClient{
+	psClient := PureRestClient{
 		config:  config,
 		baseUrl: fmt.Sprintf("https://%s/api/%s/", config.HostIp, config.ApiVersion),
 		client:  &http.Client{Transport: tr},
@@ -156,7 +157,7 @@ func isCookieValid(cookie string) bool {
 	return now.Before(parsedExpireDate)
 }
 
-func (c *PurestorageClient) Get(endpoint string) (string, error) {
+func (c *PureRestClient) Get(endpoint string) (string, error) {
 	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
 	if err != nil {
 		return "", err

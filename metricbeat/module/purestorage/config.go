@@ -26,11 +26,14 @@ const (
 )
 
 type Config struct {
-	HostIp     string `config:"host_ip" validate:"required"`
-	ApiKey     string `config:"api_key" validate:"required"`
-	ApiVersion string `config:"api_version" validate:"required"`
-	Port       uint   `config:"port"`
-	DebugMode  string `config:"api_debug_mode"`
+	HostIp        string `config:"host_ip" validate:"required"`
+	ApiKey        string `config:"api_key" validate:"required"`
+	ApiVersion    string `config:"api_version" validate:"required"`
+	Port          uint   `config:"port"`
+	DebugMode     string `config:"api_debug_mode"`
+	SnmpBaseOID   string `config:"snmp_base_oid"`
+	SnmpCommunity string `config:"snmp_community"`
+	SnmpPort      uint16 `config:"snmp_port"`
 }
 
 func NewConfig(base mb.BaseMetricSet) (*Config, error) {

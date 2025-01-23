@@ -69,7 +69,7 @@ type MetricSet struct {
 	mb.BaseMetricSet
 	config   *purestorage.Config
 	logger   *logp.Logger
-	psClient *purestorage.PurestorageClient
+	psClient *PureRestClient
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -85,7 +85,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	logger := logp.NewLogger(base.FullyQualifiedName())
 
 	// Get the session cookie
-	psClient, err := purestorage.GetClient(config, base)
+	psClient, err := GetClient(config, base)
 
 	if err != nil {
 		logger.Errorf("Failed to get session cookie: %v", err)

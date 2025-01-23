@@ -41,9 +41,16 @@ func StringToBool(s string) (bool, error) {
 	return false, fmt.Errorf("invalid value: %s", s)
 }
 
-func MakeRootFields(HostIp string) mapstr.M {
+func MakeRootFields(hostip string) mapstr.M {
 	return mapstr.M{
-		"host.ip": HostIp,
+		"host.ip": hostip,
+	}
+}
+
+func MakeErrorFields(errstr string, hostip string) mapstr.M {
+	return mapstr.M{
+		"host.ip":       hostip,
+		"error.message": errstr,
 	}
 }
 
