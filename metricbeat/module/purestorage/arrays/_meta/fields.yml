@@ -4,18 +4,31 @@
   description: >
     arrays
   fields:
-    - name: snmp
+    - name: bandwidth
       type: group
       fields:
-        - name: oid_name
-          type: keyword
+        - name: read_bandwidth
+          type: long
           description: >
-            Name of the SNMP field
-        - name: oid
-          type: keyword
+            Read bandwidth in bytes per second.
+        - name: read_iops
+          type: long
           description: >
-            The OID of the SNMP field
-        - name: value
-          type: integer
+            Read IOPS (Input/Output Operations Per Second).
+        - name: read_latency
+          type: long
           description: >
-            Version information
+            Read latency in milliseconds.
+        - name: write_bandwidth
+          type: long
+          description: >
+            Write bandwidth in bytes per second.
+        - name: write_iops
+          type: long
+          description: >
+            Write IOPS (Input/Output Operations Per Second).
+        - name: write_latency
+          type: long
+          description: >
+            Write latency in milliseconds.
+

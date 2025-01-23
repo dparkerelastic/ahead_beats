@@ -18,6 +18,7 @@
 package arrays
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -63,11 +64,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	logger := logp.NewLogger(base.FullyQualifiedName())
 
-	// Get the session cookie
 	psClient, err := GetSnmpClient(config, base)
 
 	if err != nil {
-		logger.Errorf("Failed to get session cookie: %v", err)
+		logger.Errorf("Failed to get SNMP client: %v", err)
 		return nil, err
 	}
 
@@ -83,7 +83,6 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) error {
-	timestamp := time.Now().UTC()
 
 	results, err := m.psClient.Get()
 	if err != nil {
@@ -92,36 +91,47 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 		return fmt.Errorf("%s", errstr)
 	}
 
-	for _, result := range results {
-		// All of the OID values are supposed to be integers, according to the MIB. If the conversion fails,
-		// we log an error, report and event with error.message, and continue to the next OID.
+	event := m.createEvent(results)
+
+	report.Event(event)
+
+	return nil
+}
+
+// createEvent creates a new event from the SNMP data. The results
+// come back from the SNMP call with one oid field per record. We collapse
+// these into a single event with multiple fields.
+func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
+	timestamp := time.Now().UTC()
+
+	// accumulate errs and report them all at the end
+	var errs []error
+
+	event := mb.Event{
+		ModuleFields:    make(map[string]interface{}),
+		MetricSetFields: make(map[string]interface{}),
+	}
+	event.Timestamp = timestamp
+	event.RootFields = purestorage.MakeRootFields(m.config.HostIp)
+
+	for _, result := range fields {
+		oid := result.OID
+		field_name := OidToName[oid].OIDFieldName
+
 		value, err := strconv.Atoi(result.Value)
 		if err != nil {
 			errstr := fmt.Sprintf("failed to convert SNMP value to integer: %v for oid %s", err, result.OIDName)
-			m.logger.Errorf(errstr)
-			errevent := mb.Event{
-				Timestamp: timestamp,
-				MetricSetFields: map[string]interface{}{
-					"snmp.oid_name": result.OIDName,
-					"snmp.oid":      result.OID,
-				},
-				RootFields: purestorage.MakeErrorFields(errstr, m.config.HostIp),
-			}
-			report.Event(errevent)
+			errs = append(errs, fmt.Errorf("%s", errstr))
 			continue
 		}
 
-		event := mb.Event{
-			Timestamp: timestamp,
-			MetricSetFields: map[string]interface{}{
-				"snmp.oid_name": result.OIDName,
-				"snmp.oid":      result.OID,
-				"snmp.value":    value,
-			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
-		}
+		event.MetricSetFields[field_name] = value
 
-		report.Event(event)
 	}
-	return nil
+
+	if len(errs) > 0 {
+		event.Error = fmt.Errorf("errors while fetching system metrics: %w", errors.Join(errs...))
+	}
+
+	return event
 }

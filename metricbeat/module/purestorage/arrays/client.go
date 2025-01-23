@@ -24,13 +24,19 @@ type SNMPResult struct {
 	Value   string `json:"Value"`
 }
 
-var oidToName = map[string]string{
-	".1.3.6.1.4.1.40482.4.1.0": "PureArrayReadBandwidth",
-	".1.3.6.1.4.1.40482.4.3.0": "PureArrayReadIOPS",
-	".1.3.6.1.4.1.40482.4.5.0": "PureArrayReadLatency",
-	".1.3.6.1.4.1.40482.4.2.0": "PureArrayWriteBandwidth",
-	".1.3.6.1.4.1.40482.4.4.0": "PureArrayWriteIOPS",
-	".1.3.6.1.4.1.40482.4.6.0": "PureArrayWriteLatency",
+type OidField struct {
+	OID          string
+	OIDName      string
+	OIDFieldName string
+}
+
+var OidToName = map[string]OidField{
+	".1.3.6.1.4.1.40482.4.1.0": {".1.3.6.1.4.1.40482.4.1.0", "PureArrayReadBandwidth", "read_bandwidth"},
+	".1.3.6.1.4.1.40482.4.3.0": {".1.3.6.1.4.1.40482.4.3.0", "PureArrayReadIOPS", "read_iops"},
+	".1.3.6.1.4.1.40482.4.5.0": {".1.3.6.1.4.1.40482.4.5.0", "PureArrayReadLatency", "read_latency"},
+	".1.3.6.1.4.1.40482.4.2.0": {".1.3.6.1.4.1.40482.4.2.0", "PureArrayWriteBandwidth", "write_bandwidth"},
+	".1.3.6.1.4.1.40482.4.4.0": {".1.3.6.1.4.1.40482.4.4.0", "PureArrayWriteIOPS", "write_iops"},
+	".1.3.6.1.4.1.40482.4.6.0": {".1.3.6.1.4.1.40482.4.6.0", "PureArrayWriteLatency", "write_latency"},
 }
 
 func GetSnmpClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureSnmpClient, error) {
@@ -63,7 +69,7 @@ func (c *PureSnmpClient) Get() ([]SNMPResult, error) {
 
 	var results []SNMPResult
 	err := c.client.Walk(c.baseOID, func(variable gosnmp.SnmpPDU) error {
-		name := oidToName[variable.Name] // Lookup the human-readable name
+		name := OidToName[variable.Name].OIDName // Lookup the human-readable name
 		if name == "" {
 			name = "Unknown OID"
 		}
