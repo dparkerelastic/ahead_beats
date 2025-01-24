@@ -59107,13 +59107,64 @@ arrays
 
 
 
-*`purestorage.arrays.example`*::
+
+*`purestorage.arrays.performance.read_bandwidth`*::
 +
 --
-Example field
+Read bandwidth in bytes per second.
 
 
-type: keyword
+type: long
+
+--
+
+*`purestorage.arrays.performance.read_iops`*::
++
+--
+Read IOPS (Input/Output Operations Per Second).
+
+
+type: long
+
+--
+
+*`purestorage.arrays.performance.read_latency`*::
++
+--
+Read latency in milliseconds.
+
+
+type: long
+
+--
+
+*`purestorage.arrays.performance.write_bandwidth`*::
++
+--
+Write bandwidth in bytes per second.
+
+
+type: long
+
+--
+
+*`purestorage.arrays.performance.write_iops`*::
++
+--
+Write IOPS (Input/Output Operations Per Second).
+
+
+type: long
+
+--
+
+*`purestorage.arrays.performance.write_latency`*::
++
+--
+Write latency in milliseconds.
+
+
+type: long
 
 --
 

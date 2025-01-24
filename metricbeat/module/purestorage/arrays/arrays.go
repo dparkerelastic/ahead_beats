@@ -125,7 +125,7 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 			continue
 		}
 
-		event.MetricSetFields[field_name] = value
+		event.MetricSetFields["performance."+field_name] = value
 
 	}
 

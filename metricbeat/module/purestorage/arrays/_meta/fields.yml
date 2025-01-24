@@ -4,7 +4,7 @@
   description: >
     arrays
   fields:
-    - name: bandwidth
+    - name: performance
       type: group
       fields:
         - name: read_bandwidth
