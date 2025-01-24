@@ -200,3 +200,93 @@ func GetRemoteSystemMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
 	return jsonInfo, nil
 
 }
+
+func GetDiskMetrics(hostInfo Connection) (Disk_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Disk_API)
+
+	var jsonInfo Disk_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetDatastoreMetrics(hostInfo Connection) (Datastore_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+DataStore_API)
+
+	var jsonInfo Datastore_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetFilesystemMetrics(hostInfo Connection) (FileSystem_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Filesystem_API)
+
+	var jsonInfo FileSystem_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetSnapMetrics(hostInfo Connection) (Snap_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Snap_API)
+
+	var jsonInfo Snap_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetSasPortMetrics(hostInfo Connection) (SasPort_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+SasPort_API)
+
+	var jsonInfo SasPort_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}

@@ -3,10 +3,13 @@ package storage_health
 import (
 	"crypto/tls"
 	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
@@ -25,9 +28,6 @@ func basicAuth(username, password string) string {
 }
 
 func GetInstanceData(hostInfo Connection, url string) ([]byte, error) {
-
-	//url := "https://10.200.0.8:443/api/types/system/instances?fields=name,model,serialNumber,internalModel,platform,macAddress"
-	//url := hostUrl + ":443/api/types/system/instances?fields=name,model,serialNumber,internalModel,platform,macAddress"
 
 	req, _ := http.NewRequest("GET", url, nil)
 	// add authorization header to the req
@@ -55,6 +55,20 @@ func GetInstanceData(hostInfo Connection, url string) ([]byte, error) {
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	var errorJson ErrorResponse
+	err = json.Unmarshal(responseData, &errorJson)
+	if err != nil {
+		return nil, err
+	} else if errorJson.Error.HTTPStatusCode != 0 {
+
+		var errorMessage string = "Error: HTTPStatusCode: " + strconv.Itoa(errorJson.Error.HTTPStatusCode) + " Message: "
+		for _, message := range errorJson.Error.Messages {
+			errorMessage += message.EnUS + " "
+		}
+		return nil, errors.New(errorMessage)
+
 	}
 
 	return responseData, nil
@@ -190,8 +204,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["storage.resource.health.descriptions"] = storageResourceData.Content.Health.Descriptions
 		metric["storage.resource.size.total"] = storageResourceData.Content.SizeTotal
 		metric["storage.resource.size.allocated"] = storageResourceData.Content.SizeAllocated
-		metric["storage.resource.snap.size"] = storageResourceData.Content.SnapCount
-		metric["storage.resource.snap.size.allocated"] = storageResourceData.Content.SnapsSizeAllocated
+		metric["storage.resource.snap.count"] = storageResourceData.Content.SnapCount
+		metric["storage.resource.snaps.size.total"] = storageResourceData.Content.SnapsSizeTotal
+		metric["storage.resource.snaps.size.allocated"] = storageResourceData.Content.SnapsSizeAllocated
 		metric["storage.resource.metadata.size"] = storageResourceData.Content.MetadataSize
 		metric["storage.resource.metadata.size.allocated"] = storageResourceData.Content.MetadataSizeAllocated
 
@@ -250,6 +265,73 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["file.system.health.value"] = remoteSystemData.Content.Health.Value
 		metric["file.system.health.description.ids"] = remoteSystemData.Content.Health.DescriptionIds
 		metric["file.system.health.descriptions"] = remoteSystemData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, diskData := range data.disk.Entries {
+		metric := mapstr.M{}
+		metric["disk.id"] = diskData.Content.ID
+		metric["disk.name"] = diskData.Content.Name
+		metric["disk.raw.size"] = diskData.Content.RawSize
+		metric["disk.size"] = diskData.Content.Size
+		metric["disk.vendor.size"] = diskData.Content.VendorSize
+		metric["disk.health.value"] = diskData.Content.Health.Value
+		metric["disk.health.desciption.ids"] = diskData.Content.Health.DescriptionIds
+		metric["disk.health.desciption.descriptions"] = diskData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, datastoreData := range data.datastore.Entries {
+		metric := mapstr.M{}
+		metric["datastore.id"] = datastoreData.Content.ID
+		metric["datastore.name"] = datastoreData.Content.Name
+		metric["datastore.size.total"] = datastoreData.Content.SizeTotal
+		metric["datastore.size.used"] = datastoreData.Content.SizeUsed
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, filesystemData := range data.filesystem.Entries {
+		metric := mapstr.M{}
+		metric["filesystem.id"] = filesystemData.Content.ID
+		metric["filesystem.name"] = filesystemData.Content.Name
+		metric["filesystem.health.value"] = filesystemData.Content.Health.Value
+		metric["filesystem.health.description.ids"] = filesystemData.Content.Health.DescriptionIds
+		metric["filesystem.health.descriptions"] = filesystemData.Content.Health.Descriptions
+		metric["filesystem.metadata.size"] = filesystemData.Content.MetadataSize
+		metric["filesystem.metadata.size.allocated"] = filesystemData.Content.MetadataSizeAllocated
+		metric["filesystem.size.total"] = filesystemData.Content.SizeTotal
+		metric["filesystem.size.used"] = filesystemData.Content.SizeUsed
+		metric["filesystem.size.allocated"] = filesystemData.Content.SizeAllocated
+		metric["filesystem.snap.count"] = filesystemData.Content.SnapCount
+		metric["filesystem.snaps.size"] = filesystemData.Content.SnapsSize
+		metric["filesystem.snaps.size.allocated"] = filesystemData.Content.SnapsSizeAllocated
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, snapData := range data.snap.Entries {
+		metric := mapstr.M{}
+		metric["snap.id"] = snapData.Content.ID
+		metric["snap.name"] = snapData.Content.Name
+		metric["snap.size"] = snapData.Content.Size
+		metric["snap.state"] = snapData.Content.State
+		metric["snap.creation.time"] = snapData.Content.CreationTime
+		metric["snap.expiration.time"] = snapData.Content.ExpirationTime
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, sasPortData := range data.sasPort.Entries {
+		metric := mapstr.M{}
+		metric["sas.port.id"] = sasPortData.Content.ID
+		metric["sas.port.name"] = sasPortData.Content.Name
+		metric["sas.port.needs_replacement"] = sasPortData.Content.NeedsReplacment
+		metric["sas.port.health.value"] = sasPortData.Content.Health.Value
+		metric["sas.port.health.desciption.ids"] = sasPortData.Content.Health.DescriptionIds
+		metric["sas.port.health.desciption.descriptions"] = sasPortData.Content.Health.Descriptions
 
 		metrics = append(metrics, metric)
 	}

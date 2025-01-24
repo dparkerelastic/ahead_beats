@@ -16,3 +16,10 @@ const License_API = "/api/types/license/instances?fields=id,name,isValid,expires
 const EthernetPort_API = "/api/types/ethernetPort/instances?fields=health&compact=true"
 const FileInterface_API = "/api/types/fileInterface/instances?fields=health&compact=true"
 const RemoteSystem_API = "/api/types/remoteSystem/instances?fields=health&compact=true"
+
+const DataStore_API = "/api/types/disk/instances?fields=sizeTotal,sizeUsed&compact=true"
+const Disk_API = "/api/types/datastore/instances?fields=health,size,rawSize,vendorSize&compact=true"
+
+const Filesystem_API = "/api/types/filesystem/instances?fields=name,health,metadataSize,metadataSizeAllocated,sizeAllocated,sizeTotal,sizeUsed,snapCount,snapsSize,snapsSizeAllocated&compact=true"
+const Snap_API = "/api/types/snap/instances?fields=name,size,state,expirationTime,creationTime&compact=true"
+const SasPort_API = "/api/types/sasPort/instances?fields=name,needsReplacement,health&compact=true"

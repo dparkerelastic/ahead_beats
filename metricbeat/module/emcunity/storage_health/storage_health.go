@@ -95,89 +95,130 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	systemData, err := GetSystemMetrics(hostInfo)
 	fmt.Printf("\n\nSystem Response: %+v", systemData)
 	if err != nil {
-		m.logger.Errorf("GetSystemMetrics failed; %v", err)
+		m.logger.Warnf("GetSystemMetrics failed; %v", err)
 	} else {
 		metricData.system = systemData
 	}
 
-	poolData, _ := GetPoolMetrics(hostInfo)
+	poolData, err := GetPoolMetrics(hostInfo)
 	fmt.Printf("\n\nPool Response: %+v", poolData)
 	if err != nil {
-		m.logger.Errorf("GetPoolMetrics failed; %v", err)
+		m.logger.Warnf("GetPoolMetrics failed; %v", err)
 	} else {
 		metricData.pool = poolData
 	}
 
-	poolUnitData, _ := GetPoolUnitMetrics(hostInfo)
+	poolUnitData, err := GetPoolUnitMetrics(hostInfo)
 	fmt.Printf("\n\nPool Unit Response: %+v", poolUnitData)
 	if err != nil {
-		m.logger.Errorf("GetPoolUnitMetrics failed; %v", err)
+		m.logger.Warnf("GetPoolUnitMetrics failed; %v", err)
 	} else {
 		metricData.poolUnit = poolUnitData
 	}
 
-	lunData, _ := GetLunMetrics(hostInfo)
+	lunData, err := GetLunMetrics(hostInfo)
 	fmt.Printf("\n\nLun Response: %+v", lunData)
 	if err != nil {
-		m.logger.Errorf("GetLunMetrics failed; %v", err)
+		m.logger.Warnf("GetLunMetrics failed; %v", err)
 	} else {
 		metricData.lun = lunData
 	}
 
-	storageProcessorData, _ := GetStorageProcessorMetrics(hostInfo)
+	storageProcessorData, err := GetStorageProcessorMetrics(hostInfo)
 	fmt.Printf("\n\nStorage Processor Response: %+v", storageProcessorData)
 	if err != nil {
-		m.logger.Errorf("GetStorageProcessorMetrics failed; %v", err)
+		m.logger.Warnf("GetStorageProcessorMetrics failed; %v", err)
 	} else {
 		metricData.storageProcesser = storageProcessorData
 	}
 
-	storageResourceData, _ := GetStorageResourceMetrics(hostInfo)
+	storageResourceData, err := GetStorageResourceMetrics(hostInfo)
 	fmt.Printf("\n\nStorage Resource Response: %+v", storageResourceData)
 	if err != nil {
-		m.logger.Errorf("GetStorageResourceMetrics failed; %v", err)
+		m.logger.Warnf("GetStorageResourceMetrics failed; %v", err)
 	} else {
 		metricData.storageResource = storageResourceData
 	}
 
-	storageTierData, _ := GetStorageTierMetrics(hostInfo)
+	storageTierData, err := GetStorageTierMetrics(hostInfo)
 	fmt.Printf("\n\nStorage Tier Response: %+v", storageTierData)
 	if err != nil {
-		m.logger.Errorf("GetStorageTierMetrics failed; %v", err)
+		m.logger.Warnf("GetStorageTierMetrics failed; %v", err)
 	} else {
 		metricData.storageTier = storageTierData
 	}
 
-	licenseData, _ := GetLicenseMetrics(hostInfo)
+	licenseData, err := GetLicenseMetrics(hostInfo)
 	fmt.Printf("\n\nLicense Response: %+v", licenseData)
 	if err != nil {
-		m.logger.Errorf("GetStorageTierMetrics failed; %v", err)
+		m.logger.Warnf("GetStorageTierMetrics failed; %v", err)
 	} else {
 		metricData.license = licenseData
 	}
 
-	ethernetPortData, _ := GetEthernetPortMetrics(hostInfo)
+	ethernetPortData, err := GetEthernetPortMetrics(hostInfo)
 	fmt.Printf("\n\nEthernet Port Response: %+v", ethernetPortData)
 	if err != nil {
-		m.logger.Errorf("GetEthernetPortMetrics failed; %v", err)
+		m.logger.Warnf("GetEthernetPortMetrics failed; %v", err)
 	} else {
 		metricData.ethernetPort = ethernetPortData
 	}
 
-	fileInterfaceData, _ := GetFileInterfaceMetrics(hostInfo)
+	fileInterfaceData, err := GetFileInterfaceMetrics(hostInfo)
 	fmt.Printf("\n\nFile Interface Response: %+v", fileInterfaceData)
 	if err != nil {
-		m.logger.Errorf("GetFileInterfaceMetrics failed; %v", err)
+		m.logger.Warnf("GetFileInterfaceMetrics failed; %v", err)
 	} else {
 		metricData.fileInterface = fileInterfaceData
 	}
 
-	remoteSystemData, _ := GetRemoteSystemMetrics(hostInfo)
+	remoteSystemData, err := GetRemoteSystemMetrics(hostInfo)
 	fmt.Printf("\n\nRemote System Response: %+v", remoteSystemData)
 	if err != nil {
-		m.logger.Errorf("GetRemoteSystemMetrics failed; %v", err)
+		m.logger.Warnf("GetRemoteSystemMetrics failed; %v", err)
 	} else {
 		metricData.remoteSystem = remoteSystemData
+	}
+
+	diskData, err := GetDiskMetrics(hostInfo)
+	fmt.Printf("\n\nDisk Response: %+v", diskData)
+	if err != nil {
+
+		m.logger.Warnf("GetDiskMetrics failed; %v", err)
+	} else {
+		metricData.disk = diskData
+	}
+
+	datastoreData, err := GetDatastoreMetrics(hostInfo)
+	fmt.Printf("\n\nDatastore Response: %+v", datastoreData)
+	if err != nil {
+		m.logger.Warnf("GetDatastoreMetrics failed; %v", err)
+	} else {
+		metricData.datastore = datastoreData
+	}
+
+	filesystemData, err := GetFilesystemMetrics(hostInfo)
+	fmt.Printf("\n\nFilesystem Response: %+v", filesystemData)
+	if err != nil {
+		m.logger.Warnf("GetFilesystemMetrics failed; %v", err)
+	} else {
+		metricData.filesystem = filesystemData
+	}
+
+	snapData, err := GetSnapMetrics(hostInfo)
+	fmt.Printf("\n\nSnap Response: %+v", snapData)
+	if err != nil {
+		m.logger.Warnf("GetSnapMetrics failed; %v", err)
+	} else {
+		metricData.snap = snapData
+	}
+
+	sasPortData, err := GetSasPortMetrics(hostInfo)
+	fmt.Printf("\n\nSasPort Response: %+v", sasPortData)
+	if err != nil {
+		m.logger.Warnf("GetSasPortMetrics failed; %v ", err)
+	} else {
+		metricData.sasPort = sasPortData
 	}
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData)
