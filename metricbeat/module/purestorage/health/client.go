@@ -45,12 +45,12 @@ func GetClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureRestClie
 
 	psClient := PureRestClient{
 		config:  config,
-		baseUrl: fmt.Sprintf("https://%s/api/%s/", config.HostIp, config.ApiVersion),
+		baseUrl: fmt.Sprintf("https://%s/api/%s/", config.Host, config.ApiVersion),
 		client:  &http.Client{Transport: tr},
 	}
 
 	// Get the session cookie
-	cookie, err := getSessionCookie(config.HostIp, config.ApiVersion, config.ApiKey)
+	cookie, err := getSessionCookie(config.Host, config.ApiVersion, config.ApiKey)
 	if err != nil {
 		return nil, fmt.Errorf("error initializing PureStorage client: %w", err)
 	}

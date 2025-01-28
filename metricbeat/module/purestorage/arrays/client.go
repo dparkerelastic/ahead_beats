@@ -58,7 +58,7 @@ var OidToName = map[string]OidField{
 
 func GetSnmpClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureSnmpClient, error) {
 	snmp := &gosnmp.GoSNMP{
-		Target:    config.HostIp,
+		Target:    config.Host,
 		Port:      config.SnmpPort,
 		Community: config.SnmpCommunity,
 		Version:   gosnmp.Version2c,
@@ -67,7 +67,7 @@ func GetSnmpClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureSnmp
 
 	client := PureSnmpClient{
 		config:    config,
-		target:    config.HostIp,
+		target:    config.Host,
 		client:    snmp,
 		community: config.SnmpCommunity,
 		baseOID:   config.SnmpBaseOID,

@@ -112,7 +112,7 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 		MetricSetFields: make(map[string]interface{}),
 	}
 	event.Timestamp = timestamp
-	event.RootFields = purestorage.MakeRootFields(m.config.HostIp)
+	event.RootFields = purestorage.MakeRootFields(m.config)
 
 	for _, result := range fields {
 		oid := result.OID

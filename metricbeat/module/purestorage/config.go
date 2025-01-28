@@ -18,6 +18,8 @@
 package purestorage
 
 import (
+	"errors"
+
 	"github.com/elastic/beats/v7/metricbeat/mb"
 )
 
@@ -26,7 +28,7 @@ const (
 )
 
 type Config struct {
-	HostIp        string `config:"host_ip" validate:"required"`
+	Host          string `config:"host" validate:"required"`
 	ApiKey        string `config:"api_key" validate:"required"`
 	ApiVersion    string `config:"api_version" validate:"required"`
 	Port          uint   `config:"port"`
@@ -34,14 +36,25 @@ type Config struct {
 	SnmpBaseOID   string `config:"snmp_base_oid"`
 	SnmpCommunity string `config:"snmp_community"`
 	SnmpPort      uint16 `config:"snmp_port"`
+	HostInfo      HostInfo
 }
 
 func NewConfig(base mb.BaseMetricSet) (*Config, error) {
 	config := Config{}
-	if err := base.Module().UnpackConfig(&config); err != nil {
+	var err error
+
+	if err = base.Module().UnpackConfig(&config); err != nil {
 		return nil, err
 	}
 
+	if config.Host == "" {
+		return nil, errors.New("host is required")
+	} else {
+		config.HostInfo, err = GetHostInfo(config.Host)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &config, nil
 
 }

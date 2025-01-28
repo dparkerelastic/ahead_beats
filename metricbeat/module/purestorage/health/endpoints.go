@@ -63,7 +63,7 @@ func getArrayControllersEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_controller.mode":    controller.Mode,
 				"array_controller.model":   controller.Model,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -103,7 +103,7 @@ func getArrayMonitorEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_monitor.usec_per_read_op":  monitor.UsecPerReadOp,
 				"array_monitor.queue_depth":       monitor.QueueDepth,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -145,7 +145,7 @@ func getArraySpaceEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_space.thin_provisioning": space.ThinProvisioning,
 				"array_space.total_reduction":   space.TotalReduction,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -186,7 +186,7 @@ func getHardwareEvents(m *MetricSet) ([]mb.Event, error) {
 				"hardware.speed":       item.Speed,
 				"hardware.details":     item.Details,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -222,7 +222,7 @@ func getDriveEvents(m *MetricSet) ([]mb.Event, error) {
 				"drive.type":     drive.Type,
 				"drive.name":     drive.Name,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -263,7 +263,7 @@ func getPGroupEvents(m *MetricSet) ([]mb.Event, error) {
 				"pgroup.progress":               pGroup.Progress,
 				"pgroup.data_transferred":       pGroup.DataTransferred,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -303,7 +303,7 @@ func getVolumeMonitorEvents(m *MetricSet) ([]mb.Event, error) {
 				"volume_monitor.time":              space.Time,
 				"volume_monitor.usec_per_read_op":  space.UsecPerReadOp,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -345,7 +345,7 @@ func getVolumeSpaceEvents(m *MetricSet) ([]mb.Event, error) {
 				"volume_space.thin_provisioning": space.ThinProvisioning,
 				"volume_space.total_reduction":   space.TotalReduction,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
@@ -379,7 +379,7 @@ func getArrayEvents(m *MetricSet) ([]mb.Event, error) {
 			"array.array_name": array.ArrayName,
 			"array.id":         array.ID,
 		},
-		RootFields: purestorage.MakeRootFields(m.config.HostIp),
+		RootFields: purestorage.MakeRootFields(m.config),
 	})
 
 	return events, nil
@@ -415,7 +415,7 @@ func getVolumeEvents(m *MetricSet) ([]mb.Event, error) {
 				"volume.serial":  volume.Serial,
 				"volume.size":    volume.Size,
 			},
-			RootFields: purestorage.MakeRootFields(m.config.HostIp),
+			RootFields: purestorage.MakeRootFields(m.config),
 		})
 	}
 
