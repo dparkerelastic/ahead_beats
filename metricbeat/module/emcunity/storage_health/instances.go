@@ -290,3 +290,346 @@ func GetSasPortMetrics(hostInfo Connection) (SasPort_JSON, error) {
 	return jsonInfo, nil
 
 }
+
+func GetPowerSupplyMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+PowerSupply_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetFanMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Fan_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetDaeMetrics(hostInfo Connection) (Dae_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Dae_API)
+
+	var jsonInfo Dae_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetMemoryModuleMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+MemoryModule_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetBatteryMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Battery_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetSsdMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Ssd_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetRaidGroupMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+RaidGroup_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetTreeQuotaMetrics(hostInfo Connection) (TreeQuota_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+TreeQuota_API)
+
+	var jsonInfo TreeQuota_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetDiskGroupMetrics(hostInfo Connection) (DiskGroup_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+DiskGroup_API)
+
+	var jsonInfo DiskGroup_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetCifsServerMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+CifsServer_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetFastCacheMetrics(hostInfo Connection) (FastCache_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+FastCache_API)
+
+	var jsonInfo FastCache_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetFastVPMetrics(hostInfo Connection) (FastVP_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+FastVP_API)
+
+	var jsonInfo FastVP_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetFcPortMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+FcPort_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetHostContainerMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+HostContainer_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetHostInitiatorMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+HostInitiator_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetHostMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Host_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetIoModuleMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+IoModule_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+// LinkedControlCards
+func GetLccMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+Lcc_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}
+
+func GetNasServerMetrics(hostInfo Connection) (BasicEMCUnity_JSON, error) {
+
+	responseData, err := GetInstanceData(hostInfo, hostInfo.baseurl+NasServer_API)
+
+	var jsonInfo BasicEMCUnity_JSON
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		return jsonInfo, err
+	}
+
+	return jsonInfo, nil
+
+}

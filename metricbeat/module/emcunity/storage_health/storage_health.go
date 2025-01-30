@@ -221,6 +221,158 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.sasPort = sasPortData
 	}
 
+	powerSupplyData, err := GetPowerSupplyMetrics(hostInfo)
+	fmt.Printf("\n\nPowerSupply Response: %+v", powerSupplyData)
+	if err != nil {
+		m.logger.Warnf("GetPowerSupplyMetrics failed; %v ", err)
+	} else {
+		metricData.powerSupply = powerSupplyData
+	}
+
+	fanData, err := GetFanMetrics(hostInfo)
+	fmt.Printf("\n\nFan Response: %+v", fanData)
+	if err != nil {
+		m.logger.Warnf("GetFanMetrics failed; %v ", err)
+	} else {
+		metricData.fan = fanData
+	}
+
+	daeData, err := GetDaeMetrics(hostInfo)
+	fmt.Printf("\n\nDAE (Disk Array Enclosure) Response: %+v", daeData)
+	if err != nil {
+		m.logger.Warnf("GetDaeMetrics (DiskArrayEnclosure) failed; %v ", err)
+	} else {
+		metricData.dae = daeData
+	}
+
+	memoryModuleData, err := GetMemoryModuleMetrics(hostInfo)
+	fmt.Printf("\n\nMemory Module Response: %+v", memoryModuleData)
+	if err != nil {
+		m.logger.Warnf("GetMemoryModuleMetrics failed; %v ", err)
+	} else {
+		metricData.memoryModule = memoryModuleData
+	}
+
+	batteryData, err := GetBatteryMetrics(hostInfo)
+	fmt.Printf("\n\nBattery Response: %+v", batteryData)
+	if err != nil {
+		m.logger.Warnf("GetBatteryMetrics failed; %v ", err)
+	} else {
+		metricData.battery = batteryData
+	}
+
+	ssdData, err := GetSsdMetrics(hostInfo)
+	fmt.Printf("\n\nSsd Response: %+v", ssdData)
+	if err != nil {
+		m.logger.Warnf("GetSsdMetrics failed; %v ", err)
+	} else {
+		metricData.ssd = ssdData
+	}
+
+	raidGroupData, err := GetRaidGroupMetrics(hostInfo)
+	fmt.Printf("\n\nRaidGroup Response: %+v", raidGroupData)
+	if err != nil {
+		m.logger.Warnf("GetRaidGroupMetrics failed; %v ", err)
+	} else {
+		metricData.raidGroup = raidGroupData
+	}
+
+	treeQuotaData, err := GetTreeQuotaMetrics(hostInfo)
+	fmt.Printf("\n\nTreeQuota Response: %+v", treeQuotaData)
+	if err != nil {
+		m.logger.Warnf("GetTreeQuotaMetrics failed; %v ", err)
+	} else {
+		metricData.treeQuota = treeQuotaData
+	}
+
+	diskGroupData, err := GetDiskGroupMetrics(hostInfo)
+	fmt.Printf("\n\nDiskGroup Response: %+v", diskGroupData)
+	if err != nil {
+		m.logger.Warnf("GetDiskGroupMetrics failed; %v ", err)
+	} else {
+		metricData.diskGroup = diskGroupData
+	}
+
+	cifsServerData, err := GetCifsServerMetrics(hostInfo)
+	fmt.Printf("\n\nCifsServer Response: %+v", cifsServerData)
+	if err != nil {
+		m.logger.Warnf("GetCifsServerMetrics failed; %v ", err)
+	} else {
+		metricData.cifsServer = cifsServerData
+	}
+
+	fastCacheData, err := GetFastCacheMetrics(hostInfo)
+	fmt.Printf("\n\nFastCache Response: %+v", fastCacheData)
+	if err != nil {
+		m.logger.Warnf("GetFastCacheMetrics failed; %v ", err)
+	} else {
+		metricData.fastCache = fastCacheData
+	}
+
+	fastVPData, err := GetFastVPMetrics(hostInfo)
+	fmt.Printf("\n\nFastVP Response: %+v", fastVPData)
+	if err != nil {
+		m.logger.Warnf("GetFastVPMetrics failed; %v ", err)
+	} else {
+		metricData.fastVP = fastVPData
+	}
+
+	fcPortData, err := GetFcPortMetrics(hostInfo)
+	fmt.Printf("\n\nfcPort Response: %+v", fcPortData)
+	if err != nil {
+		m.logger.Warnf("GetFcPortPMetrics failed; %v ", err)
+	} else {
+		metricData.fcPort = fcPortData
+	}
+
+	hostContainerData, err := GetHostContainerMetrics(hostInfo)
+	fmt.Printf("\n\nHostContainer Response: %+v", hostContainerData)
+	if err != nil {
+		m.logger.Warnf("GetHostContainerMetrics failed; %v ", err)
+	} else {
+		metricData.hostContainer = hostContainerData
+	}
+
+	hostInitiatorData, err := GetHostInitiatorMetrics(hostInfo)
+	fmt.Printf("\n\nHostInitiator Response: %+v", hostInitiatorData)
+	if err != nil {
+		m.logger.Warnf("GetHostInitiatorMetrics failed; %v ", err)
+	} else {
+		metricData.hostInitiator = hostInitiatorData
+	}
+
+	hostData, err := GetHostMetrics(hostInfo)
+	fmt.Printf("\n\nHost Response: %+v", hostData)
+	if err != nil {
+		m.logger.Warnf("GetHostMetrics failed; %v ", err)
+	} else {
+		metricData.host = hostData
+	}
+
+	ioModuleData, err := GetIoModuleMetrics(hostInfo)
+	fmt.Printf("\n\nIO Module Response: %+v", ioModuleData)
+	if err != nil {
+		m.logger.Warnf("GetIoModuleMetrics failed; %v ", err)
+	} else {
+		metricData.ioModule = ioModuleData
+	}
+
+	lccData, err := GetLccMetrics(hostInfo)
+	fmt.Printf("\n\nLcc (LinkedControlCards) Response: %+v", lccData)
+	if err != nil {
+		m.logger.Warnf("GetLccMetrics failed; %v ", err)
+	} else {
+		metricData.lcc = lccData
+	}
+
+	nasServerData, err := GetNasServerMetrics(hostInfo)
+	fmt.Printf("\n\nNasServer Response: %+v", nasServerData)
+	if err != nil {
+		m.logger.Warnf("GetNasServerMetrics failed; %v ", err)
+	} else {
+		metricData.nasServer = nasServerData
+	}
+
 	reportMetrics(reporter, hostInfo.baseurl, metricData)
 
 	return nil

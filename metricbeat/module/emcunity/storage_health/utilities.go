@@ -152,18 +152,26 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["pool.health.value"] = poolData.Content.Health.Value
 		metric["pool.health.description.ids"] = poolData.Content.Health.DescriptionIds
 		metric["pool.health.descriptions"] = poolData.Content.Health.Descriptions
+		metric["pool.harvest.state"] = poolData.Content.HarvestState
+		metric["pool.metadata.size.subscribed"] = poolData.Content.MetadataSizeSubscribed
+		metric["pool.metadata.size.used"] = poolData.Content.MetadataSizeUsed
+		metric["pool.rebalance.progress"] = poolData.Content.RebalanceProgress
+		metric["pool.size.subscribed"] = poolData.Content.SizeSubscribed
+		metric["pool.size.used"] = poolData.Content.SizeUsed
+		metric["pool.snap.size.subscribed"] = poolData.Content.SnapSizeSubscribed
+		metric["pool.snap.size.used"] = poolData.Content.SnapSizeUsed
 
 		metrics = append(metrics, metric)
 	}
 
 	for _, poolUnitData := range data.poolUnit.Entries {
 		metric := mapstr.M{}
-		metric["poolunit.id"] = poolUnitData.Content.ID
-		metric["poolunit.name"] = poolUnitData.Content.Name
-		metric["poolunit.size.total"] = poolUnitData.Content.SizeTotal
-		metric["poolunit.health.value"] = poolUnitData.Content.Health.Value
-		metric["poolunit.health.description.ids"] = poolUnitData.Content.Health.DescriptionIds
-		metric["poolunit.health.descriptions"] = poolUnitData.Content.Health.Descriptions
+		metric["pool.unit.id"] = poolUnitData.Content.ID
+		metric["pool.unit.name"] = poolUnitData.Content.Name
+		metric["pool.unit.size.total"] = poolUnitData.Content.SizeTotal
+		metric["pool.unit.health.value"] = poolUnitData.Content.Health.Value
+		metric["pool.unit.health.description.ids"] = poolUnitData.Content.Health.DescriptionIds
+		metric["pool.unit.health.descriptions"] = poolUnitData.Content.Health.Descriptions
 
 		metrics = append(metrics, metric)
 	}
@@ -332,6 +340,241 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["sas.port.health.value"] = sasPortData.Content.Health.Value
 		metric["sas.port.health.desciption.ids"] = sasPortData.Content.Health.DescriptionIds
 		metric["sas.port.health.desciption.descriptions"] = sasPortData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, powerSupplyData := range data.powerSupply.Entries {
+		metric := mapstr.M{}
+		metric["power.supply.id"] = powerSupplyData.Content.ID
+		metric["power.supply.name"] = powerSupplyData.Content.Name
+		metric["power.supply.needs_replacement"] = powerSupplyData.Content.NeedsReplacment
+		metric["power.supply.health.value"] = powerSupplyData.Content.Health.Value
+		metric["power.supply.health.desciption.ids"] = powerSupplyData.Content.Health.DescriptionIds
+		metric["power.supply.health.desciption.descriptions"] = powerSupplyData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, fanData := range data.fan.Entries {
+		metric := mapstr.M{}
+		metric["fan.id"] = fanData.Content.ID
+		metric["fan.name"] = fanData.Content.Name
+		metric["fan.needs_replacement"] = fanData.Content.NeedsReplacment
+		metric["fan.health.value"] = fanData.Content.Health.Value
+		metric["fan.health.desciption.ids"] = fanData.Content.Health.DescriptionIds
+		metric["fan.health.desciption.descriptions"] = fanData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, daeData := range data.dae.Entries {
+		metric := mapstr.M{}
+		metric["dae.id"] = daeData.Content.ID
+		metric["dae.name"] = daeData.Content.Name
+		metric["dae.current.power"] = daeData.Content.CurrentPower
+		metric["dae.avg.power"] = daeData.Content.AvgPower
+		metric["dae.max.power"] = daeData.Content.MaxPower
+		metric["dae.current.temperature"] = daeData.Content.CurrentTemperature
+		metric["dae.avg.temperature"] = daeData.Content.AvgTemperature
+		metric["dae.max.temperature"] = daeData.Content.MaxTemperature
+		metric["dae.needs_replacement"] = daeData.Content.NeedsReplacment
+		metric["dae.health.value"] = daeData.Content.Health.Value
+		metric["dae.health.desciption.ids"] = daeData.Content.Health.DescriptionIds
+		metric["dae.health.desciption.descriptions"] = daeData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, memoryModuleData := range data.memoryModule.Entries {
+		metric := mapstr.M{}
+		metric["memory.module.id"] = memoryModuleData.Content.ID
+		metric["memory.module.name"] = memoryModuleData.Content.Name
+		metric["memory.module.size"] = memoryModuleData.Content.Size
+		metric["memory.module.needs_replacement"] = memoryModuleData.Content.NeedsReplacment
+		metric["memory.module.health.value"] = memoryModuleData.Content.Health.Value
+		metric["memory.module.health.desciption.ids"] = memoryModuleData.Content.Health.DescriptionIds
+		metric["memory.module.health.desciption.descriptions"] = memoryModuleData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, batteryData := range data.battery.Entries {
+		metric := mapstr.M{}
+		metric["battery.id"] = batteryData.Content.ID
+		metric["battery.name"] = batteryData.Content.Name
+		metric["battery.needs_replacement"] = batteryData.Content.NeedsReplacment
+		metric["battery.health.value"] = batteryData.Content.Health.Value
+		metric["battery.health.desciption.ids"] = batteryData.Content.Health.DescriptionIds
+		metric["battery.health.desciption.descriptions"] = batteryData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, ssdData := range data.ssd.Entries {
+		metric := mapstr.M{}
+		metric["ssd.id"] = ssdData.Content.ID
+		metric["ssd.name"] = ssdData.Content.Name
+		metric["ssd.needs_replacement"] = ssdData.Content.NeedsReplacment
+		metric["ssd.health.value"] = ssdData.Content.Health.Value
+		metric["ssd.health.desciption.ids"] = ssdData.Content.Health.DescriptionIds
+		metric["ssd.health.desciption.descriptions"] = ssdData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, raidGroupData := range data.raidGroup.Entries {
+		metric := mapstr.M{}
+		metric["raid.group.id"] = raidGroupData.Content.ID
+		metric["raid.group.name"] = raidGroupData.Content.Name
+		metric["raid.group.size.total"] = raidGroupData.Content.SizeTotal
+		metric["raid.group.health.value"] = raidGroupData.Content.Health.Value
+		metric["raid.group.health.desciption.ids"] = raidGroupData.Content.Health.DescriptionIds
+		metric["raid.group.health.desciption.descriptions"] = raidGroupData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, treeQuotaData := range data.treeQuota.Entries {
+		metric := mapstr.M{}
+		metric["tree.quota.id"] = treeQuotaData.Content.ID
+		metric["tree.quota.soft.limit"] = treeQuotaData.Content.SoftLimit
+		metric["tree.quota.hard.limit"] = treeQuotaData.Content.HardLimit
+		metric["tree.quota.size.used"] = treeQuotaData.Content.SizeUsed
+		metric["tree.quota.size.state"] = treeQuotaData.Content.State
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, diskGroupData := range data.diskGroup.Entries {
+		metric := mapstr.M{}
+		metric["disk.group.id"] = diskGroupData.Content.ID
+		metric["disk.group.name"] = diskGroupData.Content.Name
+		metric["disk.group.advertised.size"] = diskGroupData.Content.AdvertisedSize
+		metric["disk.group.disk.size"] = diskGroupData.Content.DiskSize
+		metric["disk.group.hot.spare.policy.status"] = diskGroupData.Content.HotSparePolicyStatus
+		metric["disk.group.min.spare.policy.status"] = diskGroupData.Content.MinHotSpareCandidates
+		metric["disk.group.rpm"] = diskGroupData.Content.Rpm
+		metric["disk.group.speed"] = diskGroupData.Content.Speed
+		metric["disk.group.total.disks"] = diskGroupData.Content.TotalDisks
+		metric["disk.group.unconfigured.disks"] = diskGroupData.Content.UnconfiguredDisks
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, cifsServerData := range data.cifsServer.Entries {
+		metric := mapstr.M{}
+		metric["cifs.server.id"] = cifsServerData.Content.ID
+		metric["cifs.server.name"] = cifsServerData.Content.Name
+		metric["cifs.server.health.value"] = cifsServerData.Content.Health.Value
+		metric["cifs.server.health.desciption.ids"] = cifsServerData.Content.Health.DescriptionIds
+		metric["cifs.server.health.desciption.descriptions"] = cifsServerData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, fastCacheData := range data.fastCache.Entries {
+		metric := mapstr.M{}
+		metric["fast.cache.id"] = fastCacheData.Content.ID
+		metric["fast.cache.name"] = fastCacheData.Content.Name
+		metric["fast.cache.number_of_disks"] = fastCacheData.Content.NumberOfDisks
+		metric["fast.cache.size.free"] = fastCacheData.Content.SizeFree
+		metric["fast.cache.size.total"] = fastCacheData.Content.SizeTotal
+		metric["fast.cache.health.value"] = fastCacheData.Content.Health.Value
+		metric["fast.cache.health.description.ids"] = fastCacheData.Content.Health.DescriptionIds
+		metric["fast.cache.health.descriptions"] = fastCacheData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, fastVPData := range data.fastVP.Entries {
+		metric := mapstr.M{}
+		metric["fast.vp.id"] = fastVPData.Content.ID
+		metric["fast.vp.status"] = fastVPData.Content.Status
+		metric["fast.vp.is_schedule_enabled"] = fastVPData.Content.IsScheduleEnabled
+		metric["fast.vp.relocation.duration.estimate"] = fastVPData.Content.RelocationDurationEstimate
+		metric["fast.vp.relocation.rate"] = fastVPData.Content.RelocationRate
+		metric["fast.vp.size.moving.down"] = fastVPData.Content.SizeMovingDown
+		metric["fast.vp.size.moving.up"] = fastVPData.Content.SizeMovingUp
+		metric["fast.vp.size.moving.within"] = fastVPData.Content.SizeMovingWithin
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, fcPortData := range data.fcPort.Entries {
+		metric := mapstr.M{}
+		metric["fc.port.id"] = fcPortData.Content.ID
+		metric["fc.port.name"] = fcPortData.Content.Name
+		metric["fc.port.health.value"] = fcPortData.Content.Health.Value
+		metric["fc.port.health.desciption.ids"] = fcPortData.Content.Health.DescriptionIds
+		metric["fc.port.health.desciption.descriptions"] = fcPortData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, hostContainerData := range data.hostContainer.Entries {
+		metric := mapstr.M{}
+		metric["host.container.id"] = hostContainerData.Content.ID
+		metric["host.container.name"] = hostContainerData.Content.Name
+		metric["host.container.health.value"] = hostContainerData.Content.Health.Value
+		metric["host.container.health.desciption.ids"] = hostContainerData.Content.Health.DescriptionIds
+		metric["host.container.health.desciption.descriptions"] = hostContainerData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, hostInitiatorData := range data.hostInitiator.Entries {
+		metric := mapstr.M{}
+		metric["host.initiator.id"] = hostInitiatorData.Content.ID
+		metric["host.initiator.health.value"] = hostInitiatorData.Content.Health.Value
+		metric["host.initiator.health.desciption.ids"] = hostInitiatorData.Content.Health.DescriptionIds
+		metric["host.initiator.health.desciption.descriptions"] = hostInitiatorData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, hostData := range data.host.Entries {
+		metric := mapstr.M{}
+		metric["host.id"] = hostData.Content.ID
+		metric["host.name"] = hostData.Content.Name
+		metric["host.health.value"] = hostData.Content.Health.Value
+		metric["host.health.desciption.ids"] = hostData.Content.Health.DescriptionIds
+		metric["host.health.desciption.descriptions"] = hostData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, ioModuleData := range data.ioModule.Entries {
+		metric := mapstr.M{}
+		metric["io.module.id"] = ioModuleData.Content.ID
+		metric["io.module.name"] = ioModuleData.Content.Name
+		metric["io.module.needs_replacement"] = ioModuleData.Content.NeedsReplacment
+		metric["io.module.health.value"] = ioModuleData.Content.Health.Value
+		metric["io.module.health.desciption.ids"] = ioModuleData.Content.Health.DescriptionIds
+		metric["io.module.health.desciption.descriptions"] = ioModuleData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, lccData := range data.lcc.Entries {
+		metric := mapstr.M{}
+		metric["lcc.id"] = lccData.Content.ID
+		metric["lcc.name"] = lccData.Content.Name
+		metric["lcc.needs_replacement"] = lccData.Content.NeedsReplacment
+		metric["lcc.health.value"] = lccData.Content.Health.Value
+		metric["lcc.health.desciption.ids"] = lccData.Content.Health.DescriptionIds
+		metric["lcc.health.desciption.descriptions"] = lccData.Content.Health.Descriptions
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, nasServerData := range data.nasServer.Entries {
+		metric := mapstr.M{}
+		metric["nas.server.id"] = nasServerData.Content.ID
+		metric["nas.server.name"] = nasServerData.Content.Name
+		metric["nas.server.health.value"] = nasServerData.Content.Health.Value
+		metric["nas.server.health.desciption.ids"] = nasServerData.Content.Health.DescriptionIds
+		metric["nas.server.health.desciption.descriptions"] = nasServerData.Content.Health.Descriptions
 
 		metrics = append(metrics, metric)
 	}

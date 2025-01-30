@@ -32,7 +32,79 @@ type UnityData struct {
 	filesystem       FileSystem_JSON
 	snap             Snap_JSON
 	sasPort          SasPort_JSON
+	powerSupply      BasicEMCUnity_JSON
+	fan              BasicEMCUnity_JSON
+	dae              Dae_JSON
+	memoryModule     BasicEMCUnity_JSON
+	battery          BasicEMCUnity_JSON
+	ssd              BasicEMCUnity_JSON
+	raidGroup        BasicEMCUnity_JSON
+	treeQuota        TreeQuota_JSON
+	diskGroup        DiskGroup_JSON
+	cifsServer       BasicEMCUnity_JSON
+	fastCache        FastCache_JSON
+	fastVP           FastVP_JSON
+	fcPort           BasicEMCUnity_JSON
+	hostContainer    BasicEMCUnity_JSON
+	hostInitiator    BasicEMCUnity_JSON
+	host             BasicEMCUnity_JSON
+	ioModule         BasicEMCUnity_JSON
+	lcc              BasicEMCUnity_JSON
+	nasServer        BasicEMCUnity_JSON
 }
+
+// These are most common data streams.
+
+// This presently covers three scenarios EthernetPort, FileInterface, RemoteSystem
+type BasicEMCUnity_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		// Base    string    `json:"@base"`
+		// Updated time.Time `json:"updated"`
+		// Links   []struct {
+		// 	Rel  string `json:"rel"`
+		// 	Href string `json:"href"`
+		// } `json:"links"`
+		Content struct {
+			ID              string `json:"id"`
+			Name            string `json:"name"`
+			NeedsReplacment bool   `json:"needsReplacement"`
+			Size            int    `json:"size"`
+			SizeTotal       int64  `json:"sizeTotal"`
+			Health          struct {
+				Value          int      `json:"value"`
+				DescriptionIds []string `json:"descriptionIds"`
+				Descriptions   []string `json:"descriptions"`
+			} `json:"health"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+// type BasicEMCUnityWithReplacement_JSON struct {
+// 	// Base    string    `json:"@base"`
+// 	// Updated time.Time `json:"updated"`
+// 	// Links   []struct {
+// 	// 	Rel  string `json:"rel"`
+// 	// 	Href string `json:"href"`
+// 	// } `json:"links"`
+// 	Entries []struct {
+// 		Content struct {
+// 			ID              string `json:"id"`
+// 			Name            string `json:"name"`
+// 			NeedsReplacment bool   `json:"needsReplacement"`
+// 			Health          struct {
+// 				Value          int      `json:"value"`
+// 				DescriptionIds []string `json:"descriptionIds"`
+// 				Descriptions   []string `json:"descriptions"`
+// 			} `json:"health"`
+// 		} `json:"content"`
+// 	} `json:"entries"`
+// }
 
 type System_JSON struct {
 	// Base    string    `json:"@base"`
@@ -81,10 +153,18 @@ type Pool_JSON struct {
 				DescriptionIds []string `json:"descriptionIds"`
 				Descriptions   []string `json:"descriptions"`
 			} `json:"health"`
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			SizeFree    int64  `json:"sizeFree"`
-			SizeTotal   int64  `json:"sizeTotal"`
+			Name                   string `json:"name"`
+			Description            string `json:"description"`
+			SizeFree               int64  `json:"sizeFree"`
+			SizeTotal              int64  `json:"sizeTotal"`
+			HarvestState           int    `json:"harvestState"`
+			MetadataSizeSubscribed int64  `json:"metadataSizeSubscribed"`
+			MetadataSizeUsed       int64  `json:"metadataSizeUsed"`
+			RebalanceProgress      int    `json:"rebalanceProgress"`
+			SizeSubscribed         int64  `json:"sizeSubscribed"`
+			SizeUsed               int64  `json:"sizeUsed"`
+			SnapSizeSubscribed     int64  `json:"snapSizeSubscribed"`
+			SnapSizeUsed           int64  `json:"snapSizeUsed"`
 		} `json:"content"`
 	} `json:"entries"`
 }
@@ -214,7 +294,7 @@ type StorageTier_JSON struct {
 			VirtualDisksTotal  int    `json:"virtualDisksTotal"`
 			VirtualDisksUnused int    `json:"virtualDisksUnused"`
 			SizeTotal          int64  `json:"sizeTotal"`
-			SizeFree           int    `json:"sizeFree"`
+			SizeFree           int64  `json:"sizeFree"`
 		} `json:"content"`
 	} `json:"entries"`
 }
@@ -243,109 +323,6 @@ type License_JSON struct {
 			Feature     struct {
 				ID string `json:"id"`
 			} `json:"feature"`
-		} `json:"content"`
-	} `json:"entries"`
-}
-
-//
-
-// type RemoteSystem_JSON struct {
-// 	// Base    string    `json:"@base"`
-// 	// Updated time.Time `json:"updated"`
-// 	// Links   []struct {
-// 	// 	Rel  string `json:"rel"`
-// 	// 	Href string `json:"href"`
-// 	// } `json:"links"`
-// 	Entries []struct {
-// 		// Base    string    `json:"@base"`
-// 		// Updated time.Time `json:"updated"`
-// 		// Links   []struct {
-// 		// 	Rel  string `json:"rel"`
-// 		// 	Href string `json:"href"`
-// 		// } `json:"links"`
-// 		Content struct {
-// 			ID     string `json:"id"`
-// 			Health struct {
-// 				Value          int      `json:"value"`
-// 				DescriptionIds []string `json:"descriptionIds"`
-// 				Descriptions   []string `json:"descriptions"`
-// 			} `json:"health"`
-// 		} `json:"content"`
-// 	} `json:"entries"`
-// }
-
-// type FileInterface_JSON struct {
-// 	// Base    string    `json:"@base"`
-// 	// Updated time.Time `json:"updated"`
-// 	// Links   []struct {
-// 	// 	Rel  string `json:"rel"`
-// 	// 	Href string `json:"href"`
-// 	// } `json:"links"`
-// 	Entries []struct {
-// 		// Base    string    `json:"@base"`
-// 		// Updated time.Time `json:"updated"`
-// 		// Links   []struct {
-// 		// 	Rel  string `json:"rel"`
-// 		// 	Href string `json:"href"`
-// 		// } `json:"links"`
-// 		Content struct {
-// 			ID     string `json:"id"`
-// 			Health struct {
-// 				Value          int      `json:"value"`
-// 				DescriptionIds []string `json:"descriptionIds"`
-// 				Descriptions   []string `json:"descriptions"`
-// 			} `json:"health"`
-// 		} `json:"content"`
-// 	} `json:"entries"`
-// }
-
-// type EthernetPort_JSON struct {
-// 	// Base    string    `json:"@base"`
-// 	// Updated time.Time `json:"updated"`
-// 	// Links   []struct {
-// 	// 	Rel  string `json:"rel"`
-// 	// 	Href string `json:"href"`
-// 	// } `json:"links"`
-// 	Entries []struct {
-// 		// Base    string    `json:"@base"`
-// 		// Updated time.Time `json:"updated"`
-// 		// Links   []struct {
-// 		// 	Rel  string `json:"rel"`
-// 		// 	Href string `json:"href"`
-// 		// } `json:"links"`
-// 		Content struct {
-// 			ID     string `json:"id"`
-// 			Health struct {
-// 				Value          int      `json:"value"`
-// 				DescriptionIds []string `json:"descriptionIds"`
-// 				Descriptions   []string `json:"descriptions"`
-// 			} `json:"health"`
-// 		} `json:"content"`
-// 	} `json:"entries"`
-// }
-
-// This presently covers three scenarios EthernetPort, FileInterface, RemoteSystem
-type BasicEMCUnity_JSON struct {
-	// Base    string    `json:"@base"`
-	// Updated time.Time `json:"updated"`
-	// Links   []struct {
-	// 	Rel  string `json:"rel"`
-	// 	Href string `json:"href"`
-	// } `json:"links"`
-	Entries []struct {
-		// Base    string    `json:"@base"`
-		// Updated time.Time `json:"updated"`
-		// Links   []struct {
-		// 	Rel  string `json:"rel"`
-		// 	Href string `json:"href"`
-		// } `json:"links"`
-		Content struct {
-			ID     string `json:"id"`
-			Health struct {
-				Value          int      `json:"value"`
-				DescriptionIds []string `json:"descriptionIds"`
-				Descriptions   []string `json:"descriptions"`
-			} `json:"health"`
 		} `json:"content"`
 	} `json:"entries"`
 }
@@ -461,6 +438,128 @@ type SasPort_JSON struct {
 				DescriptionIds []string `json:"descriptionIds"`
 				Descriptions   []string `json:"descriptions"`
 			} `json:"health"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+// const dae_API = "/api/types/dae/instances?fields=health,currentPower,avgPower,maxPower,currentTemperature,avgTemperature,maxTemperature&compact=true"
+type Dae_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		// Base    string    `json:"@base"`
+		// Updated time.Time `json:"updated"`
+		// Links   []struct {
+		// 	Rel  string `json:"rel"`
+		// 	Href string `json:"href"`
+		// } `json:"links"`
+		Content struct {
+			ID                 string `json:"id"`
+			Name               string `json:"name"`
+			Model              string `json:"model"`
+			NeedsReplacment    bool   `json:"needsReplacement"`
+			CurrentPower       int    `json:"currentPower"`
+			AvgPower           int    `json:"avgPower"`
+			MaxPower           int    `json:"maxPower"`
+			CurrentTemperature int    `json:"currentTemperature"`
+			AvgTemperature     int    `json:"avgTemperature"`
+			MaxTemperature     int    `json:"maxTemperature"`
+			Health             struct {
+				Value          int      `json:"value"`
+				DescriptionIds []string `json:"descriptionIds"`
+				Descriptions   []string `json:"descriptions"`
+			} `json:"health"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+type TreeQuota_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		Content struct {
+			ID        string `json:"id"`
+			SoftLimit int64  `json:"softLimit"`
+			HardLimit int64  `json:"hardLimit"`
+			SizeUsed  int64  `json:"sizeUsed"`
+			State     int    `json:"state"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+// const DiskGroup_API = "/api/types/diskGroup/instances?fields=name,advertisedSize,diskSize,hotSparePolicyStatus,minHotSpareCandidates,rpm,speed,totalDisks,unconfiguredDisks&compact=true"
+type DiskGroup_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		Content struct {
+			ID                    string `json:"id"`
+			Name                  string `json:"name"`
+			AdvertisedSize        int64  `json:"advertisedSize"`
+			DiskSize              int64  `json:"diskSize"`
+			HotSparePolicyStatus  int    `json:"hotSparePolicyStatus"`
+			MinHotSpareCandidates int    `json:"minHotSpareCandidates"`
+			Rpm                   int    `json:"rpm"`
+			Speed                 int64  `json:"speed"`
+			TotalDisks            int    `json:"totalDisks"`
+			UnconfiguredDisks     int    `json:"unconfiguredDisks"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+type FastCache_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		Content struct {
+			ID     string `json:"id"`
+			Health struct {
+				Value          int      `json:"value"`
+				DescriptionIds []string `json:"descriptionIds"`
+				Descriptions   []string `json:"descriptions"`
+			} `json:"health"`
+			Name          string `json:"name"`
+			SizeFree      int64  `json:"sizeFree"`
+			SizeTotal     int64  `json:"sizeTotal"`
+			NumberOfDisks int    `json:"numberOfDisks"`
+		} `json:"content"`
+	} `json:"entries"`
+}
+
+// const FastVP_API = "/api/types/fastVP/instances?fields=id,isScheduleEnabled,relocationRate,sizeMovingUp,sizeMovingDown,sizeMovingWithin,status,relocationDurationEstimate&compact=true"
+type FastVP_JSON struct {
+	// Base    string    `json:"@base"`
+	// Updated time.Time `json:"updated"`
+	// Links   []struct {
+	// 	Rel  string `json:"rel"`
+	// 	Href string `json:"href"`
+	// } `json:"links"`
+	Entries []struct {
+		Content struct {
+			ID                         string `json:"id"`
+			IsScheduleEnabled          bool   `json:"isScheduleEnabled"`
+			RelocationRate             int    `json:"relocationRate"`
+			SizeMovingUp               int64  `json:"sizeMovingUp"`
+			SizeMovingDown             int64  `json:"sizeMovingDown"`
+			SizeMovingWithin           int64  `json:"sizeMovingWithin"`
+			Status                     int    `json:"status"`
+			RelocationDurationEstimate string `json:"relocationDurationEstimate"`
 		} `json:"content"`
 	} `json:"entries"`
 }
