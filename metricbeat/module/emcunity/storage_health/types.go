@@ -63,6 +63,7 @@ type BasicEMCUnity_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -85,27 +86,6 @@ type BasicEMCUnity_JSON struct {
 	} `json:"entries"`
 }
 
-// type BasicEMCUnityWithReplacement_JSON struct {
-// 	// Base    string    `json:"@base"`
-// 	// Updated time.Time `json:"updated"`
-// 	// Links   []struct {
-// 	// 	Rel  string `json:"rel"`
-// 	// 	Href string `json:"href"`
-// 	// } `json:"links"`
-// 	Entries []struct {
-// 		Content struct {
-// 			ID              string `json:"id"`
-// 			Name            string `json:"name"`
-// 			NeedsReplacment bool   `json:"needsReplacement"`
-// 			Health          struct {
-// 				Value          int      `json:"value"`
-// 				DescriptionIds []string `json:"descriptionIds"`
-// 				Descriptions   []string `json:"descriptions"`
-// 			} `json:"health"`
-// 		} `json:"content"`
-// 	} `json:"entries"`
-// }
-
 type System_JSON struct {
 	// Base    string    `json:"@base"`
 	// Updated time.Time `json:"updated"`
@@ -113,6 +93,7 @@ type System_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -145,6 +126,7 @@ type Pool_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -156,13 +138,13 @@ type Pool_JSON struct {
 			Name                   string `json:"name"`
 			Description            string `json:"description"`
 			SizeFree               int64  `json:"sizeFree"`
+			SizeUsed               int64  `json:"sizeUsed"`
 			SizeTotal              int64  `json:"sizeTotal"`
 			HarvestState           int    `json:"harvestState"`
 			MetadataSizeSubscribed int64  `json:"metadataSizeSubscribed"`
 			MetadataSizeUsed       int64  `json:"metadataSizeUsed"`
 			RebalanceProgress      int    `json:"rebalanceProgress"`
 			SizeSubscribed         int64  `json:"sizeSubscribed"`
-			SizeUsed               int64  `json:"sizeUsed"`
 			SnapSizeSubscribed     int64  `json:"snapSizeSubscribed"`
 			SnapSizeUsed           int64  `json:"snapSizeUsed"`
 		} `json:"content"`
@@ -176,6 +158,7 @@ type PoolUnit_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -197,6 +180,7 @@ type Lun_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -221,6 +205,7 @@ type StorageProcessor_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -248,6 +233,7 @@ type StorageResource_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -280,6 +266,7 @@ type StorageTier_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -306,6 +293,7 @@ type License_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -336,6 +324,7 @@ type Disk_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -361,6 +350,7 @@ type Datastore_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID        string `json:"id"`
@@ -379,6 +369,7 @@ type FileSystem_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -408,6 +399,7 @@ type Snap_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID             string    `json:"id"`
@@ -428,6 +420,7 @@ type SasPort_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID              string `json:"id"`
@@ -450,6 +443,7 @@ type Dae_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		// Base    string    `json:"@base"`
 		// Updated time.Time `json:"updated"`
@@ -484,6 +478,7 @@ type TreeQuota_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID        string `json:"id"`
@@ -503,6 +498,7 @@ type DiskGroup_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID                    string `json:"id"`
@@ -526,6 +522,7 @@ type FastCache_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID     string `json:"id"`
@@ -550,6 +547,7 @@ type FastVP_JSON struct {
 	// 	Rel  string `json:"rel"`
 	// 	Href string `json:"href"`
 	// } `json:"links"`
+	Message string
 	Entries []struct {
 		Content struct {
 			ID                         string `json:"id"`

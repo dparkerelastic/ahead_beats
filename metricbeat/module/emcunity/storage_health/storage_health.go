@@ -2,6 +2,7 @@ package storage_health
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
@@ -23,6 +24,7 @@ type config struct {
 	DebugMode bool          `config:"debug"`
 	UserName  string        `config:"username"`
 	Password  string        `config:"password"`
+	PerPage   int           `config:"per_page"`
 }
 
 // func defaultConfig() *config {
@@ -45,6 +47,7 @@ type MetricSet struct {
 	debug    bool
 	username string
 	password string
+	perPage  int
 }
 
 // type MetricSet struct {
@@ -72,6 +75,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		logger:        logger,
 		username:      config.UserName,
 		password:      config.Password,
+		perPage:       config.PerPage,
 	}, nil
 }
 
@@ -87,290 +91,331 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	hostInfo.username = m.username
 	hostInfo.password = m.password
 
-	//metricsData := make(map[Serial]*UnityData)
-	//map[Serial]*UnityData
+	var resources_per_page int
+	if m.perPage > 0 {
+		resources_per_page = m.perPage
+	} else {
+		resources_per_page = 100
+	}
 
 	var metricData UnityData
 
-	systemData, err := GetSystemMetrics(hostInfo)
-	fmt.Printf("\n\nSystem Response: %+v", systemData)
+	systemData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+System_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.system)
+	//fmt.Printf("\n\nSystem Response: %+v", systemData)
 	if err != nil {
 		m.logger.Warnf("GetSystemMetrics failed; %v", err)
 	} else {
-		metricData.system = systemData
+		metricData.system = systemData.(System_JSON)
+		metricData.system.Message = message
+
 	}
 
-	poolData, err := GetPoolMetrics(hostInfo)
-	fmt.Printf("\n\nPool Response: %+v", poolData)
+	poolData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Pool_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.pool)
+	//fmt.Printf("\n\nPool Response: %+v", poolData)
 	if err != nil {
 		m.logger.Warnf("GetPoolMetrics failed; %v", err)
 	} else {
-		metricData.pool = poolData
+		metricData.pool = poolData.(Pool_JSON)
+		metricData.pool.Message = message
 	}
 
-	poolUnitData, err := GetPoolUnitMetrics(hostInfo)
-	fmt.Printf("\n\nPool Unit Response: %+v", poolUnitData)
+	poolUnitData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+PoolUnit_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.poolUnit)
+	//fmt.Printf("\n\nPool Unit Response: %+v", poolUnitData)
 	if err != nil {
 		m.logger.Warnf("GetPoolUnitMetrics failed; %v", err)
 	} else {
-		metricData.poolUnit = poolUnitData
+		metricData.poolUnit = poolUnitData.(PoolUnit_JSON)
+		metricData.poolUnit.Message = message
 	}
 
-	lunData, err := GetLunMetrics(hostInfo)
-	fmt.Printf("\n\nLun Response: %+v", lunData)
+	lunData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Lun_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.lun)
+	//fmt.Printf("\n\nLun Response: %+v", lunData)
 	if err != nil {
 		m.logger.Warnf("GetLunMetrics failed; %v", err)
 	} else {
-		metricData.lun = lunData
+		metricData.lun = lunData.(Lun_JSON)
+		metricData.lun.Message = message
 	}
 
-	storageProcessorData, err := GetStorageProcessorMetrics(hostInfo)
-	fmt.Printf("\n\nStorage Processor Response: %+v", storageProcessorData)
+	storageProcessorData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+StorageProcessor_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.storageProcesser)
+	//fmt.Printf("\n\nStorage Processor Response: %+v", storageProcessorData)
 	if err != nil {
 		m.logger.Warnf("GetStorageProcessorMetrics failed; %v", err)
 	} else {
-		metricData.storageProcesser = storageProcessorData
+		metricData.storageProcesser = storageProcessorData.(StorageProcessor_JSON)
+		metricData.storageProcesser.Message = message
 	}
 
-	storageResourceData, err := GetStorageResourceMetrics(hostInfo)
-	fmt.Printf("\n\nStorage Resource Response: %+v", storageResourceData)
+	storageResourceData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+StorageResource_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.storageResource)
+	//fmt.Printf("\n\nStorage Resource Response: %+v", storageResourceData)
 	if err != nil {
 		m.logger.Warnf("GetStorageResourceMetrics failed; %v", err)
 	} else {
-		metricData.storageResource = storageResourceData
+		metricData.storageResource = storageResourceData.(StorageResource_JSON)
+		metricData.storageResource.Message = message
 	}
 
-	storageTierData, err := GetStorageTierMetrics(hostInfo)
-	fmt.Printf("\n\nStorage Tier Response: %+v", storageTierData)
+	storageTierData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+StorageTier_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.storageTier)
+	//fmt.Printf("\n\nStorage Tier Response: %+v", storageTierData)
 	if err != nil {
 		m.logger.Warnf("GetStorageTierMetrics failed; %v", err)
 	} else {
-		metricData.storageTier = storageTierData
+		metricData.storageTier = storageTierData.(StorageTier_JSON)
+		metricData.storageTier.Message = message
 	}
 
-	licenseData, err := GetLicenseMetrics(hostInfo)
-	fmt.Printf("\n\nLicense Response: %+v", licenseData)
+	licenseData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+License_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.license)
+	//fmt.Printf("\n\nLicense Response: %+v", licenseData)
 	if err != nil {
 		m.logger.Warnf("GetStorageTierMetrics failed; %v", err)
 	} else {
-		metricData.license = licenseData
+		metricData.license = licenseData.(License_JSON)
+		metricData.license.Message = message
 	}
 
-	ethernetPortData, err := GetEthernetPortMetrics(hostInfo)
-	fmt.Printf("\n\nEthernet Port Response: %+v", ethernetPortData)
+	ethernetPortData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+EthernetPort_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.ethernetPort)
+	//fmt.Printf("\n\nEthernet Port Response: %+v", ethernetPortData)
 	if err != nil {
 		m.logger.Warnf("GetEthernetPortMetrics failed; %v", err)
 	} else {
-		metricData.ethernetPort = ethernetPortData
+		metricData.ethernetPort = ethernetPortData.(BasicEMCUnity_JSON)
+		metricData.ethernetPort.Message = message
 	}
 
-	fileInterfaceData, err := GetFileInterfaceMetrics(hostInfo)
-	fmt.Printf("\n\nFile Interface Response: %+v", fileInterfaceData)
+	fileInterfaceData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+FileInterface_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.fileInterface)
+	//fmt.Printf("\n\nFile Interface Response: %+v", fileInterfaceData)
 	if err != nil {
 		m.logger.Warnf("GetFileInterfaceMetrics failed; %v", err)
 	} else {
-		metricData.fileInterface = fileInterfaceData
+		metricData.fileInterface = fileInterfaceData.(BasicEMCUnity_JSON)
+		metricData.fileInterface.Message = message
 	}
 
-	remoteSystemData, err := GetRemoteSystemMetrics(hostInfo)
-	fmt.Printf("\n\nRemote System Response: %+v", remoteSystemData)
+	remoteSystemData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+RemoteSystem_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.remoteSystem)
+	//fmt.Printf("\n\nRemote System Response: %+v", remoteSystemData)
 	if err != nil {
 		m.logger.Warnf("GetRemoteSystemMetrics failed; %v", err)
 	} else {
-		metricData.remoteSystem = remoteSystemData
+		metricData.remoteSystem = remoteSystemData.(BasicEMCUnity_JSON)
+		metricData.remoteSystem.Message = message
 	}
 
-	diskData, err := GetDiskMetrics(hostInfo)
-	fmt.Printf("\n\nDisk Response: %+v", diskData)
+	diskData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Disk_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.disk)
+	//fmt.Printf("\n\nDisk Response: %+v", diskData)
 	if err != nil {
 
 		m.logger.Warnf("GetDiskMetrics failed; %v", err)
 	} else {
-		metricData.disk = diskData
+		metricData.disk = diskData.(Disk_JSON)
+		metricData.disk.Message = message
 	}
 
-	datastoreData, err := GetDatastoreMetrics(hostInfo)
-	fmt.Printf("\n\nDatastore Response: %+v", datastoreData)
+	datastoreData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+DataStore_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.datastore)
+	//fmt.Printf("\n\nDatastore Response: %+v", datastoreData)
 	if err != nil {
 		m.logger.Warnf("GetDatastoreMetrics failed; %v", err)
 	} else {
-		metricData.datastore = datastoreData
+
+		metricData.datastore = datastoreData.(Datastore_JSON)
+		metricData.datastore.Message = message
 	}
 
-	filesystemData, err := GetFilesystemMetrics(hostInfo)
-	fmt.Printf("\n\nFilesystem Response: %+v", filesystemData)
+	filesystemData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Filesystem_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.filesystem)
+	//fmt.Printf("\n\nFilesystem Response: %+v", filesystemData)
 	if err != nil {
 		m.logger.Warnf("GetFilesystemMetrics failed; %v", err)
 	} else {
-		metricData.filesystem = filesystemData
+		metricData.filesystem = filesystemData.(FileSystem_JSON)
+		metricData.filesystem.Message = message
 	}
 
-	snapData, err := GetSnapMetrics(hostInfo)
-	fmt.Printf("\n\nSnap Response: %+v", snapData)
+	snapData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Snap_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.snap)
+	//fmt.Printf("\n\nSnap Response: %+v", snapData)
 	if err != nil {
 		m.logger.Warnf("GetSnapMetrics failed; %v", err)
 	} else {
-		metricData.snap = snapData
+		metricData.snap = snapData.(Snap_JSON)
+		metricData.snap.Message = message
 	}
 
-	sasPortData, err := GetSasPortMetrics(hostInfo)
-	fmt.Printf("\n\nSasPort Response: %+v", sasPortData)
+	sasPortData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+SasPort_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.sasPort)
+	//fmt.Printf("\n\nSasPort Response: %+v", sasPortData)
 	if err != nil {
 		m.logger.Warnf("GetSasPortMetrics failed; %v ", err)
 	} else {
-		metricData.sasPort = sasPortData
+		metricData.sasPort = sasPortData.(SasPort_JSON)
+		metricData.sasPort.Message = message
 	}
 
-	powerSupplyData, err := GetPowerSupplyMetrics(hostInfo)
-	fmt.Printf("\n\nPowerSupply Response: %+v", powerSupplyData)
+	powerSupplyData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+PowerSupply_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.powerSupply)
+	//fmt.Printf("\n\nPowerSupply Response: %+v", powerSupplyData)
 	if err != nil {
 		m.logger.Warnf("GetPowerSupplyMetrics failed; %v ", err)
 	} else {
-		metricData.powerSupply = powerSupplyData
+		metricData.powerSupply = powerSupplyData.(BasicEMCUnity_JSON)
+		metricData.powerSupply.Message = message
 	}
 
-	fanData, err := GetFanMetrics(hostInfo)
-	fmt.Printf("\n\nFan Response: %+v", fanData)
+	fanData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Fan_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.fan)
+	//fmt.Printf("\n\nFan Response: %+v", fanData)
 	if err != nil {
 		m.logger.Warnf("GetFanMetrics failed; %v ", err)
 	} else {
-		metricData.fan = fanData
+		metricData.fan = fanData.(BasicEMCUnity_JSON)
+		metricData.fan.Message = message
 	}
 
-	daeData, err := GetDaeMetrics(hostInfo)
-	fmt.Printf("\n\nDAE (Disk Array Enclosure) Response: %+v", daeData)
+	daeData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Dae_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.dae)
+	//fmt.Printf("\n\nDAE (Disk Array Enclosure) Response: %+v", daeData)
 	if err != nil {
 		m.logger.Warnf("GetDaeMetrics (DiskArrayEnclosure) failed; %v ", err)
 	} else {
-		metricData.dae = daeData
+		metricData.dae = daeData.(Dae_JSON)
+		metricData.dae.Message = message
 	}
 
-	memoryModuleData, err := GetMemoryModuleMetrics(hostInfo)
-	fmt.Printf("\n\nMemory Module Response: %+v", memoryModuleData)
+	memoryModuleData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+MemoryModule_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.memoryModule)
+	//fmt.Printf("\n\nMemory Module Response: %+v", memoryModuleData)
 	if err != nil {
 		m.logger.Warnf("GetMemoryModuleMetrics failed; %v ", err)
 	} else {
-		metricData.memoryModule = memoryModuleData
+		metricData.memoryModule = memoryModuleData.(BasicEMCUnity_JSON)
+		metricData.memoryModule.Message = message
 	}
 
-	batteryData, err := GetBatteryMetrics(hostInfo)
-	fmt.Printf("\n\nBattery Response: %+v", batteryData)
+	batteryData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Battery_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.battery)
+	//fmt.Printf("\n\nBattery Response: %+v", batteryData)
 	if err != nil {
 		m.logger.Warnf("GetBatteryMetrics failed; %v ", err)
 	} else {
-		metricData.battery = batteryData
+		metricData.battery = batteryData.(BasicEMCUnity_JSON)
+		metricData.battery.Message = message
 	}
 
-	ssdData, err := GetSsdMetrics(hostInfo)
-	fmt.Printf("\n\nSsd Response: %+v", ssdData)
+	ssdData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Ssd_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.ssd)
+	//fmt.Printf("\n\nSsd Response: %+v", ssdData)
 	if err != nil {
 		m.logger.Warnf("GetSsdMetrics failed; %v ", err)
 	} else {
-		metricData.ssd = ssdData
+		metricData.ssd = ssdData.(BasicEMCUnity_JSON)
+		metricData.ssd.Message = message
 	}
 
-	raidGroupData, err := GetRaidGroupMetrics(hostInfo)
-	fmt.Printf("\n\nRaidGroup Response: %+v", raidGroupData)
+	raidGroupData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+RaidGroup_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.raidGroup)
+	//fmt.Printf("\n\nRaidGroup Response: %+v", raidGroupData)
 	if err != nil {
 		m.logger.Warnf("GetRaidGroupMetrics failed; %v ", err)
 	} else {
-		metricData.raidGroup = raidGroupData
+		metricData.raidGroup = raidGroupData.(BasicEMCUnity_JSON)
+		metricData.raidGroup.Message = message
 	}
 
-	treeQuotaData, err := GetTreeQuotaMetrics(hostInfo)
-	fmt.Printf("\n\nTreeQuota Response: %+v", treeQuotaData)
+	treeQuotaData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+TreeQuota_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.treeQuota)
+	//fmt.Printf("\n\nTreeQuota Response: %+v", treeQuotaData)
 	if err != nil {
 		m.logger.Warnf("GetTreeQuotaMetrics failed; %v ", err)
 	} else {
-		metricData.treeQuota = treeQuotaData
+		metricData.treeQuota = treeQuotaData.(TreeQuota_JSON)
+		metricData.treeQuota.Message = message
 	}
 
-	diskGroupData, err := GetDiskGroupMetrics(hostInfo)
-	fmt.Printf("\n\nDiskGroup Response: %+v", diskGroupData)
+	diskGroupData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+DiskGroup_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.diskGroup)
+	//fmt.Printf("\n\nDiskGroup Response: %+v", diskGroupData)
 	if err != nil {
 		m.logger.Warnf("GetDiskGroupMetrics failed; %v ", err)
 	} else {
-		metricData.diskGroup = diskGroupData
+		metricData.diskGroup = diskGroupData.(DiskGroup_JSON)
+		metricData.diskGroup.Message = message
 	}
 
-	cifsServerData, err := GetCifsServerMetrics(hostInfo)
-	fmt.Printf("\n\nCifsServer Response: %+v", cifsServerData)
+	cifsServerData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+CifsServer_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.cifsServer)
+	//fmt.Printf("\n\nCifsServer Response: %+v", cifsServerData)
 	if err != nil {
 		m.logger.Warnf("GetCifsServerMetrics failed; %v ", err)
 	} else {
-		metricData.cifsServer = cifsServerData
+		metricData.cifsServer = cifsServerData.(BasicEMCUnity_JSON)
+		metricData.cifsServer.Message = message
 	}
 
-	fastCacheData, err := GetFastCacheMetrics(hostInfo)
-	fmt.Printf("\n\nFastCache Response: %+v", fastCacheData)
+	fastCacheData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+FastCache_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.fastCache)
+	//fmt.Printf("\n\nFastCache Response: %+v", fastCacheData)
 	if err != nil {
 		m.logger.Warnf("GetFastCacheMetrics failed; %v ", err)
 	} else {
-		metricData.fastCache = fastCacheData
+		metricData.fastCache = fastCacheData.(FastCache_JSON)
+		metricData.fastCache.Message = message
 	}
 
-	fastVPData, err := GetFastVPMetrics(hostInfo)
-	fmt.Printf("\n\nFastVP Response: %+v", fastVPData)
+	fastVPData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+FastVP_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.fastVP)
+	//fmt.Printf("\n\nFastVP Response: %+v", fastVPData)
 	if err != nil {
 		m.logger.Warnf("GetFastVPMetrics failed; %v ", err)
 	} else {
-		metricData.fastVP = fastVPData
+		metricData.fastVP = fastVPData.(FastVP_JSON)
+		metricData.fastVP.Message = message
 	}
 
-	fcPortData, err := GetFcPortMetrics(hostInfo)
-	fmt.Printf("\n\nfcPort Response: %+v", fcPortData)
+	fcPortData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+FcPort_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.fcPort)
+	//fmt.Printf("\n\nfcPort Response: %+v", fcPortData)
 	if err != nil {
 		m.logger.Warnf("GetFcPortPMetrics failed; %v ", err)
 	} else {
-		metricData.fcPort = fcPortData
+		metricData.fcPort = fcPortData.(BasicEMCUnity_JSON)
+		metricData.fcPort.Message = message
 	}
 
-	hostContainerData, err := GetHostContainerMetrics(hostInfo)
-	fmt.Printf("\n\nHostContainer Response: %+v", hostContainerData)
+	hostContainerData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+HostContainer_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.hostContainer)
+	//fmt.Printf("\n\nHostContainer Response: %+v", hostContainerData)
 	if err != nil {
 		m.logger.Warnf("GetHostContainerMetrics failed; %v ", err)
 	} else {
-		metricData.hostContainer = hostContainerData
+		metricData.hostContainer = hostContainerData.(BasicEMCUnity_JSON)
+		metricData.hostContainer.Message = message
 	}
 
-	hostInitiatorData, err := GetHostInitiatorMetrics(hostInfo)
-	fmt.Printf("\n\nHostInitiator Response: %+v", hostInitiatorData)
+	hostInitiatorData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+HostInitiator_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.hostInitiator)
+	//fmt.Printf("\n\nHostInitiator Response: %+v", hostInitiatorData)
 	if err != nil {
 		m.logger.Warnf("GetHostInitiatorMetrics failed; %v ", err)
 	} else {
-		metricData.hostInitiator = hostInitiatorData
+		metricData.hostInitiator = hostInitiatorData.(BasicEMCUnity_JSON)
+		metricData.hostInitiator.Message = message
 	}
 
-	hostData, err := GetHostMetrics(hostInfo)
-	fmt.Printf("\n\nHost Response: %+v", hostData)
+	hostData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Host_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.host)
+	//fmt.Printf("\n\nHost Response: %+v", hostData)
 	if err != nil {
 		m.logger.Warnf("GetHostMetrics failed; %v ", err)
 	} else {
-		metricData.host = hostData
+		metricData.host = hostData.(BasicEMCUnity_JSON)
+		metricData.host.Message = message
 	}
 
-	ioModuleData, err := GetIoModuleMetrics(hostInfo)
-	fmt.Printf("\n\nIO Module Response: %+v", ioModuleData)
+	ioModuleData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+IoModule_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.ioModule)
+	//fmt.Printf("\n\nIO Module Response: %+v", ioModuleData)
 	if err != nil {
 		m.logger.Warnf("GetIoModuleMetrics failed; %v ", err)
 	} else {
-		metricData.ioModule = ioModuleData
+		metricData.ioModule = ioModuleData.(BasicEMCUnity_JSON)
+		metricData.ioModule.Message = message
 	}
 
-	lccData, err := GetLccMetrics(hostInfo)
-	fmt.Printf("\n\nLcc (LinkedControlCards) Response: %+v", lccData)
+	lccData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+Lcc_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.lcc)
+	//fmt.Printf("\n\nLcc (LinkedControlCards) Response: %+v", lccData)
 	if err != nil {
 		m.logger.Warnf("GetLccMetrics failed; %v ", err)
 	} else {
-		metricData.lcc = lccData
+		metricData.lcc = lccData.(BasicEMCUnity_JSON)
+		metricData.lcc.Message = message
 	}
 
-	nasServerData, err := GetNasServerMetrics(hostInfo)
-	fmt.Printf("\n\nNasServer Response: %+v", nasServerData)
+	nasServerData, message, err := GetMetrics(hostInfo, hostInfo.baseurl+NasServer_API+"&per_page="+strconv.Itoa(resources_per_page), metricData.nasServer)
+	//fmt.Printf("\n\nNasServer Response: %+v", nasServerData)
 	if err != nil {
 		m.logger.Warnf("GetNasServerMetrics failed; %v ", err)
 	} else {
-		metricData.nasServer = nasServerData
+		metricData.nasServer = nasServerData.(BasicEMCUnity_JSON)
+		metricData.nasServer.Message = message
 	}
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData)
