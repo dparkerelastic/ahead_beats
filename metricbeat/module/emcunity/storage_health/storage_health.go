@@ -29,7 +29,7 @@ type config struct {
 
 // func defaultConfig() *config {
 // 	return &config{
-// 		Hosts:     []string{"localhost"},
+// 		//Hosts:     []string{"localhost"},
 // 		DebugMode: false,
 // 		//Period:    time.Second * 10,
 // 	}
@@ -418,7 +418,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.nasServer.Message = message
 	}
 
-	reportMetrics(reporter, hostInfo.baseurl, metricData)
+	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
 
 	return nil
 }

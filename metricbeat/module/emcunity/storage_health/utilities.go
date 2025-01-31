@@ -138,7 +138,7 @@ func GetMetrics[T any](hostInfo Connection, url string, jsonInfo T) (any, string
 
 }
 
-func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
+func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData, debug bool) {
 	metrics := []mapstr.M{}
 
 	for _, systemData := range data.system.Entries {
@@ -155,7 +155,10 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["system.health.description.ids"] = systemData.Content.Health.DescriptionIds
 		metric["system.health.descriptions"] = systemData.Content.Health.Descriptions
 
-		metric["message"] = data.system.Message
+		if debug {
+			metric["message"] = data.system.Message
+		}
+
 		metrics = append(metrics, metric)
 	}
 
@@ -183,7 +186,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 			metric["pool.size.percent.used"] = int((float64(poolData.Content.SizeUsed) / float64(poolData.Content.SizeTotal)) * float64(100))
 		}
 
-		metric["message"] = data.pool.Message
+		if debug {
+			metric["message"] = data.pool.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -197,7 +202,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["pool.unit.health.description.ids"] = poolUnitData.Content.Health.DescriptionIds
 		metric["pool.unit.health.descriptions"] = poolUnitData.Content.Health.Descriptions
 
-		metric["message"] = data.poolUnit.Message
+		if debug {
+			metric["message"] = data.poolUnit.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -215,7 +222,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["lun.health.description.ids"] = lunData.Content.Health.DescriptionIds
 		metric["lun.health.descriptions"] = lunData.Content.Health.Descriptions
 
-		metric["message"] = data.lun.Message
+		if debug {
+			metric["message"] = data.lun.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -229,7 +238,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["storage.processor.health.description.ids"] = storageProcessorData.Content.Health.DescriptionIds
 		metric["storage.processor.health.descriptions"] = storageProcessorData.Content.Health.Descriptions
 
-		metric["message"] = data.storageProcesser.Message
+		if debug {
+			metric["message"] = data.storageProcesser.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -248,7 +259,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["storage.resource.metadata.size"] = storageResourceData.Content.MetadataSize
 		metric["storage.resource.metadata.size.allocated"] = storageResourceData.Content.MetadataSizeAllocated
 
-		metric["message"] = data.storageResource.Message
+		if debug {
+			metric["message"] = data.storageResource.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -271,7 +284,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 			metric["storage.tier.virtual.disk.used"] = storageTierData.Content.VirtualDisksTotal - storageTierData.Content.VirtualDisksUnused
 		}
 
-		metric["message"] = data.storageTier.Message
+		if debug {
+			metric["message"] = data.storageTier.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -286,7 +301,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["license.expires"] = licenseData.Content.Expires
 		metric["license.feature.id"] = licenseData.Content.Feature.ID
 
-		metric["message"] = data.license.Message
+		if debug {
+			metric["message"] = data.license.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -298,7 +315,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["ethernet.port.health.description.ids"] = ethernetPortData.Content.Health.DescriptionIds
 		metric["ethernet.port.health.descriptions"] = ethernetPortData.Content.Health.Descriptions
 
-		metric["message"] = data.ethernetPort.Message
+		if debug {
+			metric["message"] = data.ethernetPort.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -310,7 +329,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["file.interface.health.description.ids"] = fileInterfaceData.Content.Health.DescriptionIds
 		metric["file.interface.health.descriptions"] = fileInterfaceData.Content.Health.Descriptions
 
-		metric["message"] = data.fileInterface.Message
+		if debug {
+			metric["message"] = data.fileInterface.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -322,7 +343,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["remote.system.health.description.ids"] = remoteSystemData.Content.Health.DescriptionIds
 		metric["remote.system.health.descriptions"] = remoteSystemData.Content.Health.Descriptions
 
-		metric["message"] = data.remoteSystem.Message
+		if debug {
+			metric["message"] = data.remoteSystem.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -338,7 +361,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["disk.health.desciption.ids"] = diskData.Content.Health.DescriptionIds
 		metric["disk.health.desciption.descriptions"] = diskData.Content.Health.Descriptions
 
-		metric["message"] = data.disk.Message
+		if debug {
+			metric["message"] = data.disk.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -355,7 +380,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 			metric["datastore.size.percent.used"] = int((float64(datastoreData.Content.SizeUsed) / float64(datastoreData.Content.SizeTotal)) * float64(100))
 		}
 
-		metric["message"] = data.datastore.Message
+		if debug {
+			metric["message"] = data.datastore.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -381,7 +408,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 			metric["filesystem.size.percent.used"] = int((float64(filesystemData.Content.SizeUsed) / float64(filesystemData.Content.SizeTotal)) * float64(100))
 		}
 
-		metric["message"] = data.filesystem.Message
+		if debug {
+			metric["message"] = data.filesystem.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -395,7 +424,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["snap.creation.time"] = snapData.Content.CreationTime
 		metric["snap.expiration.time"] = snapData.Content.ExpirationTime
 
-		metric["message"] = data.snap.Message
+		if debug {
+			metric["message"] = data.snap.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -409,7 +440,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["sas.port.health.desciption.ids"] = sasPortData.Content.Health.DescriptionIds
 		metric["sas.port.health.desciption.descriptions"] = sasPortData.Content.Health.Descriptions
 
-		metric["message"] = data.sasPort.Message
+		if debug {
+			metric["message"] = data.sasPort.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -423,7 +456,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["power.supply.health.desciption.ids"] = powerSupplyData.Content.Health.DescriptionIds
 		metric["power.supply.health.desciption.descriptions"] = powerSupplyData.Content.Health.Descriptions
 
-		metric["message"] = data.powerSupply.Message
+		if debug {
+			metric["message"] = data.powerSupply.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -436,8 +471,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["fan.health.value"] = fanData.Content.Health.Value
 		metric["fan.health.desciption.ids"] = fanData.Content.Health.DescriptionIds
 		metric["fan.health.desciption.descriptions"] = fanData.Content.Health.Descriptions
-
-		metric["message"] = data.fan.Message
+		if debug {
+			metric["message"] = data.fan.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -457,7 +493,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["dae.health.desciption.ids"] = daeData.Content.Health.DescriptionIds
 		metric["dae.health.desciption.descriptions"] = daeData.Content.Health.Descriptions
 
-		metric["message"] = data.dae.Message
+		if debug {
+			metric["message"] = data.dae.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -472,7 +510,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["memory.module.health.desciption.ids"] = memoryModuleData.Content.Health.DescriptionIds
 		metric["memory.module.health.desciption.descriptions"] = memoryModuleData.Content.Health.Descriptions
 
-		metric["message"] = data.memoryModule.Message
+		if debug {
+			metric["message"] = data.memoryModule.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -486,7 +526,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["battery.health.desciption.ids"] = batteryData.Content.Health.DescriptionIds
 		metric["battery.health.desciption.descriptions"] = batteryData.Content.Health.Descriptions
 
-		metric["message"] = data.battery.Message
+		if debug {
+			metric["message"] = data.battery.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -500,7 +542,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["ssd.health.desciption.ids"] = ssdData.Content.Health.DescriptionIds
 		metric["ssd.health.desciption.descriptions"] = ssdData.Content.Health.Descriptions
 
-		metric["message"] = data.ssd.Message
+		if debug {
+			metric["message"] = data.ssd.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -514,7 +558,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["raid.group.health.desciption.ids"] = raidGroupData.Content.Health.DescriptionIds
 		metric["raid.group.health.desciption.descriptions"] = raidGroupData.Content.Health.Descriptions
 
-		metric["message"] = data.raidGroup.Message
+		if debug {
+			metric["message"] = data.raidGroup.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -527,7 +573,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["tree.quota.size.used"] = treeQuotaData.Content.SizeUsed
 		metric["tree.quota.size.state"] = treeQuotaData.Content.State
 
-		metric["message"] = data.treeQuota.Message
+		if debug {
+			metric["message"] = data.treeQuota.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -545,7 +593,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["disk.group.total.disks"] = diskGroupData.Content.TotalDisks
 		metric["disk.group.unconfigured.disks"] = diskGroupData.Content.UnconfiguredDisks
 
-		metric["message"] = data.diskGroup.Message
+		if debug {
+			metric["message"] = data.diskGroup.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -558,7 +608,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["cifs.server.health.desciption.ids"] = cifsServerData.Content.Health.DescriptionIds
 		metric["cifs.server.health.desciption.descriptions"] = cifsServerData.Content.Health.Descriptions
 
-		metric["message"] = data.cifsServer.Message
+		if debug {
+			metric["message"] = data.cifsServer.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -574,7 +626,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["fast.cache.health.description.ids"] = fastCacheData.Content.Health.DescriptionIds
 		metric["fast.cache.health.descriptions"] = fastCacheData.Content.Health.Descriptions
 
-		metric["message"] = data.fastCache.Message
+		if debug {
+			metric["message"] = data.fastCache.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -590,7 +644,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["fast.vp.size.moving.up"] = fastVPData.Content.SizeMovingUp
 		metric["fast.vp.size.moving.within"] = fastVPData.Content.SizeMovingWithin
 
-		metric["message"] = data.fastVP.Message
+		if debug {
+			metric["message"] = data.fastVP.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -603,7 +659,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["fc.port.health.desciption.ids"] = fcPortData.Content.Health.DescriptionIds
 		metric["fc.port.health.desciption.descriptions"] = fcPortData.Content.Health.Descriptions
 
-		metric["message"] = data.fcPort.Message
+		if debug {
+			metric["message"] = data.fcPort.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -616,7 +674,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["host.container.health.desciption.ids"] = hostContainerData.Content.Health.DescriptionIds
 		metric["host.container.health.desciption.descriptions"] = hostContainerData.Content.Health.Descriptions
 
-		metric["message"] = data.hostContainer.Message
+		if debug {
+			metric["message"] = data.hostContainer.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -628,7 +688,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["host.initiator.health.desciption.ids"] = hostInitiatorData.Content.Health.DescriptionIds
 		metric["host.initiator.health.desciption.descriptions"] = hostInitiatorData.Content.Health.Descriptions
 
-		metric["message"] = data.hostInitiator.Message
+		if debug {
+			metric["message"] = data.hostInitiator.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -641,7 +703,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["host.health.desciption.ids"] = hostData.Content.Health.DescriptionIds
 		metric["host.health.desciption.descriptions"] = hostData.Content.Health.Descriptions
 
-		metric["message"] = data.host.Message
+		if debug {
+			metric["message"] = data.host.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -655,7 +719,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["io.module.health.desciption.ids"] = ioModuleData.Content.Health.DescriptionIds
 		metric["io.module.health.desciption.descriptions"] = ioModuleData.Content.Health.Descriptions
 
-		metric["message"] = data.ioModule.Message
+		if debug {
+			metric["message"] = data.ioModule.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -669,7 +735,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["lcc.health.desciption.ids"] = lccData.Content.Health.DescriptionIds
 		metric["lcc.health.desciption.descriptions"] = lccData.Content.Health.Descriptions
 
-		metric["message"] = data.lcc.Message
+		if debug {
+			metric["message"] = data.lcc.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
@@ -682,7 +750,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data UnityData) {
 		metric["nas.server.health.desciption.ids"] = nasServerData.Content.Health.DescriptionIds
 		metric["nas.server.health.desciption.descriptions"] = nasServerData.Content.Health.Descriptions
 
-		metric["message"] = data.nasServer.Message
+		if debug {
+			metric["message"] = data.nasServer.Message
+		}
 
 		metrics = append(metrics, metric)
 	}
