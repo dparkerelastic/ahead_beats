@@ -1,5 +1,5 @@
 - module: emcunity
-  metricsets: ["storage_health"]
+  metricsets: ["health"]
   enabled: false
   period: 10s
   hosts: ["localhost"]

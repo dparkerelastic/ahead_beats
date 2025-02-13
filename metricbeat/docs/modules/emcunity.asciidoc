@@ -27,7 +27,7 @@ in <<configuration-metricbeat>>. Here is an example configuration:
 ----
 metricbeat.modules:
 - module: emcunity
-  metricsets: ["storage_health"]
+  metricsets: ["health"]
   enabled: false
   period: 10s
   hosts: ["localhost"]
@@ -39,8 +39,8 @@ metricbeat.modules:
 
 The following metricsets are available:
 
-* <<metricbeat-metricset-emcunity-storage_health,storage_health>>
+* <<metricbeat-metricset-emcunity-health,health>>
 
-include::emcunity/storage_health.asciidoc[]
+include::emcunity/health.asciidoc[]
 
 :edit_url!:

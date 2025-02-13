@@ -1,0 +1,1340 @@
+- name: health
+  type: group
+  release: beta
+  description: >
+    health
+  fields:
+    - name: message
+      type: text
+      norms: false
+      description: >
+        debug message of json message  
+    - name: system
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of system  
+        - name: name
+          type: keyword
+          description: >
+            name of system             
+        - name: macaddress
+          type: keyword
+          description: >
+            macaddress of system  
+        - name: model
+          type: keyword
+          description: >
+             model of system
+        - name: serial_number
+          type: keyword
+          description: >
+            searial number of the system
+        - name: internal_model
+          type: keyword
+          description: >
+            internal model of the system
+        - name: platform
+          type: keyword
+          description: >
+            platform of system 
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids
+    - name: pool
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of pool  
+        - name: name
+          type: keyword
+          description: >
+            name of pool
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                      
+        - name: description
+          type: keyword
+          description: >
+            description of pool
+        - name: size.free
+          type: long
+          description: >
+             size free in the pool
+        - name: size.used
+          type: long
+          description: >
+             size used in the pool
+        - name: size.total
+          type: long
+          description: >
+             size total in the pool             
+        - name: size.subscribed
+          type: long
+          description: >
+             size subscribed in the pool     
+        - name: harvest.state
+          type: long
+          description: >
+            harvest state of the pool
+        - name: metadata.size.subscribed
+          type: long
+          description: >
+            metadata size subscribed of the pool
+        - name: metadata.size.used
+          type: long
+          description: >
+            metadata size used of the pool
+        - name: snap.size.subscribed
+          type: long
+          description: >
+            snap size suscribed of the pool
+        - name: snap.size.used
+          type: long
+          description: >
+            snap size used of the pool                        
+        - name: rebalance.progress
+          type: long
+          description: >
+            rebalance progress of the pool
+        - name: size.percent.used
+          type: long
+          description: >
+            pecent of pool used
+        - name: unit
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of pool unit
+            - name: name
+              type: keyword
+              description: >
+                name of pool unit
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids                                              
+            - name: size.total
+              type: long
+              description: >
+                size total in the pool unit
+    - name: lun
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of lun         
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                              
+        - name: size.total
+          type: long
+          description: >
+             size total in the lun 
+        - name: size.allocated
+          type: long
+          description: >
+             size allocated in the lun        
+        - name: metadata.size.total
+          type: long
+          description: >
+            metadata size total of the lun
+        - name: metadata.size.allocated
+          type: long
+          description: >
+            metadata size allocated of the lun
+        - name: snap.size.total
+          type: long
+          description: >
+            snap size total of the lun
+        - name: snap.size.allocated
+          type: long
+          description: >
+            snap size allocated of the lun     
+    - name: storage
+      type: group
+      fields: 
+        - name: processor
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of storage processor
+            - name: name
+              type: keyword
+              description: >
+                name of storage processor
+            - name: model
+              type: keyword
+              description: >
+                model of storage processor    
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids  
+        - name: resource
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of storage processor            
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids
+            - name: size.total
+              type: long
+              description: >
+                size total in the storage resource 
+            - name: size.allocated
+              type: long
+              description: >
+                size allocated in the storage resource                
+            - name: snap.count
+              type: long
+              description: >
+                snap count of the storage resource
+            - name: snaps.size.total
+              type: long
+              description: >
+                snaps size total of the storage resource
+            - name: snaps.size.allocated
+              type: long
+              description: >
+                snaps size allocated of the storage resource    
+            - name: metadata.size.total
+              type: long
+              description: >
+                metadata size total of the storage resource
+            - name: metadata.size.allocated
+              type: long
+              description: >
+                metadata size allocated of the storage resource
+        - name: tier
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of storage tier           
+            - name: size.total
+              type: long
+              description: >
+                size total in the storage tier           
+            - name: size.free
+              type: long
+              description: >
+                size free in the storage tier    
+            - name: disk.total
+              type: long
+              description: >
+                disk total in the storage tier    
+            - name: disk.unused
+              type: long
+              description: >
+                disk unused in the storage tier        
+            - name: virtual.disk.total
+              type: long
+              description: >
+                virtual disk total in the storage tier    
+            - name: virtual.disk.unused
+              type: long
+              description: >
+                virtual disk unused in the storage tier
+            - name: virtual.disk.used
+              type: long
+              description: >
+                virtual disk used in the storage tier                
+            - name: disk.used
+              type: long
+              description: >
+                disk used in the storage tier 
+    - name: license
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of license
+        - name: name
+          type: keyword
+          description: >
+            name of license                                     
+        - name: isvalid
+          type: boolean
+          description: >
+             boolean is license valid
+        - name: ispermanent
+          type: boolean
+          description: >
+             boolean is license pemanent
+        - name: isinstalled
+          type: boolean
+          description: >
+             boolean is license installed
+        - name: expires
+          type: date
+          description: >
+             date license expires
+        - name: feature.id
+          type: keyword
+          description: >
+             license feature id
+    - name: ethernet
+      type: group
+      fields: 
+        - name: port
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of ethernet port        
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids    
+    - name: file
+      type: group
+      fields: 
+        - name: interface
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of file interface
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids                                               
+    - name: remote
+      type: group
+      fields: 
+        - name: system
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of remote system
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids 
+    - name: disk
+      type: group
+      fields:         
+        - name: id
+          type: keyword
+          description: >
+            id of disk
+        - name: name
+          type: keyword
+          description: >
+            name of disk    
+        - name: size
+          type: long
+          description: >
+            size of disk    
+        - name: vendor.size
+          type: long
+          description: >
+            vendor size of disk    
+        - name: raw.size
+          type: long
+          description: >
+            raw size of disk                
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                            
+    - name: datastore
+      type: group
+      fields:         
+        - name: id
+          type: keyword
+          description: >
+            id of datastore
+        - name: name
+          type: keyword
+          description: >
+            name of datastore 
+        - name: size.total
+          type: long
+          description: >
+            size total of datastore  
+        - name: size.used
+          type: long
+          description: >
+            size used of datastore
+        - name: size.percent.used
+          type: long
+          description: >
+            size percent used of datastore 
+    - name: filesystem
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of filesystem  
+        - name: name
+          type: keyword
+          description: >
+            name of filesystem
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids 
+        - name: size.total
+          type: long
+          description: >
+             size total in filesystem
+        - name: size.used
+          type: long
+          description: >
+             size used in filesystem
+        - name: size.allocated
+          type: long
+          description: >
+             size allocated in filesystem          
+        - name: metadata.size.total
+          type: long
+          description: >
+             size total in filesystem     
+        - name: metadata.size.allocated
+          type: long
+          description: >
+             size allocated in filesystem               
+        - name: snap.count
+          type: long
+          description: >
+             snap count in filesystem      
+        - name: snaps.size.total
+          type: long
+          description: >
+             snaps size total in filesystem     
+        - name: snaps.size.allocated
+          type: long
+          description: >
+             snaps size allocated in filesystem
+        - name: size.percent.used
+          type: long
+          description: >
+             size percent used in filesystem                         
+    - name: snap
+      type: group
+      fields:         
+        - name: id
+          type: keyword
+          description: >
+            id of snap
+        - name: name
+          type: keyword
+          description: >
+            name of snap
+        - name: size.total
+          type: long
+          description: >
+            size total of snap  
+        - name: state
+          type: long
+          description: >
+            state of snap
+        - name: creation.time
+          type: date
+          description: >
+            creation time of snap
+        - name: expiration.time
+          type: date
+          description: >
+            expiration time of snap
+    - name: sas
+      type: group
+      fields: 
+        - name: port
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of sas port
+            - name: name
+              type: keyword
+              description: >
+                name of sas port    
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of sas port       
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids         
+    - name: power
+      type: group
+      fields: 
+        - name: supply
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of power supply
+            - name: name
+              type: keyword
+              description: >
+                name of power supply  
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of power supply
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids      
+    - name: fan
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of fan
+        - name: name
+          type: keyword
+          description: >
+            name of fan
+        - name: needs_replacement
+          type: boolean
+          description: >
+            boolean needs_replacement of fan
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                    
+    - name: dae
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of disk array enclosure (dae)
+        - name: name
+          type: keyword
+          description: >
+            name of disk array enclosure (dae)
+        - name: needs_replacement
+          type: boolean
+          description: >
+            boolean needs_replacement of dae
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids              
+        - name: current.power
+          type: long
+          description: >
+            current power of dae
+        - name: avg.power
+          type: long
+          description: >
+            avf power of dae    
+        - name: max.power
+          type: long
+          description: >
+            max power of dae    
+        - name: current.temperature
+          type: long
+          description: >
+            current temperature of dae
+        - name: avg.temperature
+          type: long
+          description: >
+            avf temperature of dae    
+        - name: max.temperature
+          type: long
+          description: >
+            max temperature of dae        
+    - name: memory
+      type: group
+      fields: 
+        - name: module
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of memory module
+            - name: name
+              type: keyword
+              description: >
+                name of memory module
+            - name: size
+              type: long
+              description: >
+                size of memory module     
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of memory module
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids         
+    - name: battery
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of battery
+        - name: name
+          type: keyword
+          description: >
+            name of battery
+        - name: needs_replacement
+          type: boolean
+          description: >
+            boolean needs_replacement of battery
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids 
+    - name: ssd
+      type: group
+      fields: 
+        - name: id
+          type: keyword
+          description: >
+            id of ssd
+        - name: name
+          type: keyword
+          description: >
+            name of fan
+        - name: needs_replacement
+          type: boolean
+          description: >
+            boolean needs_replacement of ssd
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                                     
+    - name: raid
+      type: group
+      fields: 
+        - name: group
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of raid group
+            - name: name
+              type: keyword
+              description: >
+                name of raid group
+            - name: size.total
+              type: long
+              description: >
+                total size of raid group
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of raid group
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids               
+    - name: tree
+      type: group
+      fields: 
+        - name: quota
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of tree quota            
+            - name: soft.limit
+              type: long
+              description: >
+                soft limit of tree quota
+            - name: hard.limit
+              type: long
+              description: >
+                hard limit of tree quota
+            - name: size.used
+              type: long
+              description: >
+                size used of tree quota
+            - name: size.state
+              type: long
+              description: >
+                size state of tree quota     
+    - name: disk
+      type: group
+      fields: 
+        - name: group
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of disk group
+            - name: name
+              type: keyword
+              description: >
+                name of disk group                 
+            - name: advertised.size
+              type: long
+              description: >
+                advertised size of disk group
+            - name: disk.size
+              type: long
+              description: >
+                disk size of disk group            
+            - name: hot.spare.policy.status
+              type: long
+              description: >
+                hot spare policy status of disk group 
+            - name: min.spare.policy.status
+              type: long
+              description: >
+                min spare policy status of disk group                    
+            - name: rpm
+              type: long
+              description: >
+                rpm of disk group                
+            - name: speed
+              type: long
+              description: >
+                speed of disk group                    
+            - name: total.disks
+              type: long
+              description: >
+                total disks of disk group     
+            - name: unconfigured.disks
+              type: long
+              description: >
+                unconfigured disks of disk group 
+    - name: cifs
+      type: group
+      fields: 
+        - name: server
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of cifs server
+            - name: name
+              type: keyword
+              description: >
+                name of cifs server            
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids                    
+    - name: fast
+      type: group
+      fields: 
+        - name: cache
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of fast cache
+            - name: name
+              type: keyword
+              description: >
+                name of fast cache
+            - name: number_of_disks
+              type: long
+              description: >
+                number of disks of fast cache
+            - name: size.free
+              type: long
+              description: >
+                size free of fast cache    
+            - name: size.total
+              type: long
+              description: >
+                size total of fast cache 
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids    
+    - name: fast
+      type: group
+      fields: 
+        - name: vp
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of fast vp
+            - name: status
+              type: long
+              description: >
+                name of fast vp
+            - name: is_schedule_enabled
+              type: boolean
+              description: >
+                is schedule enabled of fast vp              
+            - name: relocation.duration.estimate
+              type: keyword
+              description: >
+                duration estimate of fast vp 
+            - name: relocation.rate
+              type: long
+              description: >
+                relocation rate of fast vp                      
+            - name: size.moving.down
+              type: long
+              description: >
+                size moving down of fast vp                          
+            - name: size.moving.up
+              type: long
+              description: >
+                size moving up of fast vp                              
+            - name: size.moving.up
+              type: long
+              description: >
+                size moving up of fast vp  
+            - name: size.moving.within
+              type: long
+              description: >
+                size moving within of fast vp  
+    - name: fc
+      type: group
+      fields: 
+        - name: port
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of fc port
+            - name: name
+              type: keyword
+              description: >
+                name of fc port            
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids              
+    - name: host
+      type: group
+      fields: 
+        - name: container
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of host container
+            - name: name
+              type: keyword
+              description: >
+                name of host container       
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids                      
+    - name: host
+      type: group
+      fields: 
+        - name: initiator
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of host container                 
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids
+        - name: id
+          type: keyword
+          description: >
+            id of host              
+        - name: name
+          type: keyword
+          description: >
+            name of host  
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids 
+    - name: io
+      type: group
+      fields: 
+        - name: module
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of io module
+            - name: name
+              type: keyword
+              description: >
+                name of io module
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of io module
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids                           
+    - name: lcc
+      type: group
+      fields:         
+        - name: id
+          type: keyword
+          description: >
+            id of lcc
+        - name: name
+          type: keyword
+          description: >
+            name of lcc
+        - name: needs_replacement
+          type: boolean
+          description: >
+            boolean needs_replacement of lcc
+        - name: health
+          type: group
+          fields:
+            - name: value
+              type: long
+              description: >
+                value of health score
+            - name: descriptions
+              type: keyword
+              description: >
+                descriptions of the value of health score
+            - name: description
+              type: group
+              fields:
+              - name: ids
+                type: keyword
+                description: >
+                  descriptions of the health score ids                                         
+    - name: nas
+      type: group
+      fields: 
+        - name: server
+          type: group
+          fields: 
+            - name: id
+              type: keyword
+              description: >
+                id of nas server
+            - name: name
+              type: keyword
+              description: >
+                name of nas server
+            - name: needs_replacement
+              type: boolean
+              description: >
+                boolean needs_replacement of io module
+            - name: health
+              type: group
+              fields:
+                - name: value
+                  type: long
+                  description: >
+                    value of health score
+                - name: descriptions
+                  type: keyword
+                  description: >
+                    descriptions of the value of health score
+                - name: description
+                  type: group
+                  fields:
+                  - name: ids
+                    type: keyword
+                    description: >
+                      descriptions of the health score ids  
+                                                                

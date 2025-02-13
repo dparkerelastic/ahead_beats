@@ -7,12 +7,12 @@
     "metricset":{
         "host":"localhost",
         "module":"emcunity",
-        "name":"storage_health",
+        "name":"health",
         "rtt":44269
     },
     "emcunity":{
-        "storage_health":{
-            "example": "storage_health"
+        "health":{
+            "example": "health"
         }
     },
     "type":"metricsets"

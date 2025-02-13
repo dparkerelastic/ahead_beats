@@ -323,6 +323,14 @@ metricbeat.modules:
   #xpack.enabled: false
   #scope: node
 
+#------------------------------- Emcunity Module -------------------------------
+- module: emcunity
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #------------------------------ Envoyproxy Module ------------------------------
 - module: envoyproxy
   metricsets: ["server"]

@@ -1,4 +1,4 @@
-package storage_health
+package health
 
 // url := "https://10.200.0.8:443/api/types/system/instances?fields=name,model,serialNumber,internalModel,platform,macAddress"
 //const BasicSystemInfo_API = "/api/types/basicSystemInfo/instances?fields=id,name,model,softwareVersion,apiVersion"

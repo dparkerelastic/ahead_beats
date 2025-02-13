@@ -1,4 +1,4 @@
-package storage_health
+package health
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
-	mb.Registry.MustAddMetricSet("emcunity", "storage_health", New)
+	mb.Registry.MustAddMetricSet("emcunity", "health", New)
 }
 
 type config struct {
@@ -58,7 +58,7 @@ type MetricSet struct {
 // New creates a new instance of the MetricSet. New is responsible for unpacking
 // any MetricSet specific configuration options if there are any.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
-	cfgwarn.Beta("The emcunity storage_health metricset is beta.")
+	cfgwarn.Beta("The emcunity health metricset is beta.")
 
 	//config := struct{}{}
 	//config := defaultConfig()
