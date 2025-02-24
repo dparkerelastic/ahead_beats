@@ -45,7 +45,7 @@ var endpoints map[string]Endpoint
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
 	endpoints = map[string]Endpoint{
-		//"Processes":          {Name: "Processes", Endpoint: "dashboard/nodes/{nodeid}/processes", Fn: getNodeProcessEvents},
+		"Processes":          {Name: "Processes", Endpoint: "dashboard/nodes/{nodeid}/processes", Fn: getNodeProcessEvents},
 		"Node Details":       {Name: "Node Details", Endpoint: "dashboard/nodes/{nodeid}", Fn: getNoteDetailsEvents},
 		"Disks":              {Name: "Disks", Endpoint: "dashboard/nodes/{nodeid}/disks", Fn: getDiskEvents},
 		"Capacity":           {Name: "Capacity", Endpoint: "object/capacity.json", Fn: getCapacityEvents},

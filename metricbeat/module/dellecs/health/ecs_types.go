@@ -34,8 +34,8 @@ type Summary struct {
 }
 
 type StorageInfo struct {
-	TotalProvisionedGB int `json:"totalProvisioned_gb"`
-	TotalFreeGB        int `json:"totalFree_gb"`
+	TotalProvisionedGB int64 `json:"totalProvisioned_gb"`
+	TotalFreeGB        int64 `json:"totalFree_gb"`
 }
 
 type TimestampedRate struct {
@@ -57,11 +57,9 @@ type TimestampedPercent struct {
 	T       int64   `json:"t,string"`
 	Percent float64 `json:"Percent,string"`
 }
-
-type DiskSpaceSummary struct {
-	Min []TimestampedSpace `json:"Min"`
-	Max []TimestampedSpace `json:"Max"`
-	Avg float64            `json:"Avg,string"`
+type TimestampedBandwidth struct {
+	T         string `json:"t"`
+	Bandwidth int64  `json:"Bandwidth"`
 }
 
 type StoragePoolData struct {
@@ -91,16 +89,16 @@ type StoragePoolData struct {
 	ChunksL0JournalAvgSize                   float64               `json:"chunksL0JournalAvgSize,string"`
 	DiskSpaceAllocatedCurrent                []TimestampedSpace    `json:"diskSpaceAllocatedCurrent"`
 	NumBadNodes                              int64                 `json:"numBadNodes,string"`
-	DiskSpaceFreeSummary                     DiskSpaceSummary      `json:"diskSpaceFreeSummary"`
+	DiskSpaceFreeSummary                     Summary               `json:"diskSpaceFreeSummary"`
 	RecoveryBadChunksTotalSizeCurrent        []TimestampedSpace    `json:"recoveryBadChunksTotalSizeCurrent"`
 	DiskSpaceAllocated                       []TimestampedSpace    `json:"diskSpaceAllocated"`
 	DiskSpaceFreeCurrentL1                   []TimestampedSpace    `json:"diskSpaceFreeCurrentL1"`
 	DiskSpaceFreeCurrentL2                   []TimestampedSpace    `json:"diskSpaceFreeCurrentL2"`
-	DiskSpaceAllocatedL2Summary              DiskSpaceSummary      `json:"diskSpaceAllocatedL2Summary"`
+	DiskSpaceAllocatedL2Summary              Summary               `json:"diskSpaceAllocatedL2Summary"`
 	DiskSpaceAllocatedPercentage             []TimestampedPercent  `json:"diskSpaceAllocatedPercentage"`
 	DiskSpaceFreeL2                          []TimestampedSpace    `json:"diskSpaceFreeL2"`
 	DiskSpaceFreeL1                          []TimestampedSpace    `json:"diskSpaceFreeL1"`
-	DiskSpaceAllocatedSummary                DiskSpaceSummary      `json:"diskSpaceAllocatedSummary"`
+	DiskSpaceAllocatedSummary                Summary               `json:"diskSpaceAllocatedSummary"`
 	DiskSpaceAllocatedGeoCacheCurrent        []TimestampedCapacity `json:"diskSpaceAllocatedGeoCacheCurrent"`
 	ChunksEcCodedRatioCurrent                []TimestampedPercent  `json:"chunksEcCodedRatioCurrent"`
 	DiskSpaceAllocatedLocalProtectionCurrent []TimestampedCapacity `json:"diskSpaceAllocatedLocalProtectionCurrent"`
@@ -123,13 +121,13 @@ type StoragePoolData struct {
 	DiskSpaceAllocatedSystemMetadataCurrent  []TimestampedCapacity `json:"diskSpaceAllocatedSystemMetadataCurrent"`
 	NumDisks                                 int64                 `json:"numDisks,string"`
 	GcUserReclaimedPerInterval               []TimestampedCapacity `json:"gcUserReclaimedPerInterval"`
-	DiskSpaceAllocatedL1Summary              DiskSpaceSummary      `json:"diskSpaceAllocatedL1Summary"`
+	DiskSpaceAllocatedL1Summary              Summary               `json:"diskSpaceAllocatedL1Summary"`
 	ChunksEcCodedRatio                       []TimestampedPercent  `json:"chunksEcCodedRatio"`
 	DiskSpaceFree                            []TimestampedSpace    `json:"diskSpaceFree"`
 	AllocatedCapacityForecast                []TimestampedCapacity `json:"allocatedCapacityForecast"`
-	DiskSpaceFreeL1Summary                   DiskSpaceSummary      `json:"diskSpaceFreeL1Summary"`
-	DiskSpaceTotalSummary                    DiskSpaceSummary      `json:"diskSpaceTotalSummary"`
-	DiskSpaceFreeL2Summary                   DiskSpaceSummary      `json:"diskSpaceFreeL2Summary"`
+	DiskSpaceFreeL1Summary                   Summary               `json:"diskSpaceFreeL1Summary"`
+	DiskSpaceTotalSummary                    Summary               `json:"diskSpaceTotalSummary"`
+	DiskSpaceFreeL2Summary                   Summary               `json:"diskSpaceFreeL2Summary"`
 	GcUserReclaimedCurrent                   []TimestampedCapacity `json:"gcUserReclaimedCurrent"`
 	NumReadyToReplaceDisks                   int64                 `json:"numReadyToReplaceDisks,string"`
 	ChunksEcCodedTotalSealSize               []TimestampedSpace    `json:"chunksEcCodedTotalSealSize"`
@@ -171,25 +169,25 @@ type StoragePoolData struct {
 }
 
 type TrafficSummary struct {
-	Min []interface{} `json:"Min"`
-	Max []interface{} `json:"Max"`
-	Avg float64       `json:"Avg,string"`
+	Min []TimestampedBandwidth `json:"Min"`
+	Max []TimestampedBandwidth `json:"Max"`
+	Avg float64                `json:"Avg,string"`
 }
 
 type ReplicationGroup struct {
-	Links                                    Links          `json:"_links"`
-	ReplicationEgressTrafficSummary          TrafficSummary `json:"replicationEgressTrafficSummary"`
-	NumZones                                 int            `json:"numZones,string"`
-	ReplicationEgressTraffic                 []interface{}  `json:"replicationEgressTraffic"`
-	ReplicationIngressTraffic                []interface{}  `json:"replicationIngressTraffic"`
-	ReplicationIngressTrafficCurrent         []interface{}  `json:"replicationIngressTrafficCurrent"`
-	Name                                     string         `json:"name"`
-	ChunksPendingXorTotalSize                int            `json:"chunksPendingXorTotalSize,string"`
-	ChunksRepoPendingReplicationTotalSize    int            `json:"chunksRepoPendingReplicationTotalSize,string"`
-	ID                                       string         `json:"id"`
-	ReplicationEgressTrafficCurrent          []interface{}  `json:"replicationEgressTrafficCurrent"`
-	ChunksJournalPendingReplicationTotalSize int            `json:"chunksJournalPendingReplicationTotalSize,string"`
-	ReplicationIngressTrafficSummary         TrafficSummary `json:"replicationIngressTrafficSummary"`
+	Links                                    Links                  `json:"_links"`
+	ReplicationEgressTrafficSummary          TrafficSummary         `json:"replicationEgressTrafficSummary"`
+	NumZones                                 int                    `json:"numZones,string"`
+	ReplicationEgressTraffic                 []TimestampedBandwidth `json:"replicationEgressTraffic"`
+	ReplicationIngressTraffic                []TimestampedBandwidth `json:"replicationIngressTraffic"`
+	ReplicationIngressTrafficCurrent         []TimestampedBandwidth `json:"replicationIngressTrafficCurrent"`
+	Name                                     string                 `json:"name"`
+	ChunksPendingXorTotalSize                int                    `json:"chunksPendingXorTotalSize,string"`
+	ChunksRepoPendingReplicationTotalSize    int                    `json:"chunksRepoPendingReplicationTotalSize,string"`
+	ID                                       string                 `json:"id"`
+	ReplicationEgressTrafficCurrent          []TimestampedBandwidth `json:"replicationEgressTrafficCurrent"`
+	ChunksJournalPendingReplicationTotalSize int                    `json:"chunksJournalPendingReplicationTotalSize,string"`
+	ReplicationIngressTrafficSummary         TrafficSummary         `json:"replicationIngressTrafficSummary"`
 }
 
 // PercentageSummary represents a summary with percentage values.
@@ -282,4 +280,31 @@ type DiskData struct {
 	NodeId                              string               `json:"nodeId"`
 	SsmL1Status                         string               `json:"ssmL1Status"`
 	DiskSpaceFree                       []TimestampedSpace   `json:"diskSpaceFree"`
+}
+
+type TimestampedBytes struct {
+	T     int64 `json:"t"`
+	Bytes int64 `json:"Bytes,string"`
+}
+
+type TimestampedCount struct {
+	T     int64 `json:"t,string"`
+	Count int64 `json:"count,string"`
+}
+
+type TimestampedDummy struct {
+	T     int64 `json:"t,string"`
+	Dummy int64 `json:"dummy"`
+}
+
+type NodeProcess struct {
+	ProcessName            string               `json:"processName"`
+	ID                     string               `json:"id"`
+	CPUUtilization         []TimestampedPercent `json:"cpuUtilization"`
+	JavaHeapUtilization    []TimestampedPercent `json:"javaHeapUtilization"`
+	MaxJavaHeapSize        []TimestampedBytes   `json:"maxJavaHeapSize"`
+	MemoryUtilizationBytes []TimestampedBytes   `json:"memoryUtilizationBytes"`
+	MemoryUtilization      []TimestampedPercent `json:"memoryUtilization"`
+	ThreadCount            []TimestampedCount   `json:"threadCount"`
+	RestartTime            []TimestampedDummy   `json:"restartTime"`
 }
