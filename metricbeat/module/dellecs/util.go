@@ -72,7 +72,10 @@ func GetHostInfo(input string) (HostInfo, error) {
 		// Perform a reverse lookup to get the hostname
 		names, err := net.LookupAddr(ip.String())
 		if err != nil {
-			return hostInfo, fmt.Errorf("failed to lookup hostname for IP %s: %v", ip.String(), err)
+			// If the reverse lookup fails, set the hostname to "hostname not found" and let the calling
+			// function handle the error by logging a warning - we don't want to quit over this
+			hostInfo.Hostname = "hostname not found"
+			return hostInfo, err
 		}
 		if len(names) > 0 {
 			hostInfo.Hostname = names[0]

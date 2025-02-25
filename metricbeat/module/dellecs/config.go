@@ -19,12 +19,15 @@ package dellecs
 
 import (
 	"errors"
+	"net"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/elastic-agent-libs/logp"
 )
 
 const (
-	ModuleName = "dellecs"
+	ModuleName  = "dellecs"
+	DefaultPort = 4443
 )
 
 type Config struct {
@@ -36,7 +39,7 @@ type Config struct {
 	HostInfo  HostInfo
 }
 
-func NewConfig(base mb.BaseMetricSet) (*Config, error) {
+func NewConfig(base mb.BaseMetricSet, logger *logp.Logger) (*Config, error) {
 	config := Config{}
 	var err error
 
@@ -44,14 +47,23 @@ func NewConfig(base mb.BaseMetricSet) (*Config, error) {
 		return nil, err
 	}
 
+	if config.Port == 0 {
+		config.Port = DefaultPort
+	}
+
 	if config.Host == "" {
 		return nil, errors.New("host is required")
 	} else {
 		config.HostInfo, err = GetHostInfo(config.Host)
 		if err != nil {
-			return nil, err
+			var dnsErr *net.DNSError
+			if errors.As(err, &dnsErr) && dnsErr.IsNotFound {
+				logger.Warnf("Ignoring: host not found for ip: %s", config.Host)
+			} else {
+				return nil, err
+			}
 		}
+		return &config, nil
 	}
-	return &config, nil
 
 }

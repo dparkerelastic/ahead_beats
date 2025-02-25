@@ -108,7 +108,7 @@ func getNoteDetailsEvents(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				field_prefix + ".id":                                      nodeDetails.ID,
+				field_prefix + ".node_id":                                 nodeDetails.ID,
 				field_prefix + ".storage_pool_id":                         nodeDetails.StoragePoolID,
 				field_prefix + ".name":                                    nodeDetails.DisplayName,
 				field_prefix + ".api_change":                              nodeDetails.APIChange,
@@ -192,7 +192,7 @@ func getDiskEvents(m *MetricSet) ([]mb.Event, error) {
 					field_prefix + ".display_name":                            disk.DisplayName,
 					field_prefix + ".node_display_name":                       disk.NodeDisplayName,
 					field_prefix + ".slot_id":                                 disk.SlotId,
-					field_prefix + ".id":                                      disk.Id,
+					field_prefix + ".disk_id":                                 disk.Id,
 					field_prefix + ".storage_pool_id":                         disk.StoragePoolId,
 					field_prefix + ".ssm_l2_status":                           disk.SsmL2Status,
 					field_prefix + ".health_status":                           disk.HealthStatus,
@@ -249,8 +249,8 @@ func getCapacityEvents(m *MetricSet) ([]mb.Event, error) {
 	event := mb.Event{
 		Timestamp: timestamp,
 		MetricSetFields: map[string]interface{}{
-			field_prefix + ".total_provisioned_db": storage.TotalProvisionedGB,
-			field_prefix + ".total_free_db":        storage.TotalFreeGB,
+			field_prefix + ".total_provisioned_gb": storage.TotalProvisionedGB,
+			field_prefix + ".total_free_gb":        storage.TotalFreeGB,
 		},
 		RootFields: dellecs.MakeRootFields(m.config),
 	}
@@ -324,7 +324,7 @@ func getStoragePoolsEvents(m *MetricSet) ([]mb.Event, error) {
 				field_prefix + ".gc_system_metadata_is_enabled":                 pool.GcSystemMetadataIsEnabled,
 				field_prefix + ".recovery_complete_time_estimate":               pool.RecoveryCompleteTimeEstimate,
 				field_prefix + ".chunks_ec_complete_time_estimate":              pool.ChunksEcCompleteTimeEstimate,
-				field_prefix + ".id":                                            pool.ID,
+				field_prefix + ".pool_id":                                       pool.ID,
 				field_prefix + ".name":                                          pool.Name,
 				field_prefix + ".gc_user_unreclaimable_current":                 lastCapacityValue(pool.GcUserUnreclaimableCurrent),
 				field_prefix + ".gc_user_total_detected_current":                lastCapacityValue(pool.GcUserTotalDetectedCurrent),
@@ -398,7 +398,7 @@ func getReplicationGroupsEvents(m *MetricSet) ([]mb.Event, error) {
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
 				field_prefix + ".name":                                          group.Name,
-				field_prefix + ".id":                                            group.ID,
+				field_prefix + ".group_id":                                      group.ID,
 				field_prefix + ".num_zones":                                     group.NumZones,
 				field_prefix + ".chunks_pending_xor_total_size":                 group.ChunksPendingXorTotalSize,
 				field_prefix + ".chunks_repo_pending_replication_total_size":    group.ChunksRepoPendingReplicationTotalSize,

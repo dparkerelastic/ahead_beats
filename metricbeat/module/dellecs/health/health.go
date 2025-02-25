@@ -80,24 +80,24 @@ type MetricSet struct {
 // any MetricSet specific configuration options if there are any.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Beta("The dellecs health metricset is beta.")
+	logger := logp.NewLogger(base.FullyQualifiedName())
 
-	config, err := dellecs.NewConfig(base)
+	config, err := dellecs.NewConfig(base, logger)
 	if err != nil {
+		logger.Errorf("failed to get load config: %v", err)
 		return nil, err
 	}
-
-	logger := logp.NewLogger(base.FullyQualifiedName())
 
 	// Get the session cookie
 	ecsClient, err := GetClient(config, base)
 	if err != nil {
-		logger.Errorf("Failed to get session cookie: %v", err)
+		logger.Errorf("failed to get a session client: %v", err)
 		return nil, err
 	}
 	nodes, err := getLocalNodes(ecsClient)
 
 	if err != nil {
-		logger.Errorf("Failed to get session cookie: %v", err)
+		logger.Errorf("unable to retrieve node list: %v", err)
 		return nil, err
 	}
 
