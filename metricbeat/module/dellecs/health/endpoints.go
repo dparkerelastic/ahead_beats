@@ -539,8 +539,12 @@ func addSpaceSummaryValues(data interface{}, event *mb.Event, prefix string) {
 	}
 
 	for key, summary := range summaries {
-		event.MetricSetFields[key+".min"] = summary.Min[0].Space
-		event.MetricSetFields[key+".max"] = summary.Max[0].Space
+		if len(summary.Min) > 0 {
+			event.MetricSetFields[key+".min"] = summary.Min[0].Space
+		}
+		if len(summary.Max) > 0 {
+			event.MetricSetFields[key+".max"] = summary.Max[0].Space
+		}
 		event.MetricSetFields[key+".avg"] = summary.Avg
 	}
 }
@@ -559,8 +563,13 @@ func addPercentageSummaryValues(data interface{}, event *mb.Event, prefix string
 	}
 
 	for key, summary := range summaries {
-		event.MetricSetFields[key+".min"] = summary.Min[0].Percent
-		event.MetricSetFields[key+".max"] = summary.Max[0].Percent
+		if len(summary.Min) > 0 {
+			event.MetricSetFields[key+".min"] = summary.Min[0].Percent
+		}
+		if len(summary.Max) > 0 {
+			event.MetricSetFields[key+".max"] = summary.Max[0].Percent
+		}
+
 		event.MetricSetFields[key+".avg"] = summary.Avg
 	}
 }
@@ -570,14 +579,18 @@ func addTrafficSummaryValues(data interface{}, event *mb.Event, prefix string) {
 	switch v := data.(type) {
 	case ReplicationGroup:
 		summaries = map[string]TrafficSummary{
-			prefix + "replication_ingress_traffic_summary": v.ReplicationIngressTrafficSummary,
-			prefix + "replication_egress_traffic_summary":  v.ReplicationEgressTrafficSummary,
+			prefix + ".replication_ingress_traffic_summary": v.ReplicationIngressTrafficSummary,
+			prefix + ".replication_egress_traffic_summary":  v.ReplicationEgressTrafficSummary,
 		}
 	}
 
 	for key, summary := range summaries {
-		event.MetricSetFields[key+".min"] = summary.Min[0].Bandwidth
-		event.MetricSetFields[key+".max"] = summary.Max[0].Bandwidth
+		if len(summary.Min) > 0 {
+			event.MetricSetFields[key+".min"] = summary.Min[0].Bandwidth
+		}
+		if len(summary.Max) > 0 {
+			event.MetricSetFields[key+".max"] = summary.Max[0].Bandwidth
+		}
 		event.MetricSetFields[key+".avg"] = summary.Avg
 	}
 }

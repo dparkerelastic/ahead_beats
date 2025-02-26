@@ -20,6 +20,7 @@ package health
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/v7/metricbeat/mb"
@@ -37,7 +38,11 @@ type Endpoint struct {
 	Fn       func(*MetricSet) ([]mb.Event, error)
 }
 
-var endpoints map[string]Endpoint
+var (
+	endpoints map[string]Endpoint
+	loadOnce  sync.Once
+	nodes     []NodeData
+)
 
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
@@ -94,7 +99,14 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		logger.Errorf("failed to get a session client: %v", err)
 		return nil, err
 	}
-	nodes, err := getLocalNodes(ecsClient)
+
+	loadOnce.Do(func() {
+		var loadErr error
+		nodes, loadErr = getLocalNodes(ecsClient)
+		if loadErr != nil {
+			err = loadErr
+		}
+	})
 
 	if err != nil {
 		logger.Errorf("unable to retrieve node list: %v", err)
