@@ -6,5 +6,5 @@
   fields:
     - name: dellecs
       type: group
-      description: >
+      description: Dell EMC ECS metrics
       fields:

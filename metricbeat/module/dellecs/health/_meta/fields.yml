@@ -1,0 +1,614 @@
+- name: health
+  type: group
+  release: beta
+  description: >
+    This module collects health metrics from Dell EMC ECS.
+  fields:
+    - name: disks
+      type: group
+      description: >
+        Information about disks
+      fields:
+        - name: disk_id
+          type: keyword
+          description: >
+            Unique identifier for the disk
+        - name: node_id
+          type: keyword
+          description: >
+            Unique identifier for the node
+        - name: storage_pool_name
+          type: keyword
+          description: >
+            Name of the storage pool
+        - name: display_name
+          type: keyword
+          description: >
+            Display name of the disk
+        - name: node_display_name
+          type: keyword
+          description: >
+            Display name of the node
+        - name: slot_id
+          type: keyword
+          description: >
+            Slot identifier for the disk
+        - name: storage_pool_id
+          type: keyword
+          description: >
+            Unique identifier for the storage pool
+        - name: ssm_l2_status
+          type: keyword
+          description: >
+            SSM level 2 status
+        - name: health_status
+          type: keyword
+          description: >
+            Health status of the disk
+        - name: ssm_l1_status
+          type: keyword
+          description: >
+            SSM level 1 status
+        - name: disk_space_free_current_l1
+          type: long
+          description: >
+            Current free disk space at level 1
+        - name: disk_space_free_current_l2
+          type: long
+          description: >
+            Current free disk space at level 2
+        - name: disk_space_free_l2
+          type: long
+          description: >
+            Free disk space at level 2
+        - name: disk_space_free_l1
+          type: long
+          description: >
+            Free disk space at level 1
+        - name: disk_space_total
+          type: long
+          description: >
+            Total disk space
+        - name: disk_space_total_current_l1
+          type: long
+          description: >
+            Current total disk space at level 1
+        - name: disk_space_total_current_l2
+          type: long
+          description: >
+            Current total disk space at level 2
+        - name: disk_space_allocated_l2
+          type: long
+          description: >
+            Allocated disk space at level 2
+        - name: disk_space_allocated_l1
+          type: long
+          description: >
+            Allocated disk space at level 1
+        - name: disk_space_free_current
+          type: long
+          description: >
+            Current free disk space
+        - name: disk_space_total_current
+          type: long
+          description: >
+            Current total disk space
+        - name: disk_space_allocated_current
+          type: long
+          description: >
+            Current allocated disk space
+        - name: disk_space_allocated_current_l1
+          type: long
+          description: >
+            Current allocated disk space at level 1
+        - name: disk_space_allocated
+          type: long
+          description: >
+            Allocated disk space
+        - name: disk_space_allocated_current_l2
+          type: long
+          description: >
+            Current allocated disk space at level 2
+        - name: disk_space_free
+          type: long
+          description: >
+            Free disk space
+        - name: disk_space_allocated_percent
+          type: float
+          description: >
+            Percentage of allocated disk space
+        - name: disk_space_allocated_percentage_current
+          type: float
+          description: >
+            Current percentage of allocated disk space
+    - name: capacity
+      type: group
+      description: >
+        Capacity details
+      fields:
+        - name: total_provisioned_gb
+          type: long
+          description: >
+            Total provisioned capacity in GB
+        - name: total_free_gb
+          type: long
+          description: >
+            Total free capacity in GB
+    - name: storage_pool
+      type: group
+      description: >
+        Information about storage pools
+      fields:
+        - name: pool_id
+          type: keyword
+          description: >
+            Unique identifier for the storage pool
+        - name: status
+          type: keyword
+          description: >
+            Status of the storage pool
+        - name: chunks_l1_journal_total_size
+          type: long
+          description: >
+            Total size of L1 journal chunks
+        - name: chunks_l1_btree_number
+          type: long
+          description: >
+            Number of L1 B-tree chunks
+        - name: chunks_l1_btree_total_size
+          type: long
+          description: >
+            Total size of L1 B-tree chunks
+        - name: chunks_l1_journal_avg_size
+          type: long
+          description: >
+            Average size of L1 journal chunks
+        - name: chunks_l1_journal_number
+          type: long
+          description: >
+            Number of L1 journal chunks
+        - name: chunks_l0_journal_total_size
+          type: long
+          description: >
+            Total size of L0 journal chunks
+        - name: chunks_l0_btree_number
+          type: long
+          description: >
+            Number of L0 B-tree chunks
+        - name: chunks_l0_btree_total_size
+          type: long
+          description: >
+            Total size of L0 B-tree chunks
+        - name: chunks_l0_btree_avg_size
+          type: long
+          description: >
+            Average size of L0 B-tree chunks
+        - name: chunks_l0_journal_avg_size
+          type: long
+          description: >
+            Average size of L0 journal chunks
+        - name: chunks_l0_journal_number
+          type: long
+          description: >
+            Number of L0 journal chunks
+        - name: chunks_repo_total_seal_size
+          type: long
+          description: >
+            Total seal size of repository chunks
+        - name: chunks_repo_number
+          type: long
+          description: >
+            Number of repository chunks
+        - name: chunks_xor_number
+          type: long
+          description: >
+            Number of XOR chunks
+        - name: chunks_xor_total_size
+          type: long
+          description: >
+            Total size of XOR chunks
+        - name: chunks_geo_cache_total_size
+          type: long
+          description: >
+            Total size of geo cache chunks
+        - name: chunks_geo_cache_count
+          type: long
+          description: >
+            Count of geo cache chunks
+        - name: chunks_geo_copy_number
+          type: long
+          description: >
+            Number of geo copy chunks
+        - name: chunks_geo_copy_total_size
+          type: long
+          description: >
+            Total size of geo copy chunks
+        - name: num_nodes
+          type: long
+          description: >
+            Number of nodes
+        - name: num_disks
+          type: long
+          description: >
+            Number of disks
+        - name: num_bad_nodes
+          type: long
+          description: >
+            Number of bad nodes
+        - name: num_good_nodes
+          type: long
+          description: >
+            Number of good nodes
+        - name: num_bad_disks
+          type: long
+          description: >
+            Number of bad disks
+        - name: num_good_disks
+          type: long
+          description: >
+            Number of good disks
+        - name: num_maintenance_nodes
+          type: long
+          description: >
+            Number of nodes under maintenance
+        - name: num_maintenance_disks
+          type: long
+          description: >
+            Number of disks under maintenance
+        - name: num_ready_to_replace_disks
+          type: long
+          description: >
+            Number of disks ready to be replaced
+        - name: num_nodes_with_sufficient_disk_space
+          type: long
+          description: >
+            Number of nodes with sufficient disk space
+        - name: gc_user_data_is_enabled
+          type: boolean
+          description: >
+            Indicates if user data garbage collection is enabled
+        - name: gc_system_metadata_is_enabled
+          type: boolean
+          description: >
+            Indicates if system metadata garbage collection is enabled
+        - name: recovery_complete_time_estimate
+          type: long
+          description: >
+            Estimated time to complete recovery
+        - name: chunks_ec_complete_time_estimate
+          type: long
+          description: >
+            Estimated time to complete EC chunks
+        - name: name
+          type: keyword
+          description: >
+            Name of the pool
+        - name: gc_user_unreclaimable_current
+          type: long
+          description: >
+            Current unreclaimable user data
+        - name: gc_user_total_detected_current
+          type: long
+          description: >
+            Current total detected user data
+        - name: gc_system_reclaimed_current
+          type: long
+          description: >
+            Current reclaimed system data
+        - name: gc_system_reclaimed_per_interval
+          type: long
+          description: >
+            System data reclaimed per interval
+        - name: gc_system_reclaimed_over_time_range
+          type: long
+          description: >
+            System data reclaimed over time range
+        - name: gc_combined_reclaimed_current
+          type: long
+          description: >
+            Current combined reclaimed data
+        - name: gc_user_reclaimed_over_time_range
+          type: long
+          description: >
+            User data reclaimed over time range
+        - name: gc_system_pending_current
+          type: long
+          description: >
+            Current pending system data
+        - name: gc_user_reclaimed_per_interval
+          type: long
+          description: >
+            User data reclaimed per interval
+        - name: gc_combined_total_detected_current
+          type: long
+          description: >
+            Current combined total detected data
+        - name: gc_system_total_detected_current
+          type: long
+          description: >
+            Current total detected system data
+        - name: gc_user_reclaimed_current
+          type: long
+          description: >
+            Current reclaimed user data
+        - name: gc_user_pending_current
+          type: long
+          description: >
+            Current pending user data
+        - name: gc_system_unreclaimable_current
+          type: long
+          description: >
+            Current unreclaimable system data
+        - name: gc_combined_reclaimed_over_time_range
+          type: long
+          description: >
+            Combined data reclaimed over time range
+        - name: gc_combined_pending_current
+          type: long
+          description: >
+            Current pending combined data
+        - name: gc_combined_unreclaimable_current
+          type: long
+          description: >
+            Current unreclaimable combined data
+        - name: disk_space_allocated_geo_cache_current
+          type: long
+          description: >
+            Current allocated disk space for geo cache
+        - name: disk_space_allocated_local_protection_current
+          type: long
+          description: >
+            Current allocated disk space for local protection
+        - name: disk_space_allocated_system_metadata_current
+          type: long
+          description: >
+            Current allocated disk space for system metadata
+        - name: disk_space_allocated_user_data_current
+          type: long
+          description: >
+            Current allocated disk space for user data
+        - name: allocated_capacity_forecast
+          type: long
+          description: >
+            Forecasted allocated capacity
+        - name: disk_space_allocated_percentage
+          type: float
+          description: >
+            Percentage of allocated disk space
+        - name: chunks_ec_coded_ratio_current
+          type: float
+          description: >
+            Current EC coded ratio
+        - name: chunks_ec_coded_ratio
+          type: float
+          description: >
+            EC coded ratio
+        - name: disk_space_allocated_percentage_current
+          type: float
+          description: >
+            Current percentage of allocated disk space
+    - name: rep_group
+      type: group
+      description: >
+        Information about replication groups
+      fields:
+        - name: name
+          type: keyword
+          description: >
+            Name of the replication group
+        - name: group_id
+          type: keyword
+          description: >
+            Unique identifier for the replication group
+        - name: num_zones
+          type: long
+          description: >
+            Number of zones in the replication group
+        - name: chunks_pending_xor_total_size
+          type: long
+          description: >
+            Total size of pending XOR chunks
+        - name: chunks_repo_pending_replication_total_size
+          type: long
+          description: >
+            Total size of repository chunks pending replication
+        - name: chunks_journal_pending_replication_total_size
+          type: long
+          description: >
+            Total size of journal chunks pending replication
+        - name: replication_egress_traffic
+          type: float
+          description: >
+            Replication egress traffic
+        - name: replication_ingress_traffic
+          type: float
+          description: >
+            Replication ingress traffic
+        - name: replication_ingress_traffic_current
+          type: float
+          description: >
+            Current replication ingress traffic
+        - name: replication_egress_traffic_current
+          type: float
+          description: >
+            Current replication egress traffic
+    - name: node_processes
+      type: group
+      description: >
+        Information about node processes
+      fields:
+        - name: process_id
+          type: keyword
+          description: >
+            Unique identifier for the process
+        - name: process_name
+          type: keyword
+          description: >
+            Name of the process
+        - name: cpu_utilization
+          type: float
+          description: >
+            CPU utilization percentage
+
+        - name: java_heap_utilization
+          type: float
+          description: >
+            Java heap utilization percentage
+
+        - name: max_java_heap_size
+          type: long
+          description: >
+            Maximum Java heap size in bytes
+
+        - name: memory_utilization_bytes
+          type: long
+          description: >
+            Memory utilization in bytes
+
+        - name: memory_utilization
+          type: float
+          description: >
+            Memory utilization percentage
+
+        - name: thread_count
+          type: long
+          description: >
+            Number of threads
+
+        - name: restart_time
+          type: date
+          description: >
+            Time of the last restart
+    - name: node_details
+      type: group
+      description: >
+        Details about nodes
+      fields:
+        - name: node_id
+          type: keyword
+          description: >
+            Unique identifier for the node
+        - name: storage_pool_id
+          type: keyword
+          description: >
+            Unique identifier for the storage pool
+        - name: name
+          type: keyword
+          description: >
+            Display name of the node
+        - name: api_change
+          type: boolean
+          description: >
+            Indicates if there was an API change
+        - name: num_bad_disks
+          type: long
+          description: >
+            Number of bad disks
+        - name: storage_pool_name
+          type: keyword
+          description: >
+            Name of the storage pool
+        - name: display_name
+          type: keyword
+          description: >
+            Display name of the node
+        - name: num_ready_to_replace_disks
+          type: long
+          description: >
+            Number of disks ready to be replaced
+        - name: num_maintenance_disks
+          type: long
+          description: >
+            Number of disks under maintenance
+        - name: health_status
+          type: keyword
+          description: >
+            Health status of the node
+        - name: num_good_disks
+          type: long
+          description: >
+            Number of good disks
+        - name: num_disks
+          type: long
+          description: >
+            Total number of disks
+        - name: disk_space_free_current_l1
+          type: long
+          description: >
+            Current free disk space at level 1
+        - name: allocated_capacity_forecast
+          type: long
+          description: >
+            Forecasted allocated capacity
+        - name: disk_space_free_current_l2
+          type: long
+          description: >
+            Current free disk space at level 2
+        - name: disk_space_reserved_current
+          type: long
+          description: >
+            Current reserved disk space
+        - name: disk_space_free_l2
+          type: long
+          description: >
+            Free disk space at level 2
+        - name: disk_space_free_l1
+          type: long
+          description: >
+            Free disk space at level 1
+        - name: disk_space_total
+          type: long
+          description: >
+            Total disk space
+        - name: disk_space_total_current_l1
+          type: long
+          description: >
+            Current total disk space at level 1
+        - name: disk_space_total_current_l2
+          type: long
+          description: >
+            Current total disk space at level 2
+        - name: disk_space_offline_total_current
+          type: long
+          description: >
+            Current total offline disk space
+        - name: disk_space_allocated_l2
+          type: long
+          description: >
+            Allocated disk space at level 2
+        - name: disk_space_allocated_l1
+          type: long
+          description: >
+            Allocated disk space at level 1
+        - name: disk_space_free_current
+          type: long
+          description: >
+            Current free disk space
+        - name: disk_space_total_current
+          type: long
+          description: >
+            Current total disk space
+        - name: disk_space_allocated_current
+          type: long
+          description: >
+            Current allocated disk space
+        - name: disk_space_allocated_current_l1
+          type: long
+          description: >
+            Current allocated disk space at level 1
+        - name: disk_space_allocated_current_l2
+          type: long
+          description: >
+            Current allocated disk space at level 2
+        - name: disk_space_allocated
+          type: long
+          description: >
+            Allocated disk space
+        - name: disk_space_allocated_percent
+          type: float
+          description: >
+            Percentage of allocated disk space
+        - name: disk_space_allocated_percentage_current
+          type: float
+          description: >
+            Current percentage of allocated disk space
