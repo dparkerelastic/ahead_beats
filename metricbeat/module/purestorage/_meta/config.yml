@@ -1,0 +1,6 @@
+- module: purestorage
+  metricsets: ["arrays"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

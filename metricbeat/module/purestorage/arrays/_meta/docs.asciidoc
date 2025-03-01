@@ -1,0 +1,1 @@
+This is the arrays metricset of the module purestorage.

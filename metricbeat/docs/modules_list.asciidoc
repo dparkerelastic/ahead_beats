@@ -267,6 +267,9 @@ This file is generated! See scripts/mage/docs_collector.go
 .3+| .3+|  |<<metricbeat-metricset-prometheus-collector,collector>>   
 |<<metricbeat-metricset-prometheus-query,query>>   
 |<<metricbeat-metricset-prometheus-remote_write,remote_write>>   
+|<<metricbeat-module-purestorage,purestorage>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.2+| .2+|  |<<metricbeat-metricset-purestorage-arrays,arrays>> beta[]  
+|<<metricbeat-metricset-purestorage-health,health>> beta[]  
 |<<metricbeat-module-rabbitmq,RabbitMQ>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .5+| .5+|  |<<metricbeat-metricset-rabbitmq-connection,connection>>   
 |<<metricbeat-metricset-rabbitmq-exchange,exchange>>   
@@ -393,6 +396,7 @@ include::modules/panw.asciidoc[]
 include::modules/php_fpm.asciidoc[]
 include::modules/postgresql.asciidoc[]
 include::modules/prometheus.asciidoc[]
+include::modules/purestorage.asciidoc[]
 include::modules/rabbitmq.asciidoc[]
 include::modules/redis.asciidoc[]
 include::modules/redisenterprise.asciidoc[]

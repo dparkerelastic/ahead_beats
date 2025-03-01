@@ -1,0 +1,34 @@
+- name: arrays
+  type: group
+  release: beta
+  description: >
+    arrays
+  fields:
+    - name: performance
+      type: group
+      fields:
+        - name: read_bandwidth
+          type: long
+          description: >
+            Read bandwidth in bytes per second.
+        - name: read_iops
+          type: long
+          description: >
+            Read IOPS (Input/Output Operations Per Second).
+        - name: read_latency
+          type: long
+          description: >
+            Read latency in milliseconds.
+        - name: write_bandwidth
+          type: long
+          description: >
+            Write bandwidth in bytes per second.
+        - name: write_iops
+          type: long
+          description: >
+            Write IOPS (Input/Output Operations Per Second).
+        - name: write_latency
+          type: long
+          description: >
+            Write latency in milliseconds.
+
