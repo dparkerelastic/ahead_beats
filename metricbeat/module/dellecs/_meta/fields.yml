@@ -1,0 +1,10 @@
+- key: dellecs
+  title: "dellecs"
+  release: beta
+  description: >
+    dellecs module
+  fields:
+    - name: dellecs
+      type: group
+      description: Dell EMC ECS metrics
+      fields:
