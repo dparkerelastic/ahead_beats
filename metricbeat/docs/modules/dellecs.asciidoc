@@ -1,0 +1,46 @@
+////
+This file is generated! See scripts/mage/docs_collector.go
+////
+
+:modulename: dellecs
+:edit_url: https://github.com/elastic/beats/edit/main/metricbeat/module/dellecs/_meta/docs.asciidoc
+
+
+[[metricbeat-module-dellecs]]
+== dellecs module
+
+beta[]
+
+This is the dellecs module.
+
+
+
+:edit_url:
+
+[float]
+=== Example configuration
+
+The dellecs module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
+- module: dellecs
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-dellecs-health,health>>
+
+include::dellecs/health.asciidoc[]
+
+:edit_url!:

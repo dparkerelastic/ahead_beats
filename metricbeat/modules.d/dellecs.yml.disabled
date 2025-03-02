@@ -1,0 +1,13 @@
+# Module: dellecs
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-dellecs.html
+
+- module: dellecs
+  metricsets: 
+    - health
+  enabled: true
+  period: 10s
+  host: <HOST>
+  username: <username>
+  password: <password>
+
+
