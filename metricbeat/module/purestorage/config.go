@@ -23,10 +23,6 @@ import (
 	"github.com/elastic/beats/v7/metricbeat/mb"
 )
 
-const (
-	ModuleName = "purestorage"
-)
-
 type Config struct {
 	Host          string `config:"host" validate:"required"`
 	ApiKey        string `config:"api_key" validate:"required"`

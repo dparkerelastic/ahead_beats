@@ -57,11 +57,13 @@ func getArrayControllersEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"array_controller.status":  controller.Status,
-				"array_controller.name":    controller.Name,
-				"array_controller.version": controller.Version,
-				"array_controller.mode":    controller.Mode,
-				"array_controller.model":   controller.Model,
+				"array_controller": mapstr.M{
+					"status":  controller.Status,
+					"name":    controller.Name,
+					"version": controller.Version,
+					"mode":    controller.Mode,
+					"model":   controller.Model,
+				},
 			},
 			RootFields: CreateECSFields(m),
 		})
@@ -94,14 +96,16 @@ func getArrayMonitorEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"array_monitor.writes_per_sec":    monitor.WritesPerSec,
-				"array_monitor.usec_per_write_op": monitor.UsecPerWriteOp,
-				"array_monitor.output_per_sec":    monitor.OutputPerSec,
-				"array_monitor.reads_per_sec":     monitor.ReadsPerSec,
-				"array_monitor.input_per_sec":     monitor.InputPerSec,
-				"array_monitor.time":              monitor.Time,
-				"array_monitor.usec_per_read_op":  monitor.UsecPerReadOp,
-				"array_monitor.queue_depth":       monitor.QueueDepth,
+				"array_monitor": mapstr.M{
+					"writes_per_sec":    monitor.WritesPerSec,
+					"usec_per_write_op": monitor.UsecPerWriteOp,
+					"output_per_sec":    monitor.OutputPerSec,
+					"reads_per_sec":     monitor.ReadsPerSec,
+					"input_per_sec":     monitor.InputPerSec,
+					"time":              monitor.Time,
+					"usec_per_read_op":  monitor.UsecPerReadOp,
+					"queue_depth":       monitor.QueueDepth,
+				},
 			},
 			RootFields: CreateECSFields(m),
 		})
@@ -134,16 +138,18 @@ func getArraySpaceEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"array_space.capacity":          space.Capacity,
-				"array_space.hostname":          space.Hostname,
-				"array_space.system":            space.System,
-				"array_space.snapshots":         space.Snapshots,
-				"array_space.volumes":           space.Volumes,
-				"array_space.data_reduction":    space.DataReduction,
-				"array_space.total":             space.Total,
-				"array_space.shared_space":      space.SharedSpace,
-				"array_space.thin_provisioning": space.ThinProvisioning,
-				"array_space.total_reduction":   space.TotalReduction,
+				"array_space": mapstr.M{
+					"capacity":          space.Capacity,
+					"hostname":          space.Hostname,
+					"system":            space.System,
+					"snapshots":         space.Snapshots,
+					"volumes":           space.Volumes,
+					"data_reduction":    space.DataReduction,
+					"total":             space.Total,
+					"shared_space":      space.SharedSpace,
+					"thin_provisioning": space.ThinProvisioning,
+					"total_reduction":   space.TotalReduction,
+				},
 			},
 			RootFields: CreateECSFields(m),
 		})
@@ -177,14 +183,16 @@ func getHardwareEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"hardware.status":      item.Status,
-				"hardware.slot":        item.Slot,
-				"hardware.name":        item.Name,
-				"hardware.temperature": item.Temperature,
-				"hardware.index":       item.Index,
-				"hardware.identify":    item.Identify,
-				"hardware.speed":       item.Speed,
-				"hardware.details":     item.Details,
+				"hardware": mapstr.M{
+					"status":      item.Status,
+					"slot":        item.Slot,
+					"name":        item.Name,
+					"temperature": item.Temperature,
+					"index":       item.Index,
+					"identify":    item.Identify,
+					"speed":       item.Speed,
+					"details":     item.Details,
+				},
 			},
 			RootFields: CreateECSFields(m),
 		})
@@ -372,6 +380,11 @@ func getArrayEvents(m *MetricSet) ([]mb.Event, error) {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
+	if response == "" || response == "[]" {
+		m.logger.Warnf("Empty response for message: %s", response)
+		return nil, fmt.Errorf("empty response from endpoint %s", endpoint.Endpoint)
+	}
+
 	var array Array
 	err = json.Unmarshal([]byte(response), &array)
 	if err != nil {
@@ -435,12 +448,16 @@ func getVolumeEvents(m *MetricSet) ([]mb.Event, error) {
 	return events, nil
 }
 func CreateECSFields(ms *MetricSet) mapstr.M {
-	dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+	// dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
 
 	return mapstr.M{
-		"event": mapstr.M{
-			"dataset": dataset,
-		},
+		// "event": mapstr.M{
+		// 	"dataset": dataset,
+		// },
+		// "data_stream": mapstr.M{
+		// 	"type":    "metrics",
+		// 	"dataset": fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name()),
+		// },
 		"observer": mapstr.M{
 			"hostname": ms.config.HostInfo.Hostname,
 			"ip":       ms.config.HostInfo.IP,

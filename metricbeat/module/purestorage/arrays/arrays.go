@@ -35,7 +35,7 @@ import (
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
-	mb.Registry.MustAddMetricSet(purestorage.ModuleName, "arrays", New)
+	mb.Registry.MustAddMetricSet("purestorage", "arrays", New)
 
 }
 
@@ -105,12 +105,14 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 	var errs []error
 
 	event := mb.Event{
-		ModuleFields:    make(map[string]interface{}),
+		//ModuleFields:    make(map[string]interface{}),
 		MetricSetFields: make(map[string]interface{}),
 	}
 	event.Timestamp = timestamp
 	event.RootFields = createECSFields(m)
 
+	event.MetricSetFields["performance"] = mapstr.M{}
+	performance := event.MetricSetFields["performance"].(mapstr.M)
 	for _, result := range fields {
 		oid := result.OID
 		field_name := OidToName[oid].OIDFieldName
@@ -122,8 +124,7 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 			continue
 		}
 
-		event.MetricSetFields["performance."+field_name] = value
-
+		performance[field_name] = value
 	}
 
 	if len(errs) > 0 {
@@ -134,18 +135,21 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 }
 
 func createECSFields(ms *MetricSet) mapstr.M {
-	dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+	// dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
 
 	return mapstr.M{
-		"event": mapstr.M{
-			"dataset": dataset,
+		// "event": mapstr.M{
+		// 	"dataset": dataset,
+		// // },
+		// "data_stream": mapstr.M{
+		// 	"type":    "metrics",
+		// 	"dataset": fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name()),
+		// },
+		"observer": mapstr.M{
+			"hostname": ms.config.HostInfo.Hostname,
+			"ip":       ms.config.HostInfo.IP,
+			"type":     "flash storage",
+			"vendor":   "Pure Storage",
 		},
-		"data_stream": mapstr.M{
-			"type":      "metrics",
-			"dataset":   dataset,
-			"namespace": "default",
-		},
-		"host.ip":   ms.config.HostInfo.IP,
-		"host.name": ms.config.HostInfo.Hostname,
 	}
 }

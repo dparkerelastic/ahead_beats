@@ -46,7 +46,7 @@ func init() {
 		"Array":            {Name: "Array", Endpoint: "array", ReturnType: Array{}, Fn: getArrayEvents},
 		"Volume":           {Name: "Volume", Endpoint: "volume", ReturnType: Volume{}, Fn: getVolumeEvents},
 	}
-	mb.Registry.MustAddMetricSet(purestorage.ModuleName, "health", New)
+	mb.Registry.MustAddMetricSet("purestorage", "health", New)
 }
 
 func getEndpoint(name string) (Endpoint, error) {
