@@ -253,6 +253,14 @@ metricbeat.modules:
   period: 10s
   hosts: ["localhost:5984"]
 
+#------------------------------- Dellecs Module -------------------------------
+- module: dellecs
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #-------------------------------- Docker Module --------------------------------
 - module: docker
   metricsets:

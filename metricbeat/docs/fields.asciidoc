@@ -14721,7 +14721,7 @@ type: keyword
 Indicates if there was an API change
 
 
-type: boolean
+type: integer
 
 --
 
@@ -61039,7 +61039,7 @@ type: long
 Identify flag
 
 
-type: boolean
+type: keyword
 
 --
 

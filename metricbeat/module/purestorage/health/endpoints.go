@@ -23,7 +23,7 @@ import (
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
-	"github.com/elastic/beats/v7/metricbeat/module/purestorage"
+	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
 type Endpoint struct {
@@ -63,7 +63,7 @@ func getArrayControllersEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_controller.mode":    controller.Mode,
 				"array_controller.model":   controller.Model,
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -103,7 +103,7 @@ func getArrayMonitorEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_monitor.usec_per_read_op":  monitor.UsecPerReadOp,
 				"array_monitor.queue_depth":       monitor.QueueDepth,
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -145,7 +145,7 @@ func getArraySpaceEvents(m *MetricSet) ([]mb.Event, error) {
 				"array_space.thin_provisioning": space.ThinProvisioning,
 				"array_space.total_reduction":   space.TotalReduction,
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -186,7 +186,7 @@ func getHardwareEvents(m *MetricSet) ([]mb.Event, error) {
 				"hardware.speed":       item.Speed,
 				"hardware.details":     item.Details,
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -217,12 +217,14 @@ func getDriveEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"drive.status":   drive.Status,
-				"drive.capacity": drive.Capacity,
-				"drive.type":     drive.Type,
-				"drive.name":     drive.Name,
+				"drive": mapstr.M{
+					"status":   drive.Status,
+					"capacity": drive.Capacity,
+					"type":     drive.Type,
+					"name":     drive.Name,
+				},
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -253,17 +255,19 @@ func getPGroupEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"pgroup.name":                   pGroup.Name,
-				"pgroup.physical_bytes_written": pGroup.PhysicalBytesWritten,
-				"pgroup.started":                pGroup.Started,
-				"pgroup.completed":              pGroup.Completed,
-				"pgroup.created":                pGroup.Created,
-				"pgroup.source":                 pGroup.Source,
-				"pgroup.time_remaining":         pGroup.TimeRemaining,
-				"pgroup.progress":               pGroup.Progress,
-				"pgroup.data_transferred":       pGroup.DataTransferred,
+				"pgroup": mapstr.M{
+					"name":                   pGroup.Name,
+					"physical_bytes_written": pGroup.PhysicalBytesWritten,
+					"started":                pGroup.Started,
+					"completed":              pGroup.Completed,
+					"created":                pGroup.Created,
+					"source":                 pGroup.Source,
+					"time_remaining":         pGroup.TimeRemaining,
+					"progress":               pGroup.Progress,
+					"data_transferred":       pGroup.DataTransferred,
+				},
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -294,16 +298,18 @@ func getVolumeMonitorEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"volume_monitor.writes_per_sec":    space.WritesPerSec,
-				"volume_monitor.name":              space.Name,
-				"volume_monitor.usec_per_write_op": space.UsecPerWriteOp,
-				"volume_monitor.output_per_sec":    space.OutputPerSec,
-				"volume_monitor.reads_per_sec":     space.ReadsPerSec,
-				"volume_monitor.input_per_sec":     space.InputPerSec,
-				"volume_monitor.time":              space.Time,
-				"volume_monitor.usec_per_read_op":  space.UsecPerReadOp,
+				"volume_monitor": mapstr.M{
+					"writes_per_sec":    space.WritesPerSec,
+					"name":              space.Name,
+					"usec_per_write_op": space.UsecPerWriteOp,
+					"output_per_sec":    space.OutputPerSec,
+					"reads_per_sec":     space.ReadsPerSec,
+					"input_per_sec":     space.InputPerSec,
+					"time":              space.Time,
+					"usec_per_read_op":  space.UsecPerReadOp,
+				},
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -334,18 +340,20 @@ func getVolumeSpaceEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"volume_space.size":              space.Size,
-				"volume_space.name":              space.Name,
-				"volume_space.system":            space.System,
-				"volume_space.snapshots":         space.Snapshots,
-				"volume_space.volumes":           space.Volumes,
-				"volume_space.data_reduction":    space.DataReduction,
-				"volume_space.total":             space.Total,
-				"volume_space.shared_space":      space.SharedSpace,
-				"volume_space.thin_provisioning": space.ThinProvisioning,
-				"volume_space.total_reduction":   space.TotalReduction,
+				"volume_space": mapstr.M{
+					"size":              space.Size,
+					"name":              space.Name,
+					"system":            space.System,
+					"snapshots":         space.Snapshots,
+					"volumes":           space.Volumes,
+					"data_reduction":    space.DataReduction,
+					"total":             space.Total,
+					"shared_space":      space.SharedSpace,
+					"thin_provisioning": space.ThinProvisioning,
+					"total_reduction":   space.TotalReduction,
+				},
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
@@ -367,6 +375,7 @@ func getArrayEvents(m *MetricSet) ([]mb.Event, error) {
 	var array Array
 	err = json.Unmarshal([]byte(response), &array)
 	if err != nil {
+		m.logger.Errorf("Failed to unmarshal array response: %v for message: %s", err, response)
 		return nil, err
 	}
 
@@ -374,12 +383,14 @@ func getArrayEvents(m *MetricSet) ([]mb.Event, error) {
 	events = append(events, mb.Event{
 		Timestamp: timestamp,
 		MetricSetFields: map[string]interface{}{
-			"array.revision":   array.Revision,
-			"array.version":    array.Version,
-			"array.array_name": array.ArrayName,
-			"array.id":         array.ID,
+			"array": mapstr.M{
+				"revision":   array.Revision,
+				"version":    array.Version,
+				"array_name": array.ArrayName,
+				"id":         array.ID,
+			},
 		},
-		RootFields: purestorage.MakeRootFields(m.config),
+		RootFields: CreateECSFields(m),
 	})
 
 	return events, nil
@@ -409,15 +420,32 @@ func getVolumeEvents(m *MetricSet) ([]mb.Event, error) {
 		events = append(events, mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				"volume.name":    volume.Name,
-				"volume.created": volume.Created,
-				"volume.source":  volume.Source,
-				"volume.serial":  volume.Serial,
-				"volume.size":    volume.Size,
+				"volume": mapstr.M{
+					"name":    volume.Name,
+					"created": volume.Created,
+					"source":  volume.Source,
+					"serial":  volume.Serial,
+					"size":    volume.Size,
+				},
 			},
-			RootFields: purestorage.MakeRootFields(m.config),
+			RootFields: CreateECSFields(m),
 		})
 	}
 
 	return events, nil
+}
+func CreateECSFields(ms *MetricSet) mapstr.M {
+	dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+
+	return mapstr.M{
+		"event": mapstr.M{
+			"dataset": dataset,
+		},
+		"observer": mapstr.M{
+			"hostname": ms.config.HostInfo.Hostname,
+			"ip":       ms.config.HostInfo.IP,
+			"type":     "flash storage",
+			"vendor":   "Pure Storage",
+		},
+	}
 }

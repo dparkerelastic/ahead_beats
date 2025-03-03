@@ -21,8 +21,6 @@ import (
 	"fmt"
 	"net"
 	"strings"
-
-	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
 func StringToBool(s string) (bool, error) {
@@ -40,13 +38,6 @@ func StringToBool(s string) (bool, error) {
 
 	// Default to false
 	return false, fmt.Errorf("invalid value: %s", s)
-}
-
-func MakeRootFields(config *Config) mapstr.M {
-	return mapstr.M{
-		"host.ip":   config.HostInfo.IP,
-		"host.name": config.HostInfo.Hostname,
-	}
 }
 
 func CreateArray[T any](size int, defaultValue T) []T {

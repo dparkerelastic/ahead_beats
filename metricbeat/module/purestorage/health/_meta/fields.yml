@@ -129,7 +129,7 @@
           description: >
             Index number
         - name: identify
-          type: boolean
+          type: keyword
           description: >
             Identify flag
         - name: speed

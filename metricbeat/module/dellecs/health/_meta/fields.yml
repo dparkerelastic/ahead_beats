@@ -497,7 +497,7 @@
           description: >
             Display name of the node
         - name: api_change
-          type: boolean
+          type: integer
           description: >
             Indicates if there was an API change
         - name: num_bad_disks

@@ -27,10 +27,7 @@ import (
 	"github.com/elastic/beats/v7/metricbeat/mb"
 	"github.com/elastic/beats/v7/metricbeat/module/purestorage"
 	"github.com/elastic/elastic-agent-libs/logp"
-)
-
-const (
-	metricsetName = "arrays"
+	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -38,7 +35,7 @@ const (
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
-	mb.Registry.MustAddMetricSet(purestorage.ModuleName, metricsetName, New)
+	mb.Registry.MustAddMetricSet(purestorage.ModuleName, "arrays", New)
 
 }
 
@@ -112,7 +109,7 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 		MetricSetFields: make(map[string]interface{}),
 	}
 	event.Timestamp = timestamp
-	event.RootFields = purestorage.MakeRootFields(m.config)
+	event.RootFields = createECSFields(m)
 
 	for _, result := range fields {
 		oid := result.OID
@@ -134,4 +131,21 @@ func (m *MetricSet) createEvent(fields []SNMPResult) mb.Event {
 	}
 
 	return event
+}
+
+func createECSFields(ms *MetricSet) mapstr.M {
+	dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+
+	return mapstr.M{
+		"event": mapstr.M{
+			"dataset": dataset,
+		},
+		"data_stream": mapstr.M{
+			"type":      "metrics",
+			"dataset":   dataset,
+			"namespace": "default",
+		},
+		"host.ip":   ms.config.HostInfo.IP,
+		"host.name": ms.config.HostInfo.Hostname,
+	}
 }

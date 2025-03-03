@@ -27,10 +27,6 @@ import (
 	"github.com/elastic/elastic-agent-libs/logp"
 )
 
-const (
-	metricsetName = "health"
-)
-
 var endpoints map[string]Endpoint
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -50,7 +46,7 @@ func init() {
 		"Array":            {Name: "Array", Endpoint: "array", ReturnType: Array{}, Fn: getArrayEvents},
 		"Volume":           {Name: "Volume", Endpoint: "volume", ReturnType: Volume{}, Fn: getVolumeEvents},
 	}
-	mb.Registry.MustAddMetricSet(purestorage.ModuleName, metricsetName, New)
+	mb.Registry.MustAddMetricSet(purestorage.ModuleName, "health", New)
 }
 
 func getEndpoint(name string) (Endpoint, error) {

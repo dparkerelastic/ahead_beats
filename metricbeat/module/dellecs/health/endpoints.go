@@ -24,7 +24,7 @@ import (
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
-	"github.com/elastic/beats/v7/metricbeat/module/dellecs"
+	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
 // dashboard/nodes/{nodeid}/processes
@@ -60,17 +60,19 @@ func getNodeProcessEvents(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				field_prefix + ".process_name":             proc.ProcessName,
-				field_prefix + ".process_id":               proc.ID,
-				field_prefix + ".cpu_utilization":          lastPercentValue(proc.CPUUtilization),
-				field_prefix + ".java_heap_utilization":    lastPercentValue(proc.JavaHeapUtilization),
-				field_prefix + ".max_java_heap_size":       lastBytesValue(proc.MaxJavaHeapSize),
-				field_prefix + ".memory_utilization_bytes": lastBytesValue(proc.MemoryUtilizationBytes),
-				field_prefix + ".memory_utilization":       lastPercentValue(proc.MemoryUtilization),
-				field_prefix + ".thread_count":             lastCountValue(proc.ThreadCount),
-				field_prefix + ".restart_time":             lastDummyValue(proc.RestartTime),
+				field_prefix: mapstr.M{
+					"process_name":             proc.ProcessName,
+					"process_id":               proc.ID,
+					"cpu_utilization":          lastPercentValue(proc.CPUUtilization),
+					"java_heap_utilization":    lastPercentValue(proc.JavaHeapUtilization),
+					"max_java_heap_size":       lastBytesValue(proc.MaxJavaHeapSize),
+					"memory_utilization_bytes": lastBytesValue(proc.MemoryUtilizationBytes),
+					"memory_utilization":       lastPercentValue(proc.MemoryUtilization),
+					"thread_count":             lastCountValue(proc.ThreadCount),
+					"restart_time":             lastDummyValue(proc.RestartTime),
+				},
 			},
-			RootFields: dellecs.MakeRootFields(m.config),
+			RootFields: createECSFields(m),
 		}
 		events = append(events, event)
 
@@ -108,40 +110,42 @@ func getNoteDetailsEvents(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				field_prefix + ".node_id":                                 nodeDetails.ID,
-				field_prefix + ".storage_pool_id":                         nodeDetails.StoragePoolID,
-				field_prefix + ".name":                                    nodeDetails.DisplayName,
-				field_prefix + ".api_change":                              nodeDetails.APIChange,
-				field_prefix + ".num_bad_disks":                           nodeDetails.NumBadDisks,
-				field_prefix + ".storage_pool_name":                       nodeDetails.StoragePoolName,
-				field_prefix + ".display_name":                            nodeDetails.DisplayName,
-				field_prefix + ".num_ready_to_replace_disks":              nodeDetails.NumReadyToReplaceDisks,
-				field_prefix + ".num_maintenance_disks":                   nodeDetails.NumMaintenanceDisks,
-				field_prefix + ".health_status":                           nodeDetails.HealthStatus,
-				field_prefix + ".num_good_disks":                          nodeDetails.NumGoodDisks,
-				field_prefix + ".num_disks":                               nodeDetails.NumDisks,
-				field_prefix + ".disk_space_free_current_l1":              lastSpaceValue(node.DiskSpaceFreeCurrentL1),
-				field_prefix + ".allocated_capacity_forecast":             lastSpaceValue(node.AllocatedCapacityForecast),
-				field_prefix + ".disk_space_free_current_l2":              lastSpaceValue(node.DiskSpaceFreeCurrentL2),
-				field_prefix + ".disk_space_reserved_current":             lastSpaceValue(node.DiskSpaceReservedCurrent),
-				field_prefix + ".disk_space_free_l2":                      lastSpaceValue(node.DiskSpaceFreeL2),
-				field_prefix + ".disk_space_free_l1":                      lastSpaceValue(node.DiskSpaceFreeL1),
-				field_prefix + ".disk_space_total":                        lastSpaceValue(node.DiskSpaceTotal),
-				field_prefix + ".disk_space_total_current_l1":             lastSpaceValue(node.DiskSpaceTotalCurrentL1),
-				field_prefix + ".disk_space_total_current_l2":             lastSpaceValue(node.DiskSpaceTotalCurrentL2),
-				field_prefix + ".disk_space_offline_total_current":        lastSpaceValue(node.DiskSpaceOfflineTotalCurrent),
-				field_prefix + ".disk_space_allocated_l2":                 lastSpaceValue(node.DiskSpaceAllocatedL2),
-				field_prefix + ".disk_space_allocated_l1":                 lastSpaceValue(node.DiskSpaceAllocatedL1),
-				field_prefix + ".disk_space_free_current":                 lastSpaceValue(node.DiskSpaceFreeCurrent),
-				field_prefix + ".disk_space_total_current":                lastSpaceValue(node.DiskSpaceTotalCurrent),
-				field_prefix + ".disk_space_allocated_current":            lastSpaceValue(node.DiskSpaceAllocatedCurrent),
-				field_prefix + ".disk_space_allocated_current_l1":         lastSpaceValue(node.DiskSpaceAllocatedCurrentL1),
-				field_prefix + ".disk_space_allocated_current_l2":         lastSpaceValue(node.DiskSpaceAllocatedCurrentL2),
-				field_prefix + ".disk_space_allocated":                    lastSpaceValue(node.DiskSpaceAllocated),
-				field_prefix + ".disk_space_allocated_percent":            lastPercentValue(node.DiskSpaceAllocatedPercentage),
-				field_prefix + ".disk_space_allocated_percentage_current": lastPercentValue(node.DiskSpaceAllocatedPercentageCurrent),
+				field_prefix: mapstr.M{
+					"node_id":                                 nodeDetails.ID,
+					"storage_pool_id":                         nodeDetails.StoragePoolID,
+					"name":                                    nodeDetails.DisplayName,
+					"api_change":                              nodeDetails.APIChange,
+					"num_bad_disks":                           nodeDetails.NumBadDisks,
+					"storage_pool_name":                       nodeDetails.StoragePoolName,
+					"display_name":                            nodeDetails.DisplayName,
+					"num_ready_to_replace_disks":              nodeDetails.NumReadyToReplaceDisks,
+					"num_maintenance_disks":                   nodeDetails.NumMaintenanceDisks,
+					"health_status":                           nodeDetails.HealthStatus,
+					"num_good_disks":                          nodeDetails.NumGoodDisks,
+					"num_disks":                               nodeDetails.NumDisks,
+					"disk_space_free_current_l1":              lastSpaceValue(node.DiskSpaceFreeCurrentL1),
+					"allocated_capacity_forecast":             lastSpaceValue(node.AllocatedCapacityForecast),
+					"disk_space_free_current_l2":              lastSpaceValue(node.DiskSpaceFreeCurrentL2),
+					"disk_space_reserved_current":             lastSpaceValue(node.DiskSpaceReservedCurrent),
+					"disk_space_free_l2":                      lastSpaceValue(node.DiskSpaceFreeL2),
+					"disk_space_free_l1":                      lastSpaceValue(node.DiskSpaceFreeL1),
+					"disk_space_total":                        lastSpaceValue(node.DiskSpaceTotal),
+					"disk_space_total_current_l1":             lastSpaceValue(node.DiskSpaceTotalCurrentL1),
+					"disk_space_total_current_l2":             lastSpaceValue(node.DiskSpaceTotalCurrentL2),
+					"disk_space_offline_total_current":        lastSpaceValue(node.DiskSpaceOfflineTotalCurrent),
+					"disk_space_allocated_l2":                 lastSpaceValue(node.DiskSpaceAllocatedL2),
+					"disk_space_allocated_l1":                 lastSpaceValue(node.DiskSpaceAllocatedL1),
+					"disk_space_free_current":                 lastSpaceValue(node.DiskSpaceFreeCurrent),
+					"disk_space_total_current":                lastSpaceValue(node.DiskSpaceTotalCurrent),
+					"disk_space_allocated_current":            lastSpaceValue(node.DiskSpaceAllocatedCurrent),
+					"disk_space_allocated_current_l1":         lastSpaceValue(node.DiskSpaceAllocatedCurrentL1),
+					"disk_space_allocated_current_l2":         lastSpaceValue(node.DiskSpaceAllocatedCurrentL2),
+					"disk_space_allocated":                    lastSpaceValue(node.DiskSpaceAllocated),
+					"disk_space_allocated_percent":            lastPercentValue(node.DiskSpaceAllocatedPercentage),
+					"disk_space_allocated_percentage_current": lastPercentValue(node.DiskSpaceAllocatedPercentageCurrent),
+				},
 			},
-			RootFields: dellecs.MakeRootFields(m.config),
+			RootFields: createECSFields(m),
 		}
 		addSpaceSummaryValues(nodeDetails, &event, field_prefix)
 		addPercentageSummaryValues(nodeDetails, &event, field_prefix)
@@ -187,36 +191,38 @@ func getDiskEvents(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp: timestamp,
 				MetricSetFields: map[string]interface{}{
-					field_prefix + ".node_id":                                 node.ID,
-					field_prefix + ".storage_pool_name":                       disk.StoragePoolName,
-					field_prefix + ".display_name":                            disk.DisplayName,
-					field_prefix + ".node_display_name":                       disk.NodeDisplayName,
-					field_prefix + ".slot_id":                                 disk.SlotId,
-					field_prefix + ".disk_id":                                 disk.Id,
-					field_prefix + ".storage_pool_id":                         disk.StoragePoolId,
-					field_prefix + ".ssm_l2_status":                           disk.SsmL2Status,
-					field_prefix + ".health_status":                           disk.HealthStatus,
-					field_prefix + ".ssm_l1_status":                           disk.SsmL1Status,
-					field_prefix + ".disk_space_free_current_l1":              lastSpaceValue(disk.DiskSpaceFreeCurrentL1),
-					field_prefix + ".disk_space_free_current_l2":              lastSpaceValue(disk.DiskSpaceFreeCurrentL2),
-					field_prefix + ".disk_space_free_l2":                      lastSpaceValue(disk.DiskSpaceFreeL2),
-					field_prefix + ".disk_space_free_l1":                      lastSpaceValue(disk.DiskSpaceFreeL1),
-					field_prefix + ".disk_space_total":                        lastSpaceValue(disk.DiskSpaceTotal),
-					field_prefix + ".disk_space_total_current_l1":             lastSpaceValue(disk.DiskSpaceTotalCurrentL1),
-					field_prefix + ".disk_space_total_current_l2":             lastSpaceValue(disk.DiskSpaceTotalCurrentL2),
-					field_prefix + ".disk_space_allocated_l2":                 lastSpaceValue(disk.DiskSpaceAllocatedL2),
-					field_prefix + ".disk_space_allocated_l1":                 lastSpaceValue(disk.DiskSpaceAllocatedL1),
-					field_prefix + ".disk_space_free_current":                 lastSpaceValue(disk.DiskSpaceFreeCurrent),
-					field_prefix + ".disk_space_total_current":                lastSpaceValue(disk.DiskSpaceTotalCurrent),
-					field_prefix + ".disk_space_allocated_current":            lastSpaceValue(disk.DiskSpaceAllocatedCurrent),
-					field_prefix + ".disk_space_allocated_current_l1":         lastSpaceValue(disk.DiskSpaceAllocatedCurrentL1),
-					field_prefix + ".disk_space_allocated":                    lastSpaceValue(disk.DiskSpaceAllocated),
-					field_prefix + ".disk_space_allocated_current_l2":         lastSpaceValue(disk.DiskSpaceAllocatedCurrentL2),
-					field_prefix + ".disk_space_free":                         lastSpaceValue(disk.DiskSpaceFree),
-					field_prefix + ".disk_space_allocated_percent":            lastPercentValue(disk.DiskSpaceAllocatedPercentage),
-					field_prefix + ".disk_space_allocated_percentage_current": lastPercentValue(disk.DiskSpaceAllocatedPercentageCurrent),
+					field_prefix: mapstr.M{
+						"node_id":                                 node.ID,
+						"storage_pool_name":                       disk.StoragePoolName,
+						"display_name":                            disk.DisplayName,
+						"node_display_name":                       disk.NodeDisplayName,
+						"slot_id":                                 disk.SlotId,
+						"disk_id":                                 disk.Id,
+						"storage_pool_id":                         disk.StoragePoolId,
+						"ssm_l2_status":                           disk.SsmL2Status,
+						"health_status":                           disk.HealthStatus,
+						"ssm_l1_status":                           disk.SsmL1Status,
+						"disk_space_free_current_l1":              lastSpaceValue(disk.DiskSpaceFreeCurrentL1),
+						"disk_space_free_current_l2":              lastSpaceValue(disk.DiskSpaceFreeCurrentL2),
+						"disk_space_free_l2":                      lastSpaceValue(disk.DiskSpaceFreeL2),
+						"disk_space_free_l1":                      lastSpaceValue(disk.DiskSpaceFreeL1),
+						"disk_space_total":                        lastSpaceValue(disk.DiskSpaceTotal),
+						"disk_space_total_current_l1":             lastSpaceValue(disk.DiskSpaceTotalCurrentL1),
+						"disk_space_total_current_l2":             lastSpaceValue(disk.DiskSpaceTotalCurrentL2),
+						"disk_space_allocated_l2":                 lastSpaceValue(disk.DiskSpaceAllocatedL2),
+						"disk_space_allocated_l1":                 lastSpaceValue(disk.DiskSpaceAllocatedL1),
+						"disk_space_free_current":                 lastSpaceValue(disk.DiskSpaceFreeCurrent),
+						"disk_space_total_current":                lastSpaceValue(disk.DiskSpaceTotalCurrent),
+						"disk_space_allocated_current":            lastSpaceValue(disk.DiskSpaceAllocatedCurrent),
+						"disk_space_allocated_current_l1":         lastSpaceValue(disk.DiskSpaceAllocatedCurrentL1),
+						"disk_space_allocated":                    lastSpaceValue(disk.DiskSpaceAllocated),
+						"disk_space_allocated_current_l2":         lastSpaceValue(disk.DiskSpaceAllocatedCurrentL2),
+						"disk_space_free":                         lastSpaceValue(disk.DiskSpaceFree),
+						"disk_space_allocated_percent":            lastPercentValue(disk.DiskSpaceAllocatedPercentage),
+						"disk_space_allocated_percentage_current": lastPercentValue(disk.DiskSpaceAllocatedPercentageCurrent),
+					},
 				},
-				RootFields: dellecs.MakeRootFields(m.config),
+				RootFields: createECSFields(m),
 			}
 			addSpaceSummaryValues(disk, &event, field_prefix)
 			addPercentageSummaryValues(disk, &event, field_prefix)
@@ -252,7 +258,7 @@ func getCapacityEvents(m *MetricSet) ([]mb.Event, error) {
 			field_prefix + ".total_provisioned_gb": storage.TotalProvisionedGB,
 			field_prefix + ".total_free_gb":        storage.TotalFreeGB,
 		},
-		RootFields: dellecs.MakeRootFields(m.config),
+		RootFields: createECSFields(m),
 	}
 	events = append(events, event)
 	return events, nil
@@ -291,69 +297,71 @@ func getStoragePoolsEvents(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				field_prefix + ".chunks_l1_journal_total_size":                  pool.ChunksL1JournalTotalSize,
-				field_prefix + ".chunks_l1_btree_number":                        pool.ChunksL1BtreeNumber,
-				field_prefix + ".chunks_l1_btree_total_size":                    pool.ChunksL1BtreeTotalSize,
-				field_prefix + ".chunks_l1_journal_avg_size":                    pool.ChunksL1JournalAvgSize,
-				field_prefix + ".chunks_l1_journal_number":                      pool.ChunksL1JournalNumber,
-				field_prefix + ".chunks_l0_journal_total_size":                  pool.ChunksL0JournalTotalSize,
-				field_prefix + ".chunks_l0_btree_number":                        pool.ChunksL0BtreeNumber,
-				field_prefix + ".chunks_l0_btree_total_size":                    pool.ChunksL0BtreeTotalSize,
-				field_prefix + ".chunks_l0_btree_avg_size":                      pool.ChunksL0BtreeAvgSize,
-				field_prefix + ".chunks_l0_journal_avg_size":                    pool.ChunksL0JournalAvgSize,
-				field_prefix + ".chunks_l0_journal_number":                      pool.ChunksL0JournalNumber,
-				field_prefix + ".chunks_repo_total_seal_size":                   pool.ChunksRepoTotalSealSize,
-				field_prefix + ".chunks_repo_number":                            pool.ChunksRepoNumber,
-				field_prefix + ".chunks_xor_number":                             pool.ChunksXorNumber,
-				field_prefix + ".chunks_xor_total_size":                         pool.ChunksXorTotalSize,
-				field_prefix + ".chunks_geo_cache_total_size":                   pool.ChunksGeoCacheTotalSize,
-				field_prefix + ".chunks_geo_cache_count":                        pool.ChunksGeoCacheCount,
-				field_prefix + ".chunks_geo_copy_number":                        pool.ChunksGeoCopyNumber,
-				field_prefix + ".chunks_geo_copy_total_size":                    pool.ChunksGeoCopyTotalSize,
-				field_prefix + ".num_nodes":                                     pool.NumNodes,
-				field_prefix + ".num_disks":                                     pool.NumDisks,
-				field_prefix + ".num_bad_nodes":                                 pool.NumBadNodes,
-				field_prefix + ".num_good_nodes":                                pool.NumGoodNodes,
-				field_prefix + ".num_bad_disks":                                 pool.NumBadDisks,
-				field_prefix + ".num_good_disks":                                pool.NumGoodDisks,
-				field_prefix + ".num_maintenance_nodes":                         pool.NumMaintenanceNodes,
-				field_prefix + ".num_maintenance_disks":                         pool.NumMaintenanceDisks,
-				field_prefix + ".num_ready_to_replace_disks":                    pool.NumReadyToReplaceDisks,
-				field_prefix + ".num_nodes_with_sufficient_disk_space":          pool.NumNodesWithSufficientDiskSpace,
-				field_prefix + ".gc_user_data_is_enabled":                       pool.GcUserDataIsEnabled,
-				field_prefix + ".gc_system_metadata_is_enabled":                 pool.GcSystemMetadataIsEnabled,
-				field_prefix + ".recovery_complete_time_estimate":               pool.RecoveryCompleteTimeEstimate,
-				field_prefix + ".chunks_ec_complete_time_estimate":              pool.ChunksEcCompleteTimeEstimate,
-				field_prefix + ".pool_id":                                       pool.ID,
-				field_prefix + ".name":                                          pool.Name,
-				field_prefix + ".gc_user_unreclaimable_current":                 lastCapacityValue(pool.GcUserUnreclaimableCurrent),
-				field_prefix + ".gc_user_total_detected_current":                lastCapacityValue(pool.GcUserTotalDetectedCurrent),
-				field_prefix + ".gc_system_reclaimed_current":                   lastCapacityValue(pool.GcSystemReclaimedCurrent),
-				field_prefix + ".gc_system_reclaimed_per_interval":              lastCapacityValue(pool.GcSystemReclaimedPerInterval),
-				field_prefix + ".gc_system_reclaimed_over_time_range":           lastCapacityValue(pool.GcSystemReclaimedOverTimeRange),
-				field_prefix + ".gc_combined_reclaimed_current":                 lastCapacityValue(pool.GcCombinedReclaimedCurrent),
-				field_prefix + ".gc_user_reclaimed_over_time_range":             lastCapacityValue(pool.GcUserReclaimedOverTimeRange),
-				field_prefix + ".gc_system_pending_current":                     lastCapacityValue(pool.GcSystemPendingCurrent),
-				field_prefix + ".gc_user_reclaimed_per_interval":                lastCapacityValue(pool.GcUserReclaimedPerInterval),
-				field_prefix + ".gc_combined_total_detected_current":            lastCapacityValue(pool.GcCombinedTotalDetectedCurrent),
-				field_prefix + ".gc_system_total_detected_current":              lastCapacityValue(pool.GcSystemTotalDetectedCurrent),
-				field_prefix + ".gc_user_reclaimed_current":                     lastCapacityValue(pool.GcUserReclaimedCurrent),
-				field_prefix + ".gc_user_pending_current":                       lastCapacityValue(pool.GcUserPendingCurrent),
-				field_prefix + ".gc_system_unreclaimable_current":               lastCapacityValue(pool.GcSystemUnreclaimableCurrent),
-				field_prefix + ".gc_combined_reclaimed_over_time_range":         lastCapacityValue(pool.GcCombinedReclaimedOverTimeRange),
-				field_prefix + ".gc_combined_pending_current":                   lastCapacityValue(pool.GcCombinedPendingCurrent),
-				field_prefix + ".gc_combined_unreclaimable_current":             lastCapacityValue(pool.GcCombinedUnreclaimableCurrent),
-				field_prefix + ".disk_space_allocated_geo_cache_current":        lastCapacityValue(pool.DiskSpaceAllocatedGeoCacheCurrent),
-				field_prefix + ".disk_space_allocated_local_protection_current": lastCapacityValue(pool.DiskSpaceAllocatedLocalProtectionCurrent),
-				field_prefix + ".disk_space_allocated_system_metadata_current":  lastCapacityValue(pool.DiskSpaceAllocatedSystemMetadataCurrent),
-				field_prefix + ".disk_space_allocated_user_data_current":        lastCapacityValue(pool.DiskSpaceAllocatedUserDataCurrent),
-				field_prefix + ".allocated_capacity_forecast":                   lastCapacityValue(pool.AllocatedCapacityForecast),
-				field_prefix + ".disk_space_allocated_percentage":               lastPercentValue(pool.DiskSpaceAllocatedPercentage),
-				field_prefix + ".chunks_ec_coded_ratio_current":                 lastPercentValue(pool.ChunksEcCodedRatioCurrent),
-				field_prefix + ".chunks_ec_coded_ratio":                         lastPercentValue(pool.ChunksEcCodedRatio),
-				field_prefix + ".disk_space_allocated_percentage_current":       lastPercentValue(pool.DiskSpaceAllocatedPercentageCurrent),
+				field_prefix: mapstr.M{
+					"chunks_l1_journal_total_size":                  pool.ChunksL1JournalTotalSize,
+					"chunks_l1_btree_number":                        pool.ChunksL1BtreeNumber,
+					"chunks_l1_btree_total_size":                    pool.ChunksL1BtreeTotalSize,
+					"chunks_l1_journal_avg_size":                    pool.ChunksL1JournalAvgSize,
+					"chunks_l1_journal_number":                      pool.ChunksL1JournalNumber,
+					"chunks_l0_journal_total_size":                  pool.ChunksL0JournalTotalSize,
+					"chunks_l0_btree_number":                        pool.ChunksL0BtreeNumber,
+					"chunks_l0_btree_total_size":                    pool.ChunksL0BtreeTotalSize,
+					"chunks_l0_btree_avg_size":                      pool.ChunksL0BtreeAvgSize,
+					"chunks_l0_journal_avg_size":                    pool.ChunksL0JournalAvgSize,
+					"chunks_l0_journal_number":                      pool.ChunksL0JournalNumber,
+					"chunks_repo_total_seal_size":                   pool.ChunksRepoTotalSealSize,
+					"chunks_repo_number":                            pool.ChunksRepoNumber,
+					"chunks_xor_number":                             pool.ChunksXorNumber,
+					"chunks_xor_total_size":                         pool.ChunksXorTotalSize,
+					"chunks_geo_cache_total_size":                   pool.ChunksGeoCacheTotalSize,
+					"chunks_geo_cache_count":                        pool.ChunksGeoCacheCount,
+					"chunks_geo_copy_number":                        pool.ChunksGeoCopyNumber,
+					"chunks_geo_copy_total_size":                    pool.ChunksGeoCopyTotalSize,
+					"num_nodes":                                     pool.NumNodes,
+					"num_disks":                                     pool.NumDisks,
+					"num_bad_nodes":                                 pool.NumBadNodes,
+					"num_good_nodes":                                pool.NumGoodNodes,
+					"num_bad_disks":                                 pool.NumBadDisks,
+					"num_good_disks":                                pool.NumGoodDisks,
+					"num_maintenance_nodes":                         pool.NumMaintenanceNodes,
+					"num_maintenance_disks":                         pool.NumMaintenanceDisks,
+					"num_ready_to_replace_disks":                    pool.NumReadyToReplaceDisks,
+					"num_nodes_with_sufficient_disk_space":          pool.NumNodesWithSufficientDiskSpace,
+					"gc_user_data_is_enabled":                       pool.GcUserDataIsEnabled,
+					"gc_system_metadata_is_enabled":                 pool.GcSystemMetadataIsEnabled,
+					"recovery_complete_time_estimate":               pool.RecoveryCompleteTimeEstimate,
+					"chunks_ec_complete_time_estimate":              pool.ChunksEcCompleteTimeEstimate,
+					"pool_id":                                       pool.ID,
+					"name":                                          pool.Name,
+					"gc_user_unreclaimable_current":                 lastCapacityValue(pool.GcUserUnreclaimableCurrent),
+					"gc_user_total_detected_current":                lastCapacityValue(pool.GcUserTotalDetectedCurrent),
+					"gc_system_reclaimed_current":                   lastCapacityValue(pool.GcSystemReclaimedCurrent),
+					"gc_system_reclaimed_per_interval":              lastCapacityValue(pool.GcSystemReclaimedPerInterval),
+					"gc_system_reclaimed_over_time_range":           lastCapacityValue(pool.GcSystemReclaimedOverTimeRange),
+					"gc_combined_reclaimed_current":                 lastCapacityValue(pool.GcCombinedReclaimedCurrent),
+					"gc_user_reclaimed_over_time_range":             lastCapacityValue(pool.GcUserReclaimedOverTimeRange),
+					"gc_system_pending_current":                     lastCapacityValue(pool.GcSystemPendingCurrent),
+					"gc_user_reclaimed_per_interval":                lastCapacityValue(pool.GcUserReclaimedPerInterval),
+					"gc_combined_total_detected_current":            lastCapacityValue(pool.GcCombinedTotalDetectedCurrent),
+					"gc_system_total_detected_current":              lastCapacityValue(pool.GcSystemTotalDetectedCurrent),
+					"gc_user_reclaimed_current":                     lastCapacityValue(pool.GcUserReclaimedCurrent),
+					"gc_user_pending_current":                       lastCapacityValue(pool.GcUserPendingCurrent),
+					"gc_system_unreclaimable_current":               lastCapacityValue(pool.GcSystemUnreclaimableCurrent),
+					"gc_combined_reclaimed_over_time_range":         lastCapacityValue(pool.GcCombinedReclaimedOverTimeRange),
+					"gc_combined_pending_current":                   lastCapacityValue(pool.GcCombinedPendingCurrent),
+					"gc_combined_unreclaimable_current":             lastCapacityValue(pool.GcCombinedUnreclaimableCurrent),
+					"disk_space_allocated_geo_cache_current":        lastCapacityValue(pool.DiskSpaceAllocatedGeoCacheCurrent),
+					"disk_space_allocated_local_protection_current": lastCapacityValue(pool.DiskSpaceAllocatedLocalProtectionCurrent),
+					"disk_space_allocated_system_metadata_current":  lastCapacityValue(pool.DiskSpaceAllocatedSystemMetadataCurrent),
+					"disk_space_allocated_user_data_current":        lastCapacityValue(pool.DiskSpaceAllocatedUserDataCurrent),
+					"allocated_capacity_forecast":                   lastCapacityValue(pool.AllocatedCapacityForecast),
+					"disk_space_allocated_percentage":               lastPercentValue(pool.DiskSpaceAllocatedPercentage),
+					"chunks_ec_coded_ratio_current":                 lastPercentValue(pool.ChunksEcCodedRatioCurrent),
+					"chunks_ec_coded_ratio":                         lastPercentValue(pool.ChunksEcCodedRatio),
+					"disk_space_allocated_percentage_current":       lastPercentValue(pool.DiskSpaceAllocatedPercentageCurrent),
+				},
 			},
-			RootFields: dellecs.MakeRootFields(m.config),
+			RootFields: createECSFields(m),
 		}
 
 		addSpaceSummaryValues(pool, &event, field_prefix)
@@ -397,18 +405,20 @@ func getReplicationGroupsEvents(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp: timestamp,
 			MetricSetFields: map[string]interface{}{
-				field_prefix + ".name":                                          group.Name,
-				field_prefix + ".group_id":                                      group.ID,
-				field_prefix + ".num_zones":                                     group.NumZones,
-				field_prefix + ".chunks_pending_xor_total_size":                 group.ChunksPendingXorTotalSize,
-				field_prefix + ".chunks_repo_pending_replication_total_size":    group.ChunksRepoPendingReplicationTotalSize,
-				field_prefix + ".chunks_journal_pending_replication_total_size": group.ChunksJournalPendingReplicationTotalSize,
-				field_prefix + ".replication_egress_traffic":                    lastBandwidthValue(group.ReplicationEgressTraffic),
-				field_prefix + ".replication_ingress_traffic":                   lastBandwidthValue(group.ReplicationIngressTraffic),
-				field_prefix + ".replication_ingress_traffic_current":           lastBandwidthValue(group.ReplicationIngressTrafficCurrent),
-				field_prefix + ".replication_egress_traffic_current":            lastBandwidthValue(group.ReplicationEgressTrafficCurrent),
+				field_prefix: mapstr.M{
+					"name":                          group.Name,
+					"group_id":                      group.ID,
+					"num_zones":                     group.NumZones,
+					"chunks_pending_xor_total_size": group.ChunksPendingXorTotalSize,
+					"chunks_repo_pending_replication_total_size":    group.ChunksRepoPendingReplicationTotalSize,
+					"chunks_journal_pending_replication_total_size": group.ChunksJournalPendingReplicationTotalSize,
+					"replication_egress_traffic":                    lastBandwidthValue(group.ReplicationEgressTraffic),
+					"replication_ingress_traffic":                   lastBandwidthValue(group.ReplicationIngressTraffic),
+					"replication_ingress_traffic_current":           lastBandwidthValue(group.ReplicationIngressTrafficCurrent),
+					"replication_egress_traffic_current":            lastBandwidthValue(group.ReplicationEgressTrafficCurrent),
+				},
 			},
-			RootFields: dellecs.MakeRootFields(m.config),
+			RootFields: createECSFields(m),
 		}
 
 		addSpaceSummaryValues(group, &event, field_prefix)
@@ -499,53 +509,61 @@ func addSpaceSummaryValues(data interface{}, event *mb.Event, prefix string) {
 	switch v := data.(type) {
 	case NodeData:
 		summaries = map[string]Summary{
-			prefix + ".disk_space_free_l1_summary":      v.DiskSpaceFreeL1Summary,
-			prefix + ".disk_space_allocated_l2_summary": v.DiskSpaceAllocatedL2Summary,
-			prefix + ".disk_space_total_summary":        v.DiskSpaceTotalSummary,
-			prefix + ".disk_space_free_l2_summary":      v.DiskSpaceFreeL2Summary,
-			prefix + ".disk_space_allocated_summary":    v.DiskSpaceAllocatedSummary,
-			prefix + ".disk_space_free_summary":         v.DiskSpaceFreeSummary,
-			prefix + ".disk_space_allocated_l1_summary": v.DiskSpaceAllocatedL1Summary,
-		}
-	case DiskData:
-		summaries = map[string]Summary{
-			prefix + ".disk_space_free_l1_summary":      v.DiskSpaceFreeL1Summary,
-			prefix + ".disk_space_allocated_l2_summary": v.DiskSpaceAllocatedL2Summary,
-			prefix + ".disk_space_total_summary":        v.DiskSpaceTotalSummary,
-			prefix + ".disk_space_free_l2_summary":      v.DiskSpaceFreeL2Summary,
-			prefix + ".disk_space_allocated_summary":    v.DiskSpaceAllocatedSummary,
-			prefix + ".disk_space_free_summary":         v.DiskSpaceFreeSummary,
-			prefix + ".disk_space_allocated_l1_summary": v.DiskSpaceAllocatedL1Summary,
+			"disk_space_free_l1_summary":      v.DiskSpaceFreeL1Summary,
+			"disk_space_allocated_l2_summary": v.DiskSpaceAllocatedL2Summary,
+			"disk_space_total_summary":        v.DiskSpaceTotalSummary,
+			"disk_space_free_l2_summary":      v.DiskSpaceFreeL2Summary,
+			"disk_space_allocated_summary":    v.DiskSpaceAllocatedSummary,
+			"disk_space_free_summary":         v.DiskSpaceFreeSummary,
+			"disk_space_allocated_l1_summary": v.DiskSpaceAllocatedL1Summary,
 		}
 	case StoragePoolData:
 		summaries = map[string]Summary{
-			prefix + ".chunks_ec_coded_total_seal_size_summary":      v.ChunksEcCodedTotalSealSizeSummary,
-			prefix + ".chunks_ec_rate_summary":                       v.ChunksEcRateSummary,
-			prefix + ".chunks_ec_coded_ratio_summary":                v.ChunksEcCodedRatioSummary,
-			prefix + ".chunks_ec_applicable_total_seal_size_summary": v.ChunksEcApplicableTotalSealSizeSummary,
-			prefix + ".recovery_rate_summary":                        v.RecoveryRateSummary,
-			prefix + ".recovery_bad_chunks_total_size_summary":       v.RecoveryBadChunksTotalSizeSummary,
-			prefix + ".disk_space_allocated_l1_summary":              v.DiskSpaceAllocatedL1Summary,
-			prefix + ".disk_space_allocated_l2_summary":              v.DiskSpaceAllocatedL2Summary,
-			prefix + ".disk_space_allocated_summary":                 v.DiskSpaceAllocatedSummary,
-
-			prefix + ".disk_space_free_l1_summary": v.DiskSpaceFreeL1Summary,
-			prefix + ".disk_space_free_l2_summary": v.DiskSpaceFreeL2Summary,
-			prefix + ".disk_space_total_summary":   v.DiskSpaceTotalSummary,
-			prefix + ".disk_space_free_summary":    v.DiskSpaceFreeSummary,
+			"chunks_ec_coded_total_seal_size_summary":      v.ChunksEcCodedTotalSealSizeSummary,
+			"chunks_ec_rate_summary":                       v.ChunksEcRateSummary,
+			"chunks_ec_coded_ratio_summary":                v.ChunksEcCodedRatioSummary,
+			"chunks_ec_applicable_total_seal_size_summary": v.ChunksEcApplicableTotalSealSizeSummary,
+			"recovery_rate_summary":                        v.RecoveryRateSummary,
+			"recovery_bad_chunks_total_size_summary":       v.RecoveryBadChunksTotalSizeSummary,
+			"disk_space_allocated_l1_summary":              v.DiskSpaceAllocatedL1Summary,
+			"disk_space_allocated_l2_summary":              v.DiskSpaceAllocatedL2Summary,
+			"disk_space_allocated_summary":                 v.DiskSpaceAllocatedSummary,
+			"disk_space_free_l1_summary":                   v.DiskSpaceFreeL1Summary,
+			"disk_space_free_l2_summary":                   v.DiskSpaceFreeL2Summary,
+			"disk_space_total_summary":                     v.DiskSpaceTotalSummary,
+			"disk_space_free_summary":                      v.DiskSpaceFreeSummary,
 		}
 	case ReplicationGroup:
 		summaries = map[string]Summary{}
+	case DiskData:
+		summaries = map[string]Summary{
+			"disk_space_free_l1_summary":      v.DiskSpaceFreeL1Summary,
+			"disk_space_allocated_l2_summary": v.DiskSpaceAllocatedL2Summary,
+			"disk_space_total_summary":        v.DiskSpaceTotalSummary,
+			"disk_space_free_l2_summary":      v.DiskSpaceFreeL2Summary,
+			"disk_space_allocated_summary":    v.DiskSpaceAllocatedSummary,
+			"disk_space_free_summary":         v.DiskSpaceFreeSummary,
+			"disk_space_allocated_l1_summary": v.DiskSpaceAllocatedL1Summary,
+		}
+	}
+
+	prefixMap, ok := event.MetricSetFields[prefix].(mapstr.M)
+	if !ok {
+		prefixMap = mapstr.M{}
+		event.MetricSetFields[prefix] = prefixMap
 	}
 
 	for key, summary := range summaries {
-		if len(summary.Min) > 0 {
-			event.MetricSetFields[key+".min"] = summary.Min[0].Space
+		prefixMap[key] = mapstr.M{}
+		if prefixMapKey, ok := prefixMap[key].(mapstr.M); ok {
+			if len(summary.Min) > 0 {
+				prefixMapKey["min"] = summary.Min[0].Space
+			}
+			if len(summary.Max) > 0 {
+				prefixMapKey["max"] = summary.Max[0].Space
+			}
+			prefixMapKey["avg"] = summary.Avg
 		}
-		if len(summary.Max) > 0 {
-			event.MetricSetFields[key+".max"] = summary.Max[0].Space
-		}
-		event.MetricSetFields[key+".avg"] = summary.Avg
 	}
 }
 
@@ -554,23 +572,31 @@ func addPercentageSummaryValues(data interface{}, event *mb.Event, prefix string
 	switch v := data.(type) {
 	case NodeData:
 		summaries = map[string]PercentageSummary{
-			prefix + ".disk_space_allocated_percentage_summary": v.DiskSpaceAllocatedPercentageSummary,
+			"disk_space_allocated_percentage_summary": v.DiskSpaceAllocatedPercentageSummary,
 		}
 	case StoragePoolData:
 		summaries = map[string]PercentageSummary{
-			prefix + ".disk_space_allocated_percentage_summary": v.DiskSpaceAllocatedPercentageSummary,
+			"disk_space_allocated_percentage_summary": v.DiskSpaceAllocatedPercentageSummary,
 		}
 	}
 
-	for key, summary := range summaries {
-		if len(summary.Min) > 0 {
-			event.MetricSetFields[key+".min"] = summary.Min[0].Percent
-		}
-		if len(summary.Max) > 0 {
-			event.MetricSetFields[key+".max"] = summary.Max[0].Percent
-		}
+	prefixMap, ok := event.MetricSetFields[prefix].(mapstr.M)
+	if !ok {
+		prefixMap = mapstr.M{}
+		event.MetricSetFields[prefix] = prefixMap
+	}
 
-		event.MetricSetFields[key+".avg"] = summary.Avg
+	for key, summary := range summaries {
+		prefixMap[key] = mapstr.M{}
+		if prefixMapKey, ok := prefixMap[key].(mapstr.M); ok {
+			if len(summary.Min) > 0 {
+				prefixMapKey["min"] = summary.Min[0].Percent
+			}
+			if len(summary.Max) > 0 {
+				prefixMapKey["max"] = summary.Max[0].Percent
+			}
+			prefixMapKey["avg"] = summary.Avg
+		}
 	}
 }
 
@@ -579,18 +605,44 @@ func addTrafficSummaryValues(data interface{}, event *mb.Event, prefix string) {
 	switch v := data.(type) {
 	case ReplicationGroup:
 		summaries = map[string]TrafficSummary{
-			prefix + ".replication_ingress_traffic_summary": v.ReplicationIngressTrafficSummary,
-			prefix + ".replication_egress_traffic_summary":  v.ReplicationEgressTrafficSummary,
+			"replication_ingress_traffic_summary": v.ReplicationIngressTrafficSummary,
+			"replication_egress_traffic_summary":  v.ReplicationEgressTrafficSummary,
 		}
 	}
 
+	prefixMap, ok := event.MetricSetFields[prefix].(mapstr.M)
+	if !ok {
+		prefixMap = mapstr.M{}
+		event.MetricSetFields[prefix] = prefixMap
+	}
+
 	for key, summary := range summaries {
-		if len(summary.Min) > 0 {
-			event.MetricSetFields[key+".min"] = summary.Min[0].Bandwidth
+
+		prefixMap[key] = mapstr.M{}
+		if prefixMapKey, ok := prefixMap[key].(mapstr.M); ok {
+			if len(summary.Min) > 0 {
+				prefixMapKey["min"] = summary.Min[0].Bandwidth
+			}
+			if len(summary.Max) > 0 {
+				prefixMapKey["max"] = summary.Max[0].Bandwidth
+			}
+			prefixMapKey["avg"] = summary.Avg
 		}
-		if len(summary.Max) > 0 {
-			event.MetricSetFields[key+".max"] = summary.Max[0].Bandwidth
-		}
-		event.MetricSetFields[key+".avg"] = summary.Avg
+	}
+}
+
+func createECSFields(ms *MetricSet) mapstr.M {
+	dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+
+	return mapstr.M{
+		"event": mapstr.M{
+			"dataset": dataset,
+		},
+		"observer": mapstr.M{
+			"hostname": ms.config.HostInfo.Hostname,
+			"ip":       ms.config.HostInfo.IP,
+			"type":     "cloud-storage",
+			"vendor":   "Dell",
+		},
 	}
 }
