@@ -981,7 +981,9 @@ metricbeat.modules:
 
 #----------------------------- Purestorage Module -----------------------------
 - module: purestorage
-  metricsets: ["arrays"]
+  metricsets: 
+    - "arrays"
+    - "health"
   enabled: false
   period: 10s
   hosts: ["localhost"]
