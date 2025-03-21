@@ -25,6 +25,7 @@ grouped in the following categories:
 * <<exported-fields-beat>>
 * <<exported-fields-benchmark>>
 * <<exported-fields-ceph>>
+* <<exported-fields-citrix_cms>>
 * <<exported-fields-cloud>>
 * <<exported-fields-cloudfoundry>>
 * <<exported-fields-cockroachdb>>
@@ -11711,6 +11712,36 @@ Used kb of the pool
 
 
 type: long
+
+--
+
+[[exported-fields-citrix_cms]]
+== citrix_cms fields
+
+citrix_cms module
+
+
+
+[float]
+=== citrix_cms
+
+
+
+
+[float]
+=== health
+
+health
+
+
+
+*`citrix_cms.health.example`*::
++
+--
+Example field
+
+
+type: keyword
 
 --
 

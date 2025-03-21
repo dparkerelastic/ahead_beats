@@ -67,6 +67,8 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-ceph-osd_df,osd_df>>   
 |<<metricbeat-metricset-ceph-osd_tree,osd_tree>>   
 |<<metricbeat-metricset-ceph-pool_disk,pool_disk>>   
+|<<metricbeat-module-citrix_cms,citrix_cms>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.1+| .1+|  |<<metricbeat-metricset-citrix_cms-health,health>> beta[]  
 |<<metricbeat-module-cloudfoundry,Cloudfoundry>>  beta[]   |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .3+| .3+|  |<<metricbeat-metricset-cloudfoundry-container,container>> beta[]  
 |<<metricbeat-metricset-cloudfoundry-counter,counter>> beta[]  
@@ -347,6 +349,7 @@ include::modules/azure.asciidoc[]
 include::modules/beat.asciidoc[]
 include::modules/benchmark.asciidoc[]
 include::modules/ceph.asciidoc[]
+include::modules/citrix_cms.asciidoc[]
 include::modules/cloudfoundry.asciidoc[]
 include::modules/cockroachdb.asciidoc[]
 include::modules/consul.asciidoc[]

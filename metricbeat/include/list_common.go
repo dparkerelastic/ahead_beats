@@ -42,6 +42,8 @@ import (
 	_ "github.com/elastic/beats/v7/metricbeat/module/ceph/osd_df"
 	_ "github.com/elastic/beats/v7/metricbeat/module/ceph/osd_tree"
 	_ "github.com/elastic/beats/v7/metricbeat/module/ceph/pool_disk"
+	_ "github.com/elastic/beats/v7/metricbeat/module/citrix_cms"
+	_ "github.com/elastic/beats/v7/metricbeat/module/citrix_cms/health"
 	_ "github.com/elastic/beats/v7/metricbeat/module/consul"
 	_ "github.com/elastic/beats/v7/metricbeat/module/consul/agent"
 	_ "github.com/elastic/beats/v7/metricbeat/module/couchbase"

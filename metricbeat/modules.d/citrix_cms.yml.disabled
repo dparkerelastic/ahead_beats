@@ -1,0 +1,13 @@
+# Module: citrix_cms
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-citrix_cms.html
+
+- module: citrix_cms
+  metricsets: ["health"]
+  enabled: true
+  period: 60s
+  #period: 30s
+  hosts: ["https://api-us.cloud.com"]
+  customer_id: "my_customer_id"
+  client_id: "my_client_id"
+  client_secret: "my_client_secret" 
+  
