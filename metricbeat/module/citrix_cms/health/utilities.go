@@ -24,6 +24,68 @@ import (
 // 	return base64.StdEncoding.EncodeToString([]byte(auth))
 // }
 
+func isEmpty(value interface{}) bool {
+	// we make use of the fact that all the dashboard API responses utilize
+	// pointers for non-string types to filter out empty values from metric events.
+
+	if value == nil {
+		return true
+	}
+
+	t := reflect.TypeOf(value)
+
+	if t.Kind() == reflect.Ptr {
+		return reflect.ValueOf(value).IsNil()
+	}
+
+	if t.Kind() == reflect.Slice || t.Kind() == reflect.String {
+		return reflect.ValueOf(value).Len() == 0
+	}
+
+	return false
+}
+
+func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T) (any, string, error) {
+
+	responseData, err := GetInstanceData(m, hostInfo, url)
+
+	if err != nil {
+		fmt.Println("Error fetching instance data:", err)
+		return jsonInfo, "", err
+	}
+
+	if strings.Contains(string(responseData), "Invalid bearer token") {
+		fmt.Println("Invalid bearer token detected, fetching a new token...")
+		newToken, tokenErr := m.fetchAuthToken()
+		if tokenErr != nil {
+			return jsonInfo, "", fmt.Errorf("failed to fetch new auth token: %w", tokenErr)
+		}
+		m.authToken = newToken
+		fmt.Println("New Auth Token: ", m.authToken)
+
+		// Retry fetching instance data with the new token
+		responseData, err = GetInstanceData(m, hostInfo, url)
+		if err != nil {
+			fmt.Println("Error fetching instance data after refreshing token:", err)
+			return jsonInfo, "", fmt.Errorf("failed to fetch instance data after refreshing token: %w", err)
+		}
+	}
+
+	err = json.Unmarshal(responseData, &jsonInfo)
+	if err != nil {
+		fmt.Println("Error unmarshalling JSON response:", err)
+		fmt.Println("responseData:", string(responseData))
+		// Close the response body to avoid resource leaks
+		if strings.Contains(string(responseData), "Invalid bearer token") {
+			m.authToken = ""
+		}
+		return jsonInfo, "", err
+	}
+
+	return jsonInfo, string(responseData), nil
+
+}
+
 func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, error) {
 
 	// tr := &http.Transport{
@@ -78,6 +140,7 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 		}
 	}
 	defer response.Body.Close()
+
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
@@ -86,6 +149,139 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 
 	return responseData, nil
 
+}
+
+func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug bool) {
+	metrics := []mapstr.M{}
+
+	for _, metricData := range data.machineCurrentLoadIndex.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.machine.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.serverOSDesktopSummaries.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.server.os.desktop.summary.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.loadIndexSummaries.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.load.index.summary.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineMetric.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.machine.metric.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineDetails.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.machine.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	// #TODO FIX THIS no org id
+	reportMetricsForCitrixCMS(reporter, baseURL, metrics)
 }
 
 func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics ...[]mapstr.M) {
@@ -112,79 +308,6 @@ func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics .
 			reporter.Event(event)
 		}
 	}
-}
-
-func isEmpty(value interface{}) bool {
-	// we make use of the fact that all the dashboard API responses utilize
-	// pointers for non-string types to filter out empty values from metric events.
-
-	if value == nil {
-		return true
-	}
-
-	t := reflect.TypeOf(value)
-
-	if t.Kind() == reflect.Ptr {
-		return reflect.ValueOf(value).IsNil()
-	}
-
-	if t.Kind() == reflect.Slice || t.Kind() == reflect.String {
-		return reflect.ValueOf(value).Len() == 0
-	}
-
-	return false
-}
-
-func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T) (any, string, error) {
-	responseData, err := GetInstanceData(m, hostInfo, url)
-
-	if err != nil {
-		fmt.Println("Error fetching instance data:", err)
-		return jsonInfo, "", err
-	}
-
-	err = json.Unmarshal(responseData, &jsonInfo)
-	if err != nil {
-		fmt.Println("Error unmarshalling JSON response:", err)
-		fmt.Println("responseData:", string(responseData))
-		// Close the response body to avoid resource leaks
-		return jsonInfo, "", err
-	}
-
-	return jsonInfo, string(responseData), nil
-
-}
-
-func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug bool) {
-	metrics := []mapstr.M{}
-
-	for _, machineLoadData := range data.machineCurrentLoadIndex.Value {
-		metric := mapstr.M{}
-		//metric["health.machine.id"] = machineLoadData.ID
-		v := reflect.ValueOf(machineLoadData)
-		t := reflect.TypeOf(machineLoadData)
-
-		for i := 0; i < t.NumField(); i++ {
-			field := t.Field(i)
-			fieldValue := v.Field(i)
-
-			if !isEmpty(fieldValue.Interface()) {
-				metricKey := fmt.Sprintf("health.machine.%s", field.Name)
-				metric[metricKey] = fieldValue.Interface()
-			}
-		}
-		// Add the message field if debug is enabled
-		// This is useful for debugging purposes to see the message returned by the API
-		// when the machine load index is fetched
-		// if debug {
-		// 	metric["health.message"] = data.system.Message
-		// }
-
-		metrics = append(metrics, metric)
-	}
-
-	// #TODO FIX THIS no org id
-	reportMetricsForCitrixCMS(reporter, baseURL, metrics)
 }
 
 func (m *MetricSet) fetchAuthToken() (string, error) {

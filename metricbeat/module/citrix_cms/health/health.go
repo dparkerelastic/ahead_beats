@@ -102,28 +102,68 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	var metricData CMSData
 
-	machineCurrentLoadIndexData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineLoadIndex_API, metricData.machineCurrentLoadIndex)
+	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API, metricData.serverOSDesktopSummaries)
 	if err != nil {
-		m.logger.Warnf("GetSystemMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics failed; %v", err)
 		fmt.Println("##############################")
 		b, _ := json.MarshalIndent(message, "", "  ")
 		fmt.Print(string(b))
 
 	} else {
-		metricData.machineCurrentLoadIndex = machineCurrentLoadIndexData.(MachinesResponse_JSON)
-		//metricData.machineCurrentLoadIndex.Message = message
-		metricData.machineCurrentLoadIndex.Message = "DansSuccess"
+		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
+		metricData.serverOSDesktopSummaries.Message = message
+	}
 
-		//pprint(metricData.machineCurrentLoadIndex)
-		//fmt.Println("\n\n##############################")
-		//fmt.Printf("\n\nSystem Response: %+v", metricData.machineCurrentLoadIndex)
+	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API, metricData.loadIndexSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-		// fmt.Println("\n\n##############################")
-		// fmt.Printf("\n\nSystem Response: %+v", machineCurrentLoadIndexData)
+	} else {
+		metricData.loadIndexSummaries = LoadIndexSummariesData.(LoadIndexSummaries_JSON)
+		metricData.loadIndexSummaries.Message = message
+	}
 
-		// fmt.Println("\n\n##############################")
-		// b, _ := json.MarshalIndent(metricData.machineCurrentLoadIndex, "", "  ")
-		// fmt.Print(string(b))
+	MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API, metricData.machineMetric)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		//metricData.machineMetric = MachineMetricData.(Machines_JSON)
+		metricData.machineMetric = MachineMetricData.(MachineMetric_JSON)
+		metricData.machineMetric.Message = message
+	}
+
+	MachineCurrentLoadIndexData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineLoadIndex_API, metricData.machineCurrentLoadIndex)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineCurrentLoadIndex = MachineCurrentLoadIndexData.(MachineCurrentLoadIndex_JSON)
+		metricData.machineCurrentLoadIndex.Message = message
+	}
+
+	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineDetails_API, metricData.machineDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
+		metricData.machineDetails.Message = message
+		fmt.Println("Context: ", metricData.machineDetails.OdataContext)
+		fmt.Println("Counter: ", metricData.machineDetails.OdataCount)
+		//fmt.Println("Message: ", metricData.machineDetails.Message)
 
 	}
 
