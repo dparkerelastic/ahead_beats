@@ -142,6 +142,8 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-module-haproxy,HAProxy>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .2+| .2+|  |<<metricbeat-metricset-haproxy-info,info>>   
 |<<metricbeat-metricset-haproxy-stat,stat>>   
+|<<metricbeat-module-horizon,horizon>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.1+| .1+|  |<<metricbeat-metricset-horizon-health,health>> beta[]  
 |<<metricbeat-module-http,HTTP>>     |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .2+| .2+|  |<<metricbeat-metricset-http-json,json>>   
 |<<metricbeat-metricset-http-server,server>>   
@@ -370,6 +372,7 @@ include::modules/gcp.asciidoc[]
 include::modules/golang.asciidoc[]
 include::modules/graphite.asciidoc[]
 include::modules/haproxy.asciidoc[]
+include::modules/horizon.asciidoc[]
 include::modules/http.asciidoc[]
 include::modules/ibmmq.asciidoc[]
 include::modules/iis.asciidoc[]

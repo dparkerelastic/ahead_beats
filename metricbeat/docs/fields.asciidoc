@@ -46,6 +46,7 @@ grouped in the following categories:
 * <<exported-fields-golang>>
 * <<exported-fields-graphite>>
 * <<exported-fields-haproxy>>
+* <<exported-fields-horizon>>
 * <<exported-fields-host-processor>>
 * <<exported-fields-http>>
 * <<exported-fields-ibmmq>>
@@ -40639,6 +40640,36 @@ Address of the source.
 
 
 type: text
+
+--
+
+[[exported-fields-horizon]]
+== horizon fields
+
+horizon module
+
+
+
+[float]
+=== horizon
+
+
+
+
+[float]
+=== health
+
+health
+
+
+
+*`horizon.health.example`*::
++
+--
+Example field
+
+
+type: keyword
 
 --
 

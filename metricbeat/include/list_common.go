@@ -80,6 +80,8 @@ import (
 	_ "github.com/elastic/beats/v7/metricbeat/module/haproxy"
 	_ "github.com/elastic/beats/v7/metricbeat/module/haproxy/info"
 	_ "github.com/elastic/beats/v7/metricbeat/module/haproxy/stat"
+	_ "github.com/elastic/beats/v7/metricbeat/module/horizon"
+	_ "github.com/elastic/beats/v7/metricbeat/module/horizon/health"
 	_ "github.com/elastic/beats/v7/metricbeat/module/http"
 	_ "github.com/elastic/beats/v7/metricbeat/module/http/json"
 	_ "github.com/elastic/beats/v7/metricbeat/module/http/server"

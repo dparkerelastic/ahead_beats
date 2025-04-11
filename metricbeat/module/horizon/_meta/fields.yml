@@ -1,0 +1,10 @@
+- key: horizon
+  title: "horizon"
+  release: beta
+  description: >
+    horizon module
+  fields:
+    - name: horizon
+      type: group
+      description: >
+      fields:
