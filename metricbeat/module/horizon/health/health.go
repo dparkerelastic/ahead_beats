@@ -32,7 +32,7 @@ func init() {
 		"Sessions":          {Name: "Sessions", Endpoint: "rest/inventory/v1/sessions", Fn: getSessions},
 		"Gateways":          {Name: "Gateways", Endpoint: "est/monitor/gateways", Fn: getGateways},
 		"VirtualCenters":    {Name: "VirtualCenters", Endpoint: "rest/config/v1/virtual-centers", Fn: getVirtualCenters},
-		"Machines":          {Name: "Machines", Endpoint: "drest/inventory/v1/machines", Fn: getMachines},
+		"Machines":          {Name: "Machines", Endpoint: "rest/inventory/v1/machines", Fn: getMachines},
 	}
 
 	mb.Registry.MustAddMetricSet("horizon", "health", New)
@@ -52,9 +52,9 @@ func getEndpoint(name string) (Endpoint, error) {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	config    *horizon.Config
-	logger    *logp.Logger
-	ecsClient *HorizonRestClient
+	config        *horizon.Config
+	logger        *logp.Logger
+	horizonClient *HorizonRestClient
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -86,7 +86,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		BaseMetricSet: base,
 		config:        config,
 		logger:        logger,
-		ecsClient:     ecsClient,
+		horizonClient: ecsClient,
 	}, nil
 }
 

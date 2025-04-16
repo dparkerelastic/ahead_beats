@@ -89,13 +89,13 @@ func GetHostInfo(input string) (HostInfo, error) {
 	return hostInfo, nil
 }
 
-func convertToSnakeCase(s string) string {
-	var result []rune
-	for i, r := range s {
-		if i > 0 && r >= 'A' && r <= 'Z' {
-			result = append(result, '_')
-		}
-		result = append(result, r)
-	}
-	return strings.ToLower(string(result))
-}
+// func convertToSnakeCase(s string) string {
+// 	var result []rune
+// 	for i, r := range s {
+// 		if i > 0 && r >= 'A' && r <= 'Z' {
+// 			result = append(result, '_')
+// 		}
+// 		result = append(result, r)
+// 	}
+// 	return strings.ToLower(string(result))
+// }

@@ -19,6 +19,7 @@ package health
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -53,8 +54,8 @@ func GetClient(config *horizon.Config, base mb.BaseMetricSet) (*HorizonRestClien
 		baseUrl: fmt.Sprintf("https://%s:%d/", config.Host, config.Port),
 		client:  &http.Client{Transport: tr},
 		headers: map[string]string{
-			"X-SDS-AUTH-TOKEN": apiToken,
-			"Content-Type":     "application/json",
+			"Authorizaion": "Bearer " + apiToken,
+			"Content-Type": "application/json",
 		},
 	}
 
@@ -75,7 +76,24 @@ func login(config *horizon.Config) (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		return resp.Header.Get("X-SDS-AUTH-TOKEN"), nil
+		var result map[string]interface{}
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return "", fmt.Errorf("failed to parse login response: %v", err)
+		}
+
+		accessToken, ok := result["access_token"].(string)
+		if !ok {
+			return "", fmt.Errorf("access_token not found in login response")
+		}
+
+		// For now we will just login in the Fetch method, so we don't need to refresh the token
+		// (token expires after 10 minutes)
+		// refreshToken, ok := result["refresh_token"].(string)
+		// if !ok {
+		// 	return "", fmt.Errorf("refresh_token not found in login response")
+		// }
+
+		return accessToken, nil
 	} else {
 		return "", fmt.Errorf("failed to login: %d", resp.StatusCode)
 	}

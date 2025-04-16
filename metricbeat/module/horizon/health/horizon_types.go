@@ -14,7 +14,7 @@ type ConnectionServer struct {
 	Services              []Service         `json:"services"`
 	CSReplications        []CSReplication   `json:"cs_replications"`
 	Details               Details           `json:"details"`
-	SessionProtocolData   []SessionProtocol `json:"session_protocol_data"`
+	SessionProtocols      []SessionProtocol `json:"session_protocol_data"`
 }
 
 // Certificate represents the certificate details.
@@ -44,8 +44,8 @@ type Details struct {
 
 // SessionProtocol represents session protocol data.
 type SessionProtocol struct {
-	SessionProtocol string `json:"session_protocol"`
-	SessionCount    int    `json:"session_count"`
+	Protocol     string `json:"session_protocol"`
+	SessionCount int    `json:"session_count"`
 }
 
 // Endpoint: /rest/inventory/v1/desktop-pools
