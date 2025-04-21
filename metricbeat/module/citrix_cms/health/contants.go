@@ -1,15 +1,20 @@
 package health
 
-// const MachineDetails_API = "/monitorodata/Machines?%24expand=CurrentLoadIndex%2CCatalog%2CHypervisor%2CMachineCost%2CLoadIndex%2CResourceUtilization%2CMachineFailures%2CMachineMetric%2CMachineMetricSummary%2CMachineHotFixLogs&%24count=true&%24top=1"
-// const MachineDetails_API = "/monitorodata/Machines?%24expand=CurrentLoadIndex%2CCatalog%2CHypervisor%2CMachineCost%2CLoadIndex%2CResourceUtilization%2CMachineFailures%2CMachineMetric%2CMachineMetricSummary%2CMachineHotFixLogs&%24count=true"
-const MachineDetails_API = "/monitorodata/Machines?$expand=CurrentLoadIndex,Catalog,Hypervisor,MachineCost,LoadIndex,ResourceUtilization,MachineFailures,MachineMetric,MachineMetricSummary,MachineHotFixLogs&$count=true&$top=1000"
+const Count_API = "$count=true"
 
-// const MachineDetails_API = "/monitorodata/Machines?$count=true&top=1000"
-const MachineLoadIndex_API = "/monitorodata/Machines?$expand=CurrentLoadIndex"
 const ServerOSDesktopSummaries_API = "/monitorodata/ServerOSDesktopSummaries"
+const LoadIndexSummaries_API = "/monitorodata/LoadIndexSummaries"
+const LoadIndexSummaries_API_PATH = "$filter=Granularity eq 60 and CreatedDate gt 2024-01-01T00:00:00.000Z&$top=1000&$count=true"
+const MachineMetric_API = "/monitorodata/MachineMetric"
+const SessionActivitySummaries_API = "/monitorodata/SessionActivitySummaries"
+const SessionActivitySummaries_API_PATH = "$apply=filter(SummaryDate gt 2025-02-01T00:00:00Z)/groupby((DesktopGroupId),aggregate(ConnectedSessionCount with average as AverageConnectedSessionCount,DisconnectedSessionCount with average as AverageDisconnectedSessionCount,ConcurrentSessionCount with average as AverageConcurrentSessionCount,TotalLogOnDuration with average as AverageTotalLogOnDuration,TotalLogOnCount with sum as SumTotalLogOnCount))&$count=true&$top=1000"
 
-// const ServerOSDesktopSummaries_API = "/monitorodata/ServerOSDesktopSummaries?$filter=SummaryDate eq datetime'2023-10-01T00:00:00Z' and SummaryDate lt datetime'2023-10-02T00:00:00Z'&$orderby=SummaryDate desc&$top=1&$format=json"
-const LoadIndexSummaries_API = "/monitorodata/LoadIndexSummaries?%24filter=Granularity%20eq%2060%20and%20CreatedDate%20gt%202024-01-01T00%3A00%3A00.000Z&%24top=1000&%24count=true"
-const MachineMetric_API = "/monitorodata/MachineMetric?%24count=true"
+// These are the details API endpoints for the metrics
+const LogonMetric_Details_API = "/monitorodata/LogOnMetrics"
+const LogonMetric_Details_API_PATH = "$expand=Session($expand=CurrentConnection),Session($expand=Machine),Session($expand=User),Session($expand=SessionMetricsLatest)&$count=true&%$top=1000"
 
-//const MachineLoadIndex_API_V2 = "/monitorodata/Machines?$expand=CurrentLoadIndex&$filter=CurrentLoadIndex/EffectiveLoadIndex ne 0"
+const MachineMetric_Details_API = "/monitorodata/MachineMetric"
+const MachineMetric_Details_API_PATH = "$expand=Machine($expand=CurrentLoadIndex),Machine($expand=Catalog),Machine($expand=DesktopGroup),Machine($expand=Hypervisor),Machine($expand=MachineCost)&$count=true&%$top=1000"
+
+const SessionMetrics_Details_API = "/monitorodata/SessionMetrics"
+const SessionMetrics_Details_API_PATH = "$expand=Session($expand=Failure),Session($expand=CurrentConnection),Session($expand=User),Session($expand=Machine),Session($expand=SessionMetricsLatest)&$count=true&%$top=1000"

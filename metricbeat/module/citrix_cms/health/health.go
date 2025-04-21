@@ -3,6 +3,7 @@ package health
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
@@ -27,14 +28,6 @@ type config struct {
 	ClientSecret string        `config:"client_secret"`
 }
 
-// func defaultConfig() *config {
-// 	return &config{
-// 		//Hosts:     []string{"localhost"},
-// 		DebugMode: false,
-// 		//Period:    time.Second * 10,
-// 	}
-// }
-
 // MetricSet holds any configuration or state information. It must implement
 // the mb.MetricSet interface. And this is best achieved by embedding
 // mb.BaseMetricSet because it implements all of the required mb.MetricSet
@@ -50,11 +43,6 @@ type MetricSet struct {
 	clientSecret string
 	authToken    string
 }
-
-// type MetricSet struct {
-// 	mb.BaseMetricSet
-// 	counter int
-// }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
 // any MetricSet specific configuration options if there are any.
@@ -93,16 +81,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	hostInfo.clientId = m.clientId
 	hostInfo.clientSecret = m.clientSecret
 
-	// Uncomment the following lines to debug the connection info
-	// fmt.Println("Host Info: ", hostInfo)
-	// fmt.Println("hostinfo.baseurl: ", hostInfo.baseurl)
-	// fmt.Println("hostinfo.customerId: ", hostInfo.customerId)
-	// fmt.Println("hostinfo.clientId: ", hostInfo.clientId)
-	// fmt.Println("hostinfo.clientSecret: ", hostInfo.clientSecret)
-
 	var metricData CMSData
 
-	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API, metricData.serverOSDesktopSummaries)
+	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
 		fmt.Println("##############################")
@@ -113,8 +94,8 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
 		metricData.serverOSDesktopSummaries.Message = message
 	}
-
-	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API, metricData.loadIndexSummaries)
+	// ##### Harvested via Machine Details API
+	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH), metricData.loadIndexSummaries)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
 		fmt.Println("##############################")
@@ -126,50 +107,63 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.loadIndexSummaries.Message = message
 	}
 
-	MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API, metricData.machineMetric)
+	MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API+"?"+url.PathEscape(Count_API), metricData.machineMetric)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
 		b, _ := json.MarshalIndent(message, "", "  ")
 		fmt.Print(string(b))
 
 	} else {
-		//metricData.machineMetric = MachineMetricData.(Machines_JSON)
 		metricData.machineMetric = MachineMetricData.(MachineMetric_JSON)
 		metricData.machineMetric.Message = message
 	}
 
-	MachineCurrentLoadIndexData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineLoadIndex_API, metricData.machineCurrentLoadIndex)
+	SessionActivitySummaries_Agg1_Data, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_API+"?"+url.PathEscape(SessionActivitySummaries_API_PATH), metricData.sessionActivitySummaries_Agg1)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
 		b, _ := json.MarshalIndent(message, "", "  ")
 		fmt.Print(string(b))
 
 	} else {
-		metricData.machineCurrentLoadIndex = MachineCurrentLoadIndexData.(MachineCurrentLoadIndex_JSON)
-		metricData.machineCurrentLoadIndex.Message = message
+		metricData.sessionActivitySummaries_Agg1 = SessionActivitySummaries_Agg1_Data.(SessionActivitySummaries_Agg1_JSON)
+		metricData.sessionActivitySummaries_Agg1.Message = message
 	}
 
-	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineDetails_API, metricData.machineDetails)
+	LogonMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LogonMetric_Details_API+"?"+url.PathEscape(LogonMetric_Details_API_PATH), metricData.logonMetricDetails)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
 		b, _ := json.MarshalIndent(message, "", "  ")
 		fmt.Print(string(b))
 
 	} else {
-		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
-		metricData.machineDetails.Message = message
-		fmt.Println("Context: ", metricData.machineDetails.OdataContext)
-		fmt.Println("Counter: ", metricData.machineDetails.OdataCount)
-		//fmt.Println("Message: ", metricData.machineDetails.Message)
+		metricData.logonMetricDetails = LogonMetricDetailsData.(LogonMetricsDetails_JSON)
+		metricData.logonMetricDetails.Message = message
+	}
 
+	MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH), metricData.machineMetricDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
+		metricData.machineMetricDetails.Message = message
+	}
+
+	SessionMetricsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionMetrics_Details_API+"?"+url.PathEscape(SessionMetrics_Details_API_PATH), metricData.sessionMetricsDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.sessionMetricsDetails = SessionMetricsDetailsData.(SessionMetricsDetails_JSON)
+		metricData.sessionMetricsDetails.Message = message
 	}
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
 
-	fmt.Println("##############################")
 	fmt.Println("Timestamp fetchMachineData at:", time.Now().Format(time.RFC3339))
 
 	return nil

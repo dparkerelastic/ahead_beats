@@ -71,26 +71,26 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 		}
 	}
 
-	err = json.Unmarshal(responseData, &jsonInfo)
+	output, err := ExcludeNullValues(responseData)
+	if err != nil {
+		fmt.Println("Error excluding null values:", err)
+		return jsonInfo, "", err
+	}
+
+	err = json.Unmarshal(output, &jsonInfo)
 	if err != nil {
 		fmt.Println("Error unmarshalling JSON response:", err)
-		fmt.Println("responseData:", string(responseData))
-		// Close the response body to avoid resource leaks
 		if strings.Contains(string(responseData), "Invalid bearer token") {
 			m.authToken = ""
 		}
 		return jsonInfo, "", err
 	}
 
-	return jsonInfo, string(responseData), nil
+	return jsonInfo, string(output), nil
 
 }
 
 func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, error) {
-
-	// tr := &http.Transport{
-	// 	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	// }
 
 	if m.authToken == "" {
 		fmt.Println("Auth Token is empty, fetching a new token...")
@@ -108,15 +108,11 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 	req.Header.Set("Citrix-CustomerId", hostInfo.customerId)
 	req.Header.Set("Authorization", fmt.Sprintf("CWSAuth bearer=%s", m.authToken))
 
-	// cookieJar, _ := cookiejar.New(&cookiejar.Options{PublicSuffixList: nil})
 	client := &http.Client{
 		Timeout: 90 * time.Second,
 	}
 
-	// client.Jar = cookieJar
-	// Execute the HTTP request
 	response, err := client.Do(req)
-	// Close the response body to avoid resource leaks
 	if err != nil {
 		fmt.Println("Error executing HTTP request:", err)
 		if strings.Contains(err.Error(), "401") {
@@ -156,7 +152,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.machineCurrentLoadIndex.Value {
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -214,7 +210,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			field := t.Field(i)
 			fieldValue := v.Field(i)
 
-			if !isEmpty(fieldValue.Interface()) {
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 				metricKey := fmt.Sprintf("health.load.index.summary.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 			}
@@ -255,7 +251,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 		metrics = append(metrics, metric)
 	}
 
-	for _, metricData := range data.machineDetails.Value {
+	for _, metricData := range data.sessionActivitySummaries_Agg1.Value {
 		metric := mapstr.M{}
 		//metric["health.machine.id"] = metricData.ID
 		v := reflect.ValueOf(metricData)
@@ -266,7 +262,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			fieldValue := v.Field(i)
 
 			if !isEmpty(fieldValue.Interface()) {
-				metricKey := fmt.Sprintf("health.machine.details.%s", field.Name)
+				metricKey := fmt.Sprintf("health.session.activity.summaries.aggregate.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 			}
 		}
@@ -280,7 +276,81 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 		metrics = append(metrics, metric)
 	}
 
-	// #TODO FIX THIS no org id
+	for _, metricData := range data.logonMetricDetails.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.logon.metric.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineMetricDetails.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.machine.metric.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.sessionMetricsDetails.Value {
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.session.metric.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
 	reportMetricsForCitrixCMS(reporter, baseURL, metrics)
 }
 
@@ -368,4 +438,43 @@ func (m *MetricSet) fetchAuthToken() (string, error) {
 	}
 
 	return token, nil
+}
+
+func ExcludeNullValues(input []byte) ([]byte, error) {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(input, &raw); err != nil {
+		return nil, err
+	}
+
+	filtered := filterNullValues(raw)
+	return json.Marshal(filtered)
+}
+
+func filterNullValues(data interface{}) interface{} {
+	switch v := data.(type) {
+	case map[string]interface{}:
+		result := make(map[string]interface{})
+		for key, value := range v {
+			if value != nil {
+				filteredValue := filterNullValues(value)
+				if filteredValue != nil {
+					result[key] = filteredValue
+				}
+			}
+		}
+		return result
+	case []interface{}:
+		var result []interface{}
+		for _, value := range v {
+			if value != nil {
+				filteredValue := filterNullValues(value)
+				if filteredValue != nil {
+					result = append(result, filteredValue)
+				}
+			}
+		}
+		return result
+	default:
+		return data
+	}
 }
