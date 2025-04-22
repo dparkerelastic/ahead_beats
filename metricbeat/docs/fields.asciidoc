@@ -40649,57 +40649,795 @@ type: text
 horizon module
 
 
-
 [float]
 === horizon
 
 Horizon module fields.
 
 
-
 [float]
 === connection_server
 
-Connection server details.
+Horizon connection server information
 
+
+*`horizon.connection_server.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.connection_server.status`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.connection_server.connection_count`*::
++
+--
+type: long
+
+--
+
+*`horizon.connection_server.tunnel_connection_count`*::
++
+--
+type: long
+
+--
+
+*`horizon.connection_server.default_certificate`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== certificate
+
+Certificate info
+
+
+*`horizon.connection_server.certificate.valid`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.connection_server.certificate.valid_from`*::
++
+--
+type: date
+
+--
+
+*`horizon.connection_server.certificate.valid_to`*::
++
+--
+type: date
+
+--
+
+[float]
+=== details
+
+Details about the connection server
+
+
+*`horizon.connection_server.details.version`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.connection_server.details.build`*::
++
+--
+type: keyword
+
+--
 
 [float]
 === desktop_pool
 
-Desktop pool details.
+Horizon desktop pool information
 
+
+*`horizon.desktop_pool.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.display_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.description`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.source`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.enabled`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== settings
+
+Settings for the pool
+
+
+*`horizon.desktop_pool.settings.delete_in_progress`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.enable_client_restrictions`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.allow_multiple_sessions_per_user`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.session_type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.cloud_managed`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.cloud_assigned`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== session_settings
+
+Session settings
+
+
+*`horizon.desktop_pool.settings.session_settings.power_policy`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.disconnected_session_timeout_policy`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.disconnected_session_timeout_minutes`*::
++
+--
+type: integer
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.allow_users_to_reset_machines`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.allow_multiple_sessions_per_user`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.delete_or_refresh_machine_after_logoff`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.session_settings.refresh_os_disk_after_logoff`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== display_protocol_settings
+
+Protocol settings
+
+
+*`horizon.desktop_pool.settings.display_protocol_settings.display_protocols`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.default_display_protocol`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.allow_users_to_choose_protocol`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.html_access_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.session_collaboration_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.renderer3d`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.grid_vgpus_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.max_number_of_monitors`*::
++
+--
+type: integer
+
+--
+
+*`horizon.desktop_pool.settings.display_protocol_settings.max_resolution_of_any_one_monitor`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== installed_application
+
+Application installed in a desktop pool
+
+
+*`horizon.desktop_pool.installed_application.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.installed_application.version`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.installed_application.publisher`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.installed_application.executable_path`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.desktop_pool.installed_application.file_types`*::
++
+--
+type: flattened
+
+--
 
 [float]
 === session
 
-Session details.
+Horizon session information
 
+
+*`horizon.session.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.user_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.broker_user_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.access_group_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.machine_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.desktop_pool_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.agent_version`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== client_data
+
+Client data
+
+
+*`horizon.session.client_data.location_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.client_data.type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.client_data.address`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.client_data.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.client_data.version`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== security_gateway_data
+
+Gateway info
+
+
+*`horizon.session.security_gateway_data.domain_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.security_gateway_data.address`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.security_gateway_data.location`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.session_type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.session_protocol`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.session_state`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.session.start_time`*::
++
+--
+type: date
+
+--
+
+*`horizon.session.disconnected_time`*::
++
+--
+type: date
+
+--
+
+*`horizon.session.last_session_duration`*::
++
+--
+type: long
+
+--
+
+*`horizon.session.resourced_remotely`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.session.unauthenticated`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.session.idle_duration`*::
++
+--
+type: long
+
+--
 
 [float]
 === gateway
 
-Gateway details.
+Horizon gateway info
 
+
+*`horizon.gateway.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.gateway.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.gateway.status`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.gateway.active_connection_count`*::
++
+--
+type: long
+
+--
+
+*`horizon.gateway.pcoip_connection_count`*::
++
+--
+type: long
+
+--
+
+*`horizon.gateway.blast_connection_count`*::
++
+--
+type: long
+
+--
+
+[float]
+=== details
+
+Gateway details
+
+
+*`horizon.gateway.details.type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.gateway.details.address`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.gateway.details.internal`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.gateway.details.version`*::
++
+--
+type: keyword
+
+--
 
 [float]
 === virtual_center
 
-Virtual Center details.
+vCenter information
 
+
+*`horizon.virtual_center.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.version`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.description`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.instance_uuid`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.server_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.port`*::
++
+--
+type: integer
+
+--
+
+*`horizon.virtual_center.use_ssl`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.virtual_center.user_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.se_sparse_reclamation_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.virtual_center.enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.virtual_center.vmc_deployment`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== limits
+
+Resource limits
+
+
+*`horizon.virtual_center.limits.provisioning_limit`*::
++
+--
+type: integer
+
+--
+
+*`horizon.virtual_center.limits.power_operations_limit`*::
++
+--
+type: integer
+
+--
+
+*`horizon.virtual_center.limits.instant_clone_engine_provisioning_limit`*::
++
+--
+type: integer
+
+--
+
+[float]
+=== storage_accelerator_data
+
+Storage cache
+
+
+*`horizon.virtual_center.storage_accelerator_data.enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.virtual_center.storage_accelerator_data.default_cache_size_mb`*::
++
+--
+type: integer
+
+--
+
+[float]
+=== certificate_override
+
+Certificate override
+
+
+*`horizon.virtual_center.certificate_override.certificate`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.virtual_center.certificate_override.type`*::
++
+--
+type: keyword
+
+--
 
 [float]
 === machine
 
-Machine details.
-
+Machine info
 
 
 *`horizon.machine.id`*::
 +
 --
-Unique identifier for the machine.
-
-
 type: keyword
 
 --
@@ -40707,9 +41445,6 @@ type: keyword
 *`horizon.machine.name`*::
 +
 --
-Name of the machine.
-
-
 type: keyword
 
 --
@@ -40717,9 +41452,6 @@ type: keyword
 *`horizon.machine.dns_name`*::
 +
 --
-DNS name of the machine.
-
-
 type: keyword
 
 --
@@ -40727,9 +41459,6 @@ type: keyword
 *`horizon.machine.desktop_pool_id`*::
 +
 --
-Identifier of the desktop pool the machine belongs to.
-
-
 type: keyword
 
 --
@@ -40737,9 +41466,6 @@ type: keyword
 *`horizon.machine.state`*::
 +
 --
-State of the machine.
-
-
 type: keyword
 
 --
@@ -40747,9 +41473,6 @@ type: keyword
 *`horizon.machine.type`*::
 +
 --
-Type of the machine.
-
-
 type: keyword
 
 --
@@ -40757,9 +41480,6 @@ type: keyword
 *`horizon.machine.operating_system`*::
 +
 --
-Operating system of the machine.
-
-
 type: keyword
 
 --
@@ -40767,9 +41487,6 @@ type: keyword
 *`horizon.machine.operating_system_architecture`*::
 +
 --
-Architecture of the operating system.
-
-
 type: keyword
 
 --
@@ -40777,9 +41494,6 @@ type: keyword
 *`horizon.machine.agent_version`*::
 +
 --
-Version of the agent installed on the machine.
-
-
 type: keyword
 
 --
@@ -40787,29 +41501,20 @@ type: keyword
 *`horizon.machine.agent_build_number`*::
 +
 --
-Build number of the agent installed on the machine.
-
-
-type: long
+type: keyword
 
 --
 
 *`horizon.machine.remote_experience_agent_build_number`*::
 +
 --
-Build number of the remote experience agent.
-
-
-type: long
+type: keyword
 
 --
 
 *`horizon.machine.message_security_mode`*::
 +
 --
-Message security mode of the machine.
-
-
 type: keyword
 
 --
@@ -40817,9 +41522,6 @@ type: keyword
 *`horizon.machine.message_security_enhanced_mode_supported`*::
 +
 --
-Indicates if message security enhanced mode is supported.
-
-
 type: boolean
 
 --
@@ -40827,9 +41529,6 @@ type: boolean
 *`horizon.machine.pairing_state`*::
 +
 --
-Pairing state of the machine.
-
-
 type: keyword
 
 --
@@ -40837,9 +41536,6 @@ type: keyword
 *`horizon.machine.configured_by_connection_server`*::
 +
 --
-Connection server that configured the machine.
-
-
 type: keyword
 
 --
@@ -40847,26 +41543,19 @@ type: keyword
 *`horizon.machine.user_ids`*::
 +
 --
-List of user IDs associated with the machine.
-
-
-type: array
+type: keyword
 
 --
 
 [float]
 === managed_machine_data
 
-Managed machine data details.
-
+Managed machine data info
 
 
 *`horizon.machine.managed_machine_data.virtual_center_id`*::
 +
 --
-Identifier of the virtual center.
-
-
 type: keyword
 
 --
@@ -40874,9 +41563,6 @@ type: keyword
 *`horizon.machine.managed_machine_data.host_name`*::
 +
 --
-Host name of the managed machine.
-
-
 type: keyword
 
 --
@@ -40884,9 +41570,6 @@ type: keyword
 *`horizon.machine.managed_machine_data.path`*::
 +
 --
-Path of the managed machine.
-
-
 type: keyword
 
 --
@@ -40894,9 +41577,6 @@ type: keyword
 *`horizon.machine.managed_machine_data.virtual_machine_power_state`*::
 +
 --
-Power state of the virtual machine.
-
-
 type: keyword
 
 --
@@ -40904,9 +41584,6 @@ type: keyword
 *`horizon.machine.managed_machine_data.storage_accelerator_state`*::
 +
 --
-State of the storage accelerator.
-
-
 type: keyword
 
 --
@@ -40914,19 +41591,13 @@ type: keyword
 *`horizon.machine.managed_machine_data.memory_mb`*::
 +
 --
-Memory size in MB of the managed machine.
-
-
-type: long
+type: integer
 
 --
 
 *`horizon.machine.managed_machine_data.missing_in_vcenter`*::
 +
 --
-Indicates if the machine is missing in vCenter.
-
-
 type: boolean
 
 --
@@ -40934,9 +41605,6 @@ type: boolean
 *`horizon.machine.managed_machine_data.in_hold_customization`*::
 +
 --
-Indicates if the machine is in hold customization state.
-
-
 type: boolean
 
 --
@@ -40944,9 +41612,6 @@ type: boolean
 *`horizon.machine.managed_machine_data.create_time`*::
 +
 --
-Creation time of the managed machine.
-
-
 type: date
 
 --
@@ -40954,9 +41619,6 @@ type: date
 *`horizon.machine.managed_machine_data.in_maintenance_mode`*::
 +
 --
-Indicates if the machine is in maintenance mode.
-
-
 type: boolean
 
 --
@@ -40968,7 +41630,7 @@ health
 
 
 
-*`horizon.health.example`*::
+*`horizon.machine.managed_machine_data.health.example`*::
 +
 --
 Example field
