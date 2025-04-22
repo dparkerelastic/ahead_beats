@@ -76,8 +76,10 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 		fmt.Println("Error excluding null values:", err)
 		return jsonInfo, "", err
 	}
-
 	err = json.Unmarshal(output, &jsonInfo)
+
+	//err = json.Unmarshal(responseData, &jsonInfo)
+
 	if err != nil {
 		fmt.Println("Error unmarshalling JSON response:", err)
 		if strings.Contains(string(responseData), "Invalid bearer token") {
@@ -87,6 +89,7 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 	}
 
 	return jsonInfo, string(output), nil
+	//return jsonInfo, string(responseData), nil
 
 }
 
@@ -276,30 +279,30 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 		metrics = append(metrics, metric)
 	}
 
-	for _, metricData := range data.logonMetricDetails.Value {
-		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
-		v := reflect.ValueOf(metricData)
-		t := reflect.TypeOf(metricData)
+	// for _, metricData := range data.logonMetricDetails.Value {
+	// 	metric := mapstr.M{}
+	// 	//metric["health.machine.id"] = metricData.ID
+	// 	v := reflect.ValueOf(metricData)
+	// 	t := reflect.TypeOf(metricData)
 
-		for i := 0; i < t.NumField(); i++ {
-			field := t.Field(i)
-			fieldValue := v.Field(i)
+	// 	for i := 0; i < t.NumField(); i++ {
+	// 		field := t.Field(i)
+	// 		fieldValue := v.Field(i)
 
-			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
-				metricKey := fmt.Sprintf("health.logon.metric.details.%s", field.Name)
-				metric[metricKey] = fieldValue.Interface()
-			}
-		}
-		// Add the message field if debug is enabled
-		// This is useful for debugging purposes to see the message returned by the API
-		// when the machine load index is fetched
-		// if debug {
-		// 	metric["health.message"] = data.system.Message
-		// }
+	// 		if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+	// 			metricKey := fmt.Sprintf("health.logon.metric.details.%s", field.Name)
+	// 			metric[metricKey] = fieldValue.Interface()
+	// 		}
+	// 	}
+	// 	// Add the message field if debug is enabled
+	// 	// This is useful for debugging purposes to see the message returned by the API
+	// 	// when the machine load index is fetched
+	// 	// if debug {
+	// 	// 	metric["health.message"] = data.system.Message
+	// 	// }
 
-		metrics = append(metrics, metric)
-	}
+	// 	metrics = append(metrics, metric)
+	// }
 
 	for _, metricData := range data.machineMetricDetails.Value {
 		metric := mapstr.M{}
@@ -326,7 +329,32 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 		metrics = append(metrics, metric)
 	}
 
-	for _, metricData := range data.sessionMetricsDetails.Value {
+	// for _, metricData := range data.sessionMetricsDetails.Value {
+	// 	metric := mapstr.M{}
+	// 	//metric["health.machine.id"] = metricData.ID
+	// 	v := reflect.ValueOf(metricData)
+	// 	t := reflect.TypeOf(metricData)
+
+	// 	for i := 0; i < t.NumField(); i++ {
+	// 		field := t.Field(i)
+	// 		fieldValue := v.Field(i)
+
+	// 		if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+	// 			metricKey := fmt.Sprintf("health.session.metric.details.%s", field.Name)
+	// 			metric[metricKey] = fieldValue.Interface()
+	// 		}
+	// 	}
+	// 	// Add the message field if debug is enabled
+	// 	// This is useful for debugging purposes to see the message returned by the API
+	// 	// when the machine load index is fetched
+	// 	// if debug {
+	// 	// 	metric["health.message"] = data.system.Message
+	// 	// }
+
+	// 	metrics = append(metrics, metric)
+	// }
+
+	for _, metricData := range data.sessionDetails.Value {
 		metric := mapstr.M{}
 		//metric["health.machine.id"] = metricData.ID
 		v := reflect.ValueOf(metricData)
@@ -337,8 +365,56 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			fieldValue := v.Field(i)
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
-				metricKey := fmt.Sprintf("health.session.metric.details.%s", field.Name)
-				metric[metricKey] = fieldValue.Interface()
+
+				fmt.Println("Field Name:", field.Name)
+				if field.Name == "SessionMetrics" {
+					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
+						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
+						metricKey := fmt.Sprintf("health.session.details.%s.last", field.Name)
+						metric[metricKey] = lastValue
+					}
+				} else {
+					metricKey := fmt.Sprintf("health.session.details.%s", field.Name)
+					metric[metricKey] = fieldValue.Interface()
+				}
+			}
+		}
+		// Add the message field if debug is enabled
+		// This is useful for debugging purposes to see the message returned by the API
+		// when the machine load index is fetched
+		// if debug {
+		// 	metric["health.message"] = data.system.Message
+		// }
+
+		metrics = append(metrics, metric)
+	}
+
+	fmt.Println("Failures Timestamp:", time.Now().Format(time.RFC3339))
+
+	for _, metricData := range data.sessionFailureDetails.Value {
+		fmt.Println("Failures Timestamp:", time.Now().Format(time.RFC3339))
+		metric := mapstr.M{}
+		//metric["health.machine.id"] = metricData.ID
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				fmt.Println("Field Name:", field.Name)
+				if field.Name == "SessionMetrics" {
+					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
+						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
+						metricKey := fmt.Sprintf("health.session.failure.details.%s.last", field.Name)
+						metric[metricKey] = lastValue
+					}
+				} else {
+					metricKey := fmt.Sprintf("health.session.failure.details.%s", field.Name)
+					metric[metricKey] = fieldValue.Interface()
+				}
 			}
 		}
 		// Add the message field if debug is enabled
