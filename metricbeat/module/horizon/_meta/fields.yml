@@ -7,4 +7,149 @@
     - name: horizon
       type: group
       description: >
+        Horizon module fields.
       fields:
+        - name: connection_server
+          type: group
+          description: >
+            Connection server details.
+          fields:
+            # (existing fields remain unchanged)
+        - name: desktop_pool
+          type: group
+          description: >
+            Desktop pool details.
+          fields:
+            # (existing fields remain unchanged)
+        - name: session
+          type: group
+          description: >
+            Session details.
+          fields:
+            # (existing fields remain unchanged)
+        - name: gateway
+          type: group
+          description: >
+            Gateway details.
+          fields:
+            # (existing fields remain unchanged)
+        - name: virtual_center
+          type: group
+          description: >
+            Virtual Center details.
+          fields:
+            # (existing fields remain unchanged)
+        - name: machine
+          type: group
+          description: >
+            Machine details.
+          fields:
+            - name: id
+              type: keyword
+              description: >
+                Unique identifier for the machine.
+            - name: name
+              type: keyword
+              description: >
+                Name of the machine.
+            - name: dns_name
+              type: keyword
+              description: >
+                DNS name of the machine.
+            - name: desktop_pool_id
+              type: keyword
+              description: >
+                Identifier of the desktop pool the machine belongs to.
+            - name: state
+              type: keyword
+              description: >
+                State of the machine.
+            - name: type
+              type: keyword
+              description: >
+                Type of the machine.
+            - name: operating_system
+              type: keyword
+              description: >
+                Operating system of the machine.
+            - name: operating_system_architecture
+              type: keyword
+              description: >
+                Architecture of the operating system.
+            - name: agent_version
+              type: keyword
+              description: >
+                Version of the agent installed on the machine.
+            - name: agent_build_number
+              type: long
+              description: >
+                Build number of the agent installed on the machine.
+            - name: remote_experience_agent_build_number
+              type: long
+              description: >
+                Build number of the remote experience agent.
+            - name: message_security_mode
+              type: keyword
+              description: >
+                Message security mode of the machine.
+            - name: message_security_enhanced_mode_supported
+              type: boolean
+              description: >
+                Indicates if message security enhanced mode is supported.
+            - name: pairing_state
+              type: keyword
+              description: >
+                Pairing state of the machine.
+            - name: configured_by_connection_server
+              type: keyword
+              description: >
+                Connection server that configured the machine.
+            - name: user_ids
+              type: array
+              description: >
+                List of user IDs associated with the machine.
+            - name: managed_machine_data
+              type: group
+              description: >
+                Managed machine data details.
+              fields:
+                - name: virtual_center_id
+                  type: keyword
+                  description: >
+                    Identifier of the virtual center.
+                - name: host_name
+                  type: keyword
+                  description: >
+                    Host name of the managed machine.
+                - name: path
+                  type: keyword
+                  description: >
+                    Path of the managed machine.
+                - name: virtual_machine_power_state
+                  type: keyword
+                  description: >
+                    Power state of the virtual machine.
+                - name: storage_accelerator_state
+                  type: keyword
+                  description: >
+                    State of the storage accelerator.
+                - name: memory_mb
+                  type: long
+                  description: >
+                    Memory size in MB of the managed machine.
+                - name: missing_in_vcenter
+                  type: boolean
+                  description: >
+                    Indicates if the machine is missing in vCenter.
+                - name: in_hold_customization
+                  type: boolean
+                  description: >
+                    Indicates if the machine is in hold customization state.
+                - name: create_time
+                  type: date
+                  description: >
+                    Creation time of the managed machine.
+                - name: in_maintenance_mode
+                  type: boolean
+                  description: >
+                    Indicates if the machine is in maintenance mode.

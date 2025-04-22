@@ -30,7 +30,7 @@ func init() {
 		"ConnectionServers": {Name: "ConnectionServers", Endpoint: "rest/monitor/connection-servers", Fn: getConnectionServers},
 		"DesktopPools":      {Name: "DesktopPools", Endpoint: "rest/inventory/v1/desktop-pools", Fn: getDesktopPools},
 		"Sessions":          {Name: "Sessions", Endpoint: "rest/inventory/v1/sessions", Fn: getSessions},
-		"Gateways":          {Name: "Gateways", Endpoint: "est/monitor/gateways", Fn: getGateways},
+		"Gateways":          {Name: "Gateways", Endpoint: "rest/monitor/gateways", Fn: getGateways},
 		"VirtualCenters":    {Name: "VirtualCenters", Endpoint: "rest/config/v1/virtual-centers", Fn: getVirtualCenters},
 		"Machines":          {Name: "Machines", Endpoint: "rest/inventory/v1/machines", Fn: getMachines},
 	}
@@ -77,11 +77,6 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-	if err != nil {
-		logger.Errorf("unable to retrieve node list: %v", err)
-		return nil, err
-	}
-
 	return &MetricSet{
 		BaseMetricSet: base,
 		config:        config,
@@ -97,6 +92,12 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	// accumulate errs and report them all at the end so that we don't
 	// stop processing events if one of the fetches fails
 	var errs []error
+
+	err := m.horizonClient.login()
+	if err != nil {
+		m.logger.Errorf("failed to login: %v", err)
+		return err
+	}
 
 	for _, endpoint := range endpoints {
 		m.logger.Debugf("Calling endpoint %s ....", endpoint.Name)

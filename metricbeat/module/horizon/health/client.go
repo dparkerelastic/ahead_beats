@@ -18,6 +18,7 @@
 package health
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -44,58 +45,61 @@ func disableSSLVerification() *http.Transport {
 func GetClient(config *horizon.Config, base mb.BaseMetricSet) (*HorizonRestClient, error) {
 	tr := disableSSLVerification()
 
-	apiToken, err := login(config)
-	if err != nil {
-		return nil, err
-	}
-
 	client := HorizonRestClient{
 		config:  config,
-		baseUrl: fmt.Sprintf("https://%s:%d/", config.Host, config.Port),
+		baseUrl: fmt.Sprintf("http://%s:%d/", config.Host, config.Port),
 		client:  &http.Client{Transport: tr},
 		headers: map[string]string{
-			"Authorizaion": "Bearer " + apiToken,
 			"Content-Type": "application/json",
 		},
 	}
 
 	return &client, nil
 }
+func (c *HorizonRestClient) login() error {
+	apiToken, err := login(c.config)
+	if err != nil {
+		return err
+	}
+
+	// Update the Authorization header with the new token
+	c.headers["Authorization"] = "Bearer " + apiToken
+	return nil
+}
 
 func login(config *horizon.Config) (string, error) {
-	url := fmt.Sprintf("https://%s:%d/login.json", config.Host, config.Port)
-	client := &http.Client{Transport: disableSSLVerification()}
-
-	req, _ := http.NewRequest("GET", url, nil)
-	req.SetBasicAuth(config.Username, config.Password)
-
-	resp, err := client.Do(req)
+	url := fmt.Sprintf("http://%s:%d/rest/login", config.Host, config.Port)
+	payload, err := buildLoginBody(config)
 	if err != nil {
-		return "", fmt.Errorf("failed to login: %v", err)
+		return "", fmt.Errorf("failed to build login body: %v", err)
 	}
-	defer resp.Body.Close()
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
 
-	if resp.StatusCode == 200 {
-		var result map[string]interface{}
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	response, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to call login URL: %v", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode == 200 {
+		body, err := io.ReadAll(response.Body)
+		if err != nil {
+			return "", err
+		}
+		var login LoginToken
+		if err := json.Unmarshal([]byte(body), &login); err != nil {
 			return "", fmt.Errorf("failed to parse login response: %v", err)
 		}
 
-		accessToken, ok := result["access_token"].(string)
-		if !ok {
-			return "", fmt.Errorf("access_token not found in login response")
-		}
+		// FIXME: might need to use the refresh token if doing login in Fetch does not work for some reason
 
-		// For now we will just login in the Fetch method, so we don't need to refresh the token
-		// (token expires after 10 minutes)
-		// refreshToken, ok := result["refresh_token"].(string)
-		// if !ok {
-		// 	return "", fmt.Errorf("refresh_token not found in login response")
-		// }
-
-		return accessToken, nil
+		return login.AccessToken, nil
 	} else {
-		return "", fmt.Errorf("failed to login: %d", resp.StatusCode)
+		return "", fmt.Errorf("failed to login: %d", response.StatusCode)
 	}
 
 }
@@ -115,10 +119,52 @@ func (c *HorizonRestClient) Get(endpoint string) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	// Check if the HTTP status code indicates an error
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body) // Read the body for additional error details
+		return "", fmt.Errorf("server error: %s (status code: %d)", string(body), resp.StatusCode)
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
 	return string(body), nil
 
+}
+
+func buildLoginBody(config *horizon.Config) ([]byte, error) {
+	payload := map[string]string{
+		"domain":   "AD-TEST-DOMAIN",
+		"username": "Administrator",
+		"password": config.Password,
+	}
+	return json.Marshal(payload)
+}
+
+func (c *HorizonRestClient) Post(endpoint string, body interface{}) (string, error) {
+	payloadBytes, err := json.Marshal(body)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request body: %v", err)
+	}
+
+	req, err := http.NewRequest(http.MethodPost, c.baseUrl+endpoint, io.NopCloser(bytes.NewReader(payloadBytes)))
+	if err != nil {
+		return "", err
+	}
+	for key, value := range c.headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(respBody), nil
 }

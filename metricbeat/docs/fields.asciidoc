@@ -40653,8 +40653,313 @@ horizon module
 [float]
 === horizon
 
+Horizon module fields.
 
 
+
+[float]
+=== connection_server
+
+Connection server details.
+
+
+[float]
+=== desktop_pool
+
+Desktop pool details.
+
+
+[float]
+=== session
+
+Session details.
+
+
+[float]
+=== gateway
+
+Gateway details.
+
+
+[float]
+=== virtual_center
+
+Virtual Center details.
+
+
+[float]
+=== machine
+
+Machine details.
+
+
+
+*`horizon.machine.id`*::
++
+--
+Unique identifier for the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.name`*::
++
+--
+Name of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.dns_name`*::
++
+--
+DNS name of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.desktop_pool_id`*::
++
+--
+Identifier of the desktop pool the machine belongs to.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.state`*::
++
+--
+State of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.type`*::
++
+--
+Type of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.operating_system`*::
++
+--
+Operating system of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.operating_system_architecture`*::
++
+--
+Architecture of the operating system.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.agent_version`*::
++
+--
+Version of the agent installed on the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.agent_build_number`*::
++
+--
+Build number of the agent installed on the machine.
+
+
+type: long
+
+--
+
+*`horizon.machine.remote_experience_agent_build_number`*::
++
+--
+Build number of the remote experience agent.
+
+
+type: long
+
+--
+
+*`horizon.machine.message_security_mode`*::
++
+--
+Message security mode of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.message_security_enhanced_mode_supported`*::
++
+--
+Indicates if message security enhanced mode is supported.
+
+
+type: boolean
+
+--
+
+*`horizon.machine.pairing_state`*::
++
+--
+Pairing state of the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.configured_by_connection_server`*::
++
+--
+Connection server that configured the machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.user_ids`*::
++
+--
+List of user IDs associated with the machine.
+
+
+type: array
+
+--
+
+[float]
+=== managed_machine_data
+
+Managed machine data details.
+
+
+
+*`horizon.machine.managed_machine_data.virtual_center_id`*::
++
+--
+Identifier of the virtual center.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.managed_machine_data.host_name`*::
++
+--
+Host name of the managed machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.managed_machine_data.path`*::
++
+--
+Path of the managed machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.managed_machine_data.virtual_machine_power_state`*::
++
+--
+Power state of the virtual machine.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.managed_machine_data.storage_accelerator_state`*::
++
+--
+State of the storage accelerator.
+
+
+type: keyword
+
+--
+
+*`horizon.machine.managed_machine_data.memory_mb`*::
++
+--
+Memory size in MB of the managed machine.
+
+
+type: long
+
+--
+
+*`horizon.machine.managed_machine_data.missing_in_vcenter`*::
++
+--
+Indicates if the machine is missing in vCenter.
+
+
+type: boolean
+
+--
+
+*`horizon.machine.managed_machine_data.in_hold_customization`*::
++
+--
+Indicates if the machine is in hold customization state.
+
+
+type: boolean
+
+--
+
+*`horizon.machine.managed_machine_data.create_time`*::
++
+--
+Creation time of the managed machine.
+
+
+type: date
+
+--
+
+*`horizon.machine.managed_machine_data.in_maintenance_mode`*::
++
+--
+Indicates if the machine is in maintenance mode.
+
+
+type: boolean
+
+--
 
 [float]
 === health

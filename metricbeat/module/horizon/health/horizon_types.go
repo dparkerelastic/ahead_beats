@@ -1,7 +1,5 @@
 package health
 
-import "time"
-
 // Endpoint: /rest/monitor/connection-servers
 type ConnectionServer struct {
 	ID                    string            `json:"id"`
@@ -19,9 +17,9 @@ type ConnectionServer struct {
 
 // Certificate represents the certificate details.
 type Certificate struct {
-	Valid     bool      `json:"valid"`
-	ValidFrom time.Time `json:"valid_from"`
-	ValidTo   time.Time `json:"valid_to"`
+	Valid     bool  `json:"valid"`
+	ValidFrom int64 `json:"valid_from"`
+	ValidTo   int64 `json:"valid_to"`
 }
 
 // Service represents a service running on the connection server.
@@ -253,4 +251,10 @@ type VirtualDisk struct {
 	Path          string `json:"path"`
 	DatastorePath string `json:"datastore_path"`
 	CapacityMB    int    `json:"capacity_mb"`
+}
+
+// Token represents the structure of an access and refresh token.
+type LoginToken struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }

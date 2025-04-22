@@ -478,6 +478,7 @@ require (
 	cloud.google.com/go/storage v1.49.0
 	github.com/PaloAltoNetworks/pango v0.10.2
 	github.com/dlclark/regexp2 v1.4.0 // indirect
+	github.com/elastic/beats v7.6.2+incompatible
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/gosnmp/gosnmp v1.38.0
 	github.com/moby/term v0.5.0 // indirect

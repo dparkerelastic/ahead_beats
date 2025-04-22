@@ -33,8 +33,10 @@ const (
 type Config struct {
 	Host      string `config:"host" validate:"required"`
 	Username  string `config:"username" validate:"required"`
+	Domain    string `config:"domain" validate:"required"`
 	Password  string `config:"password" validate:"required"`
-	Port      uint   `config:"port" default:"4443"`
+	Port      uint   `config:"port" default:"443"`
+	Protocol  string `config:"protocol" default:"https"`
 	DebugMode string `config:"api_debug_mode"`
 	HostInfo  HostInfo
 }

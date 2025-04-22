@@ -138,7 +138,7 @@ func getDesktopPools(m *MetricSet) ([]mb.Event, error) {
 		// Get installed applications for the pool
 		installedAppEvents, err := getInstalledAppEvents(pool, m)
 		if err != nil {
-			return nil, fmt.Errorf("failed to get installed applications: %w", err)
+			m.Logger().Warnf("failed to get installed applications for pool %s: %v", pool.ID, err)
 		}
 
 		// If we had no installed application events, create a single event for the pool
