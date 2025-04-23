@@ -83,86 +83,62 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	var metricData CMSData
 
-	// ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	fmt.Println("##############################")
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
+	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-	// } else {
-	// 	metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
-	// 	metricData.serverOSDesktopSummaries.Message = message
-	// }
-	// // ##### Harvested via Machine Details API
-	// LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH), metricData.loadIndexSummaries)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	fmt.Println("##############################")
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
+	} else {
+		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
+		metricData.serverOSDesktopSummaries.Message = message
+	}
+	// ##### Harvested via Machine Details API
+	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH), metricData.loadIndexSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-	// } else {
-	// 	metricData.loadIndexSummaries = LoadIndexSummariesData.(LoadIndexSummaries_JSON)
-	// 	metricData.loadIndexSummaries.Message = message
-	// }
+	} else {
+		metricData.loadIndexSummaries = LoadIndexSummariesData.(LoadIndexSummaries_JSON)
+		metricData.loadIndexSummaries.Message = message
+	}
 
-	// MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API+"?"+url.PathEscape(Count_API), metricData.machineMetric)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
+	MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API+"?"+url.PathEscape(Count_API), metricData.machineMetric)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-	// } else {
-	// 	metricData.machineMetric = MachineMetricData.(MachineMetric_JSON)
-	// 	metricData.machineMetric.Message = message
-	// }
+	} else {
+		metricData.machineMetric = MachineMetricData.(MachineMetric_JSON)
+		metricData.machineMetric.Message = message
+	}
 
-	// SessionActivitySummaries_Agg1_Data, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_API+"?"+url.PathEscape(SessionActivitySummaries_API_PATH), metricData.sessionActivitySummaries_Agg1)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
+	SessionActivitySummaries_Agg1_Data, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_API+"?"+url.PathEscape(SessionActivitySummaries_API_PATH), metricData.sessionActivitySummaries_Agg1)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-	// } else {
-	// 	metricData.sessionActivitySummaries_Agg1 = SessionActivitySummaries_Agg1_Data.(SessionActivitySummaries_Agg1_JSON)
-	// 	metricData.sessionActivitySummaries_Agg1.Message = message
-	// }
+	} else {
+		metricData.sessionActivitySummaries_Agg1 = SessionActivitySummaries_Agg1_Data.(SessionActivitySummaries_Agg1_JSON)
+		metricData.sessionActivitySummaries_Agg1.Message = message
+	}
 
-	// MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH), metricData.machineMetricDetails)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
+	MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH), metricData.machineMetricDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
 
-	// } else {
-	// 	metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
-	// 	metricData.machineMetricDetails.Message = message
-	// }
-
-	// LogonMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LogonMetric_Details_API+"?"+url.PathEscape(LogonMetric_Details_API_PATH), metricData.logonMetricDetails)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
-
-	// } else {
-	// 	metricData.logonMetricDetails = LogonMetricDetailsData.(LogonMetricsDetails_JSON)
-	// 	metricData.logonMetricDetails.Message = message
-	// }
-
-	//SessionMetricsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionMetrics_Details_API+"?"+url.PathEscape("$filter=CollectedDate  gt "+time.Now().UTC().Add(-10*time.Minute).Format("2006-01-02T15:04:05Z")+"&$count=true&%$top=1000"), metricData.sessionMetricsDetails)
-	// SessionMetricsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionMetrics_Details_API+"?"+url.PathEscape(SessionMetrics_Details_API_PATH), metricData.sessionMetricsDetails)
-
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
-
-	// } else {
-	// 	metricData.sessionMetricsDetails = SessionMetricsDetailsData.(SessionMetricsDetails_JSON)
-	// 	metricData.sessionMetricsDetails.Message = message
-	// }
+	} else {
+		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
+		metricData.machineMetricDetails.Message = message
+	}
 
 	SessionsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsActive_Details_API_PATH), metricData.sessionDetails)
 	if err != nil {
@@ -186,6 +162,96 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.sessionFailureDetails.Message = message
 	}
 
+	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Machines_Details_API+"?"+url.PathEscape(Machines_Details_API_PATH), metricData.machineDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
+		metricData.machineDetails.Message = message
+	}
+
+	ResourceUtilizationSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilizationSummary_API+"?"+url.PathEscape(ResourceUtilizationSummary_API_PATH()), metricData.resourceUtilizationSummary)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.resourceUtilizationSummary = ResourceUtilizationSummaryData.(ResourceUtilizationSummary_JSON)
+		metricData.resourceUtilizationSummary.Message = message
+		RemoveResourceUtilizationSummaryDuplicatesByMachineID(&metricData.resourceUtilizationSummary)
+	}
+
+	ResourceUtilizationData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilization_API+"?"+url.PathEscape(ResourceUtilization_API_PATH()), metricData.resourceUtilization)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.resourceUtilization = ResourceUtilizationData.(ResourceUtilization_JSON)
+		metricData.resourceUtilization.Message = message
+		RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
+	}
+
+	LogOnSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LogOnSummaries_API+"?"+url.PathEscape(LogOnSummaries_API_PATH()), metricData.logOnSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.logOnSummaries = LogOnSummariesData.(LogOnSummaries_JSON)
+		metricData.logOnSummaries.Message = message
+		RemoveLogOnSummariesDuplicatesByDesktopGroupID(&metricData.logOnSummaries)
+		//RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
+	}
+
+	MachineSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineSummaries_API+"?"+url.PathEscape(MachineSummaries_API_PATH()), metricData.machineSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.machineSummaries = MachineSummariesData.(MachineSummaries_JSON)
+		metricData.machineSummaries.Message = message
+		RemoveMachineSummariesDuplicatesByDesktopGroupID(&metricData.machineSummaries)
+
+	}
+
+	MachineMetricSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetricSummary_API+"?"+url.PathEscape(MachineMetricSummary_API_PATH()), metricData.machineMetricSummary)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.machineMetricSummary = MachineMetricSummaryData.(MachineMetricSummary_JSON)
+		metricData.machineMetricSummary.Message = message
+		RemoveMachineMetricSummaryDuplicatesByMachineID(&metricData.machineMetricSummary)
+	}
+
+	SessionActivitySummariesDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_details_API+"?"+url.PathEscape(SessionActivitySummaries_details_API_PATH()), metricData.sessionActivitySummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.sessionActivitySummaries = SessionActivitySummariesDetailsData.(SessionActivitySummaries_JSON)
+		metricData.sessionActivitySummaries.Message = message
+		RemoveSessionActivitySummariesDuplicatesByDesktopGroupID(&metricData.sessionActivitySummaries)
+	}
+
 	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
 
 	fmt.Println("Timestamp fetchMachineData at:", time.Now().Format(time.RFC3339))
@@ -204,3 +270,5 @@ type Connection struct {
 	clientSecret string
 	authToken    string
 }
+
+//DesktopGroupID

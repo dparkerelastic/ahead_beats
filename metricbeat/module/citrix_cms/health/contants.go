@@ -21,9 +21,9 @@ const MachineMetric_Details_API_PATH = "$expand=Machine($expand=CurrentLoadIndex
 const SessionMetrics_Details_API = "/monitorodata/SessionMetrics"
 
 // SessionMetrics_Details_API_PATH is dynamically generated in a function
-var SessionMetrics_Details_API_PATH = func() string {
+func SessionMetrics_Details_API_PATH() string {
 	return "$filter=CollectedDate gt " + time.Now().UTC().Add(-10*time.Minute).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
-}()
+}
 
 //const SessionMetrics_Details_API_PATH = "$expand=Session($expand=Failure),Session($expand=CurrentConnection),Session($expand=User),Session($expand=Machine),Session($expand=SessionMetricsLatest)&$count=true&%$top=1000"
 //const SessionMetrics_Details_API_PATH = "$filter=Session/EndDate eq null&$count=true&%$top=1000"
@@ -48,3 +48,59 @@ var SessionsFailure_Details_API_PATH = "$expand=Failure,CurrentConnection,Curren
 //const SessionsActive_Details_API_PATH = "$expand=Failure,CurrentConnection,CurrentConnection($expand=ConnectionFailureLog),User,Machine,Machine($expand=CurrentLoadIndex,Catalog,DesktopGroup,Hypervisor,MachineCost),SessionMetricsLatest&$filter=EndDate eq null&$count=true&%$top=1000"
 
 //const SessionsActive_Details_API_PATH = "$count=true&%$top=1000"
+
+const Machines_Details_API = "/monitorodata/Machines"
+
+// const SessionsActive_Details_API_PATH = "$filter=EndDate eq null&$expand=Session($expand=Failure)&$count=true&%$top=1000"
+// const Machines_Details_API_PATH = "$expand=CurrentLoadIndex,Catalog,DesktopGroup,Hypervisor,MachineCost,LoadIndex,ResourceUtilization,ProcessUtilization,MachineMetric,MachoneHotfixLogs&$filter=LifecycleState eq 0&$count=true&%$top=1000"
+const Machines_Details_API_PATH = "$expand=Catalog,DesktopGroup,Hypervisor,MachineCost&$filter=LifecycleState eq 0&$count=true&%$top=1000"
+
+const ResourceUtilizationSummary_API = "/monitorodata/ResourceUtilizationSummary"
+
+func ResourceUtilizationSummary_API_PATH() string {
+	return "$filter=SummaryDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+}
+
+const ResourceUtilization_API = "/monitorodata/ResourceUtilization"
+
+func ResourceUtilization_API_PATH() string {
+	return "$filter=CollectedDate gt " + time.Now().UTC().Add(-10*time.Minute).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+}
+
+const LogOnSummaries_API = "/monitorodata/LogOnSummaries"
+
+func LogOnSummaries_API_PATH() string {
+	return "$filter=Granularity eq 1440 and SummaryDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$filter=Granularity eq 1440 and SummaryDate gt " + time.Now().UTC().Add(-720*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$count=true&%$top=1000"
+}
+
+const MachineSummaries_API = "/monitorodata/MachineSummaries"
+
+func MachineSummaries_API_PATH() string {
+	return "$filter=SummaryDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$filter=Granularity eq 1440 and SummaryDate gt " + time.Now().UTC().Add(-720*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$count=true&%$top=1000"
+}
+
+const MachineMetricSummary_API = "/monitorodata/MachineMetricSummary"
+
+func MachineMetricSummary_API_PATH() string {
+	return "$filter=SummaryDate gt " + time.Now().UTC().Add(-48*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$filter=Granularity eq 1440 and SummaryDate gt " + time.Now().UTC().Add(-720*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$count=true&%$top=1000"
+}
+
+const SessionActivitySummaries_details_API = "/monitorodata/MachineSummaries"
+
+func SessionActivitySummaries_details_API_PATH() string {
+	return "$filter=SummaryDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$filter=Granularity eq 1440 and SummaryDate gt " + time.Now().UTC().Add(-720*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+	//return "$count=true&%$top=1000"
+}
+
+// var ResourceUtilizationSummary_API_PATH = func() string {
+// 	// This API path filters session metrics collected in the last 10 minutes
+// 	// to reduce the amount of data returned and improve performance.
+// 	return "$filter=SummaryDate gt " + time.Now().UTC().Add(-10*time.Minute).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
+// }()
