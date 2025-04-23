@@ -459,15 +459,13 @@ func getMachines(m *MetricSet) ([]mb.Event, error) {
 		if len(machine.ManagedMachineData.VirtualDisks) > 0 {
 			for _, disk := range machine.ManagedMachineData.VirtualDisks {
 				diskFields := mapstr.M{
-					"disk": mapstr.M{
-						"path":           disk.Path,
-						"datastore_path": disk.DatastorePath,
-						"capacity_mb":    disk.CapacityMB,
-					},
+					"path":           disk.Path,
+					"datastore_path": disk.DatastorePath,
+					"capacity_mb":    disk.CapacityMB,
 				}
 				machineFields := createMachineFields(machine)
 				managedData := createManagedMachineDataFields(machine.ManagedMachineData)
-				managedData["virtual_disks"] = diskFields
+				managedData["virtual_disk"] = diskFields
 				machineFields["managed_machine_data"] = managedData
 
 				event := mb.Event{
@@ -516,17 +514,17 @@ func createMachineFields(machine Machine) mapstr.M {
 
 func createManagedMachineDataFields(data ManagedMachineData) mapstr.M {
 	return mapstr.M{
-		"managed_machine_data": mapstr.M{
-			"virtual_center_id":           data.VirtualCenterID,
-			"host_name":                   data.HostName,
-			"path":                        data.Path,
-			"virtual_machine_power_state": data.VirtualMachinePowerState,
-			"storage_accelerator_state":   data.StorageAcceleratorState,
-			"memory_mb":                   data.MemoryMB,
-			"missing_in_vcenter":          data.MissingInVCenter,
-			"in_hold_customization":       data.InHoldCustomization,
-			"create_time":                 data.CreateTime,
-			"in_maintenance_mode":         data.InMaintenanceMode,
-		},
+
+		"virtual_center_id":           data.VirtualCenterID,
+		"host_name":                   data.HostName,
+		"path":                        data.Path,
+		"virtual_machine_power_state": data.VirtualMachinePowerState,
+		"storage_accelerator_state":   data.StorageAcceleratorState,
+		"memory_mb":                   data.MemoryMB,
+		"missing_in_vcenter":          data.MissingInVCenter,
+		"in_hold_customization":       data.InHoldCustomization,
+		"create_time":                 data.CreateTime,
+		"in_maintenance_mode":         data.InMaintenanceMode,
 	}
+
 }

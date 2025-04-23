@@ -595,6 +595,7 @@ metricbeat.modules:
     - state_persistentvolume
     - state_persistentvolumeclaim
     - state_storageclass
+    # - state_horizontalpodautoscaler
     # Uncomment this to get k8s events:
     #- event  period: 10s
   hosts: ["kube-state-metrics:8080"]
@@ -1106,6 +1107,34 @@ metricbeat.modules:
   metricsets: ["service"]
   enabled: true
   period: 60s
+
+- module: windows
+  metricsets: ["wmi"]
+  period: 10m
+  wmi:
+    # Do not include the query string in the output
+    include_queries: false
+    # Exclude properties with null values from the output
+    include_null_properties: false
+    # Exclude properties with empty string values from the output
+    include_empty_string_properties: false
+    # Maximum time to wait for a query result before logging a warning (defaults to period)
+    warning_threshold: 10m
+    # Default WMI namespace for all queries (if not specified per query)
+    # Uncomment to override the default, which is "root\\cimv2".
+    # namespace: "root\\cimv2"
+    queries:
+    - class: Win32_OperatingSystem          # FROM: Class to fetch
+      properties:                           # SELECT: Fields to retrieve for this WMI class. Omit the setting to fetch all properties
+       - FreePhysicalMemory
+       - FreeSpaceInPagingFiles
+       - FreeVirtualMemory
+       - LocalDateTime
+       - NumberOfUsers
+      where: ""                             # Optional WHERE clause to filter query results
+      # Override the WMI namespace for this specific query (optional).
+      # If set, this takes precedence over the default namespace above.
+      # namespace: "root\\cimv2" # Overrides the metric
 
 #------------------------------ ZooKeeper Module ------------------------------
 - module: zookeeper
@@ -2513,7 +2542,7 @@ logging.files:
   #path: /var/log/metricbeat
 
   # The name of the files where the logs are written to.
-  #name: metricbeat-event-data
+  #name: metricbeat-events-data
 
   # Configure log file size limit. If the limit is reached, log file will be
   # automatically rotated.

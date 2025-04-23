@@ -31,12 +31,13 @@ import (
 	"github.com/gofrs/uuid/v5"
 
 	"github.com/elastic/beats/v7/filebeat/channel"
+	"github.com/elastic/beats/v7/filebeat/fileset"
 	"github.com/elastic/beats/v7/filebeat/harvester"
 	"github.com/elastic/beats/v7/filebeat/input"
 	"github.com/elastic/beats/v7/filebeat/input/file"
 	"github.com/elastic/beats/v7/libbeat/beat"
 	"github.com/elastic/beats/v7/libbeat/common"
-	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
+	"github.com/elastic/beats/v7/libbeat/common/fleetmode"
 	"github.com/elastic/beats/v7/libbeat/management/status"
 	conf "github.com/elastic/elastic-agent-libs/config"
 	"github.com/elastic/elastic-agent-libs/logp"
@@ -44,8 +45,9 @@ import (
 )
 
 const (
-	recursiveGlobDepth = 8
-	harvesterErrMsg    = "Harvester could not be started on new file: %s, Err: %s"
+	recursiveGlobDepth      = 8
+	harvesterErrMsg         = "Harvester could not be started on new file: %s, Err: %s"
+	allowDeprecatedUseField = "allow_deprecated_use"
 )
 
 var (
@@ -55,7 +57,7 @@ var (
 
 	errHarvesterLimit = errors.New("harvester limit reached")
 
-	deprecatedNotificationOnce sync.Once
+	errDeprecated = errors.New("Log input is deprecated. Use Filestream input instead. Follow our migration guide https://www.elastic.co/guide/en/beats/filebeat/current/migrate-to-filestream.html")
 )
 
 func init() {
@@ -82,21 +84,30 @@ type Input struct {
 	getStatusReporter   input.GetStatusReporter
 }
 
+// AllowDeprecatedUse returns true if the configuration allows using the deprecated log input
+func AllowDeprecatedUse(cfg *conf.C) bool {
+	allow, _ := cfg.Bool(allowDeprecatedUseField, -1)
+	return allow || fleetmode.Enabled() || fileset.CheckIfModuleInput(cfg)
+}
+
 // NewInput instantiates a new Log
 func NewInput(
 	cfg *conf.C,
 	outlet channel.Connector,
 	context input.Context,
+	logger *logp.Logger,
 ) (input.Input, error) {
-	deprecatedNotificationOnce.Do(func() {
-		cfgwarn.Deprecate("", "Log input. Use Filestream input instead.")
-	})
+	// we still allow the deprecated log input running under integrations and
+	// modules until they are all migrated to filestream
+	if !AllowDeprecatedUse(cfg) {
+		return nil, fmt.Errorf("Found log input configuration: %w\n%s", errDeprecated, conf.DebugString(cfg, true)) //nolint:staticcheck //Keep old behavior
+	}
 
 	cleanupNeeded := true
 	cleanupIfNeeded := func(f func() error) {
 		if cleanupNeeded {
 			if err := f(); err != nil {
-				logp.L().Named("input.log").Errorf("clean up function returned an error: %w", err)
+				logger.Named("input.log").Errorf("clean up function returned an error: %w", err)
 			}
 		}
 	}
@@ -107,10 +118,10 @@ func NewInput(
 		return nil, err
 	}
 	if err := inputConfig.resolveRecursiveGlobs(); err != nil {
-		return nil, fmt.Errorf("Failed to resolve recursive globs in config: %w", err)
+		return nil, fmt.Errorf("Failed to resolve recursive globs in config: %w", err) //nolint:staticcheck //Keep old behavior
 	}
 	if err := inputConfig.normalizeGlobPatterns(); err != nil {
-		return nil, fmt.Errorf("Failed to normalize globs patterns: %w", err)
+		return nil, fmt.Errorf("Failed to normalize globs patterns: %w", err) //nolint:staticcheck //Keep old behavior
 	}
 
 	if len(inputConfig.Paths) == 0 {
@@ -146,7 +157,7 @@ func NewInput(
 	}
 
 	uuid, _ := uuid.NewV4()
-	logger := logp.NewLogger("input").With("input_id", uuid)
+	logger = logger.Named("input").With("input_id", uuid)
 
 	p := &Input{
 		logger:              logger,
@@ -450,7 +461,7 @@ func getSortedFiles(scanOrder string, scanSort string, sortInfos []FileSortInfo)
 				return sortInfos[i].info.ModTime().After(sortInfos[j].info.ModTime())
 			}
 		default:
-			return nil, fmt.Errorf("Unexpected value for scan.order: %v", scanOrder)
+			return nil, fmt.Errorf("Unexpected value for scan.order: %v", scanOrder) //nolint:staticcheck //Keep old behavior
 		}
 	case "filename":
 		switch scanOrder {
@@ -463,10 +474,10 @@ func getSortedFiles(scanOrder string, scanSort string, sortInfos []FileSortInfo)
 				return strings.Compare(sortInfos[i].info.Name(), sortInfos[j].info.Name()) > 0
 			}
 		default:
-			return nil, fmt.Errorf("Unexpected value for scan.order: %v", scanOrder)
+			return nil, fmt.Errorf("Unexpected value for scan.order: %v", scanOrder) //nolint:staticcheck //Keep old behavior
 		}
 	default:
-		return nil, fmt.Errorf("Unexpected value for scan.sort: %v", scanSort)
+		return nil, fmt.Errorf("Unexpected value for scan.sort: %v", scanSort) //nolint:staticcheck //Keep old behavior
 	}
 
 	sort.Slice(sortInfos, sortFunc)

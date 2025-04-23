@@ -2563,10 +2563,18 @@ filebeat.inputs:
   # Available options: since_first_start, since_last_start.
   #ignore_inactive: ""
 
-  # If `take_over` is set to `true`, this `filestream` will take over all files
-  # from `log` inputs if they match at least one of the `paths` set in the `filestream`.
+  # When `take_over.enabled` is set to `true` this `filestream` input
+  # will take over files from `log` or `filestream` (need to set `from_ids`) inputs.
+  # Taking over states of active `log` or `filestream` inputs is not
+  # supported and will lead to inconsistent data ingestion (data
+  # duplication or data loss).
   # This functionality is still in beta.
-  #take_over: false
+  #take_over:
+  #  enabled: true
+  #  If `from_ids` is set, then the files are taken over
+  #  from `filestream` inputs that were assigned these IDs.
+  #  Taking over from `log` inputs is disabled when `from_ids` is set.
+  #  from_ids: ["foo", "bar"]
 
   # Defines the buffer size every harvester uses when fetching the file
   #harvester_buffer_size: 16384
@@ -2907,10 +2915,18 @@ filebeat.inputs:
     #- 2
 
   # You may wish to have separate inputs for each service. You can use
-  # include_matches.or to specify a list of filter expressions that are
-  # applied as a logical OR.
+  # include_matches.match to define a list of filters, each event needs
+  # to match all filters defined.
   #include_matches.match:
     #- _SYSTEMD_UNIT=foo.service
+
+  # To create a disjunction (logical OR) use the `+` character between
+  # the filters
+  #include_matches:
+    #match:
+      #- "systemd.transport=kernel"
+      #- "+"
+      #- "journald.process.name=systemd"
 
   # Uses the original hostname of the entry instead of the one
   # from the host running jounrald
@@ -3050,6 +3066,16 @@ filebeat.inputs:
 
   # Controls deletion of objects after backing them up
   #delete_after_backup: false
+
+  # Ignore bucket entries older than the given timespan.
+  # Timespan is calculated from current time to processing object's last modified timestamp.
+  # This is disabled by default(value 0) and can be configured to a time duration like "48h" or "2h30m".
+  #ignore_older: 0
+
+  # Accept bucket entries with last modified timestamp newer than the given timestamp.
+  # Accepts a timestamp in YYYY-MM-DDTHH:MM:SSZ format and default is empty.
+  # For example, "2024-11-20T20:00:00Z" (UTC) or "2024-11-20T22:30:00+02:30" (with zone offset).
+  #start_timestamp:
 
 #------------------------------ AWS CloudWatch input --------------------------------
 # Beta: Config options for AWS CloudWatch input
@@ -4647,7 +4673,7 @@ logging.files:
   #path: /var/log/filebeat
 
   # The name of the files where the logs are written to.
-  #name: filebeat-event-data
+  #name: filebeat-events-data
 
   # Configure log file size limit. If the limit is reached, log file will be
   # automatically rotated.

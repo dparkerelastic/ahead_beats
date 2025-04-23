@@ -126,7 +126,7 @@
         - name: executable_path
           type: keyword
         - name: file_types
-          type: flattened
+          type: keyword
     - name: session
       type: group
       description: Horizon session information
@@ -327,3 +327,13 @@
           type: date
         - name: in_maintenance_mode
           type: boolean
+      - name: virtual_disk
+        type: group
+        description: Virtual disks info
+        fields:
+          - name: path
+            type: keyword
+          - name: datastore_path
+            type: keyword
+          - name: capacity_mb
+            type: integer
