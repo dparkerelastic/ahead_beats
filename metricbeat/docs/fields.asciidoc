@@ -39,7 +39,6 @@ grouped in the following categories:
 * <<exported-fields-dropwizard>>
 * <<exported-fields-ecs>>
 * <<exported-fields-elasticsearch>>
-* <<exported-fields-enterprisesearch>>
 * <<exported-fields-envoyproxy>>
 * <<exported-fields-etcd>>
 * <<exported-fields-gcp>>
@@ -7575,6 +7574,91 @@ alias to: beat.stats.apm_server.root.unset
 
 --
 
+
+
+*`beats_stats.apm-server.sampling.tail.dynamic_service_groups`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.dynamic_service_groups
+
+--
+
+
+*`beats_stats.apm-server.sampling.tail.events.dropped`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.dropped
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.failed_writes`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.failed_writes
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.head_unsampled`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.head_unsampled
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.processed`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.processed
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.sampled`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.sampled
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.stored`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.stored
+
+--
+
+
+*`beats_stats.apm-server.sampling.tail.storage.lsm_size`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.storage.lsm_size
+
+--
+
+*`beats_stats.apm-server.sampling.tail.storage.value_log_size`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.storage.value_log_size
+
+--
+
 *`beats_stats.apm-server.sampling.transactions_dropped`*::
 +
 --
@@ -9665,6 +9749,73 @@ type: long
 
 --
 
+
+
+*`beat.stats.apm_server.sampling.tail.dynamic_service_groups`*::
++
+--
+type: long
+
+--
+
+
+*`beat.stats.apm_server.sampling.tail.events.dropped`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.failed_writes`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.head_unsampled`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.processed`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.sampled`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.stored`*::
++
+--
+type: long
+
+--
+
+
+*`beat.stats.apm_server.sampling.tail.storage.lsm_size`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.storage.value_log_size`*::
++
+--
+type: long
+
+--
+
 *`beat.stats.apm_server.sampling.transactions_dropped`*::
 +
 --
@@ -10186,16 +10337,113 @@ type: long
 
 --
 
+
 *`beat.stats.libbeat.pipeline.queue.acked`*::
 +
 --
+Number of acknowledged events
+
+
 type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.added.bytes`*::
++
+--
+Number of bytes added to the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.added.events`*::
++
+--
+Number of events added to the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.consumed.bytes`*::
++
+--
+Number of bytes consumed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.consumed.events`*::
++
+--
+Number of events consumed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.bytes`*::
++
+--
+Number of bytes filled in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.events`*::
++
+--
+Number of events filled in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.pct`*::
++
+--
+Percentage of the queue filled
+
+
+type: float
 
 --
 
 *`beat.stats.libbeat.pipeline.queue.max_events`*::
 +
 --
+Maximum number of events allowed in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.removed.bytes`*::
++
+--
+Number of bytes removed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.removed.events`*::
++
+--
+Number of events removed from the queue
+
+
 type: long
 
 --
@@ -10434,6 +10682,43 @@ Number of write errors
 
 
 type: long
+
+--
+
+
+
+*`beat.stats.libbeat.output.write.latency.histogram.count`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.max`*::
++
+--
+type: float
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.median`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.p95`*::
++
+--
+type: float
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.p99`*::
++
+--
+type: float
 
 --
 
@@ -33644,12 +33929,49 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.indices.fielddata.evictions.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.indices.fielddata.memory.bytes`*::
 +
 --
 type: long
 
 format: bytes
+
+--
+
+
+*`elasticsearch.node.stats.indices.flush.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.flush.total.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.indices.get.time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.get.total.count`*::
++
+--
+type: long
 
 --
 
@@ -33676,12 +33998,42 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.indices.merges.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.merges.total.count`*::
++
+--
+type: long
+
+--
+
+
 *`elasticsearch.node.stats.indices.query_cache.memory.bytes`*::
 +
 --
 type: long
 
 format: bytes
+
+--
+
+
+*`elasticsearch.node.stats.indices.refresh.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.refresh.total.count`*::
++
+--
+type: long
 
 --
 
@@ -33704,6 +34056,20 @@ type: long
 --
 
 *`elasticsearch.node.stats.indices.search.query_total.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.search.fetch_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.search.fetch_total.count`*::
 +
 --
 type: long
@@ -33801,6 +34167,21 @@ format: bytes
 --
 
 
+*`elasticsearch.node.stats.indices.translog.size.bytes`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.translog.operations.count`*::
++
+--
+type: long
+
+--
+
+
 *`elasticsearch.node.stats.jvm.mem.heap.max.bytes`*::
 +
 --
@@ -33826,6 +34207,13 @@ format: bytes
 type: double
 
 format: percent
+
+--
+
+*`elasticsearch.node.stats.jvm.threads.count`*::
++
+--
+type: long
 
 --
 
@@ -34159,7 +34547,59 @@ format: percent
 
 --
 
+*`elasticsearch.node.stats.process.mem.total_virtual.bytes`*::
++
+--
+type: long
 
+--
+
+*`elasticsearch.node.stats.process.open_file_descriptors`*::
++
+--
+type: long
+
+--
+
+
+
+*`elasticsearch.node.stats.transport.rx.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.transport.rx.size.bytes`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.transport.tx.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.transport.tx.size.bytes`*::
++
+--
+type: long
+
+--
+
+
+
+*`elasticsearch.node.stats.thread_pool.bulk.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.bulk.queue.count`*::
 +
@@ -34176,6 +34616,35 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.esql_worker.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.esql_worker.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.esql_worker.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.force_merge.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.force_merge.queue.count`*::
 +
 --
@@ -34190,6 +34659,35 @@ type: long
 
 --
 
+
+*`elasticsearch.node.stats.thread_pool.flush.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.flush.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.flush.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.get.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.get.queue.count`*::
 +
@@ -34206,6 +34704,13 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.index.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.index.queue.count`*::
 +
 --
@@ -34221,6 +34726,13 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.search.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.search.queue.count`*::
 +
 --
@@ -34235,6 +34747,101 @@ type: long
 
 --
 
+
+*`elasticsearch.node.stats.thread_pool.search_worker.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.search_worker.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.search_worker.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.snapshot.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.snapshot.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.snapshot.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.system_read.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_read.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_read.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.system_write.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_write.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_write.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.write.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.write.queue.count`*::
 +
@@ -34494,1214 +35101,6 @@ type: keyword
 +
 --
 type: keyword
-
---
-
-[[exported-fields-enterprisesearch]]
-== Enterprise Search fields
-
-Enterprise Search module
-
-
-
-[float]
-=== enterprisesearch
-
-`enterprisesearch` contains metrics and health information for Enterprise Search
-
-
-
-*`enterprisesearch.cluster_uuid`*::
-+
---
-Cluster UUID for the Elasticsearch cluster used as the data store for Enterprise Search.
-
-type: keyword
-
---
-
-[float]
-=== health
-
-Enterprise Search health
-
-
-*`enterprisesearch.health.name`*::
-+
---
-Host name for the Enterprise Search node
-
-type: keyword
-
---
-
-[float]
-=== version
-
-Enterprise Search version information
-
-
-*`enterprisesearch.health.version.number`*::
-+
---
-Enterprise Search version number using the semantic versioning format
-
-type: keyword
-
---
-
-*`enterprisesearch.health.version.build_hash`*::
-+
---
-A unique build hash for the Enterprise Search package
-
-type: keyword
-
---
-
-[float]
-=== process
-
-Enterprise Search process information
-
-
-*`enterprisesearch.health.process.pid`*::
-+
---
-Process ID for the Enterprise Search instance
-
-type: long
-
---
-
-*`enterprisesearch.health.process.uptime.sec`*::
-+
---
-Process uptime for the Enterprise Search instance
-
-type: long
-
---
-
-[float]
-=== filebeat
-
-Health information for the embedded Filebeat instance
-
-
-*`enterprisesearch.health.process.filebeat.pid`*::
-+
---
-Process ID for the embedded Filebeat instance
-
-type: long
-
---
-
-*`enterprisesearch.health.process.filebeat.restart_count`*::
-+
---
-Number of times embedded Filebeat instance had to be restarted due to some issues
-
-type: long
-
---
-
-*`enterprisesearch.health.process.filebeat.time_since_last_restart.sec`*::
-+
---
-Time since the last embedded Filebeat instance restart (-1 if never restarted)
-
-type: long
-
---
-
-[float]
-=== jvm
-
-JVM health
-
-
-*`enterprisesearch.health.jvm.version`*::
-+
---
-JVM version used to run Enterprise Search
-
-type: keyword
-
---
-
-[float]
-=== gc
-
-Java garbage collection metrics
-
-
-*`enterprisesearch.health.jvm.gc.collection_count`*::
-+
---
-Total number of Java garbage collector invocations since the start of the process
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.gc.collection_time.ms`*::
-+
---
-Total time spent running Java garbage collector since the start of the process
-
-type: long
-
---
-
-[float]
-=== memory_usage
-
-Memory usage
-
-
-*`enterprisesearch.health.jvm.memory_usage.heap_init.bytes`*::
-+
---
-Heap init used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_used.bytes`*::
-+
---
-Heap used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_committed.bytes`*::
-+
---
-Committed heap to the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_max.bytes`*::
-+
---
-Max heap used by the JVM in bytes
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.non_heap_init.bytes`*::
-+
---
-Non-Heap initial memory used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.non_heap_committed.bytes`*::
-+
---
-Non-Heap committed memory used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.object_pending_finalization_count`*::
-+
---
-Displays the approximate number of objects for which finalization is pending.
-
-
-type: long
-
---
-
-[float]
-=== threads
-
-Threads information
-
-
-*`enterprisesearch.health.jvm.threads.current`*::
-+
---
-Current number of live threads.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.daemon`*::
-+
---
-Current number of live daemon threads.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.max`*::
-+
---
-Peak live thread count since the JVM started or the peak was reset.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.total_started`*::
-+
---
-Total number of threads created and/or started since the JVM started.
-
-type: long
-
---
-
-[float]
-=== crawler
-
-Crawler health
-
-
-[float]
-=== workers
-
-Crawler workers
-
-
-*`enterprisesearch.health.crawler.workers.pool_size`*::
-+
---
-Workers pool size.
-
-type: long
-
---
-
-*`enterprisesearch.health.crawler.workers.active`*::
-+
---
-Number of active workers.
-
-type: long
-
---
-
-*`enterprisesearch.health.crawler.workers.available`*::
-+
---
-Number of available workers.
-
-type: long
-
---
-
-[float]
-=== stats
-
-Enterprise Search stats.
-
-
-[float]
-=== connectors
-
-Workplace Search connectors subsystem stats.
-
-
-[float]
-=== job_store
-
-Workplace Search connectors job store stats.
-
-
-*`enterprisesearch.stats.connectors.job_store.waiting`*::
-+
---
-Number of connectors jobs waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.working`*::
-+
---
-Number of connectors jobs currently being processed.
-
-type: long
-
---
-
-[float]
-=== job_types
-
-Breakdown of connectors jobs by types.
-
-
-*`enterprisesearch.stats.connectors.job_store.job_types.delete`*::
-+
---
-Number of delete jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.full`*::
-+
---
-Number of full sync jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.incremental`*::
-+
---
-Number of incremental sync jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.permissions`*::
-+
---
-Number of permissions sync jobs in the jobs store.
-
-type: long
-
---
-
-[float]
-=== pool
-
-Workplace Search worker pools stats.
-
-
-[float]
-=== extract_worker_pool
-
-Status information for the extractor workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== subextract_worker_pool
-
-Status information for the sub-extractor workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== publish_worker_pool
-
-Status information for the publish workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== http
-
-Incoming HTTP request metrics.
-
-
-[float]
-=== connections
-
-Incoming HTTP connection statistics.
-
-
-*`enterprisesearch.stats.http.connections.current`*::
-+
---
-Current number of HTTP connections opened to the Enterprise Search instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.connections.max`*::
-+
---
-Maximum number of concurrent HTTP connections open to the Enterprise Search instance since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.connections.total`*::
-+
---
-Total number of HTTP connections opened to the Enterprise Search instance since the start.
-
-type: long
-
---
-
-[float]
-=== network
-
-Network traffic metrics.
-
-
-*`enterprisesearch.stats.http.network.received.bytes`*::
-+
---
-Total number of bytes received by the Enterprise Search instance since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.sent.bytes`*::
-+
---
-Total number of bytes sent by the Enterprise Search instance since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.received.bytes_per_sec`*::
-+
---
-Average number of bytes received by the Enterprise Search instance per second since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.sent.bytes_per_sec`*::
-+
---
-Average number of bytes sent by the Enterprise Search instance per second since the start.
-
-type: long
-
-format: bytes
-
---
-
-[float]
-=== request_duration
-
-Aggregate HTTP request duration statistics.
-
-
-*`enterprisesearch.stats.http.request_duration.max.ms`*::
-+
---
-Longest HTTP connection duration since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.request_duration.mean.ms`*::
-+
---
-Average HTTP connection duration since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.request_duration.std_dev.ms`*::
-+
---
-Standard deviation for HTTP connection duration values since the start of the instance.
-
-type: long
-
---
-
-[float]
-=== responses
-
-Aggregate HTTP response counts broken down by HTTP status type.
-
-
-*`enterprisesearch.stats.http.responses.1xx`*::
-+
---
-Total number of HTTP requests finished with a 1xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.2xx`*::
-+
---
-Total number of HTTP requests finished with a 2xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.3xx`*::
-+
---
-Total number of HTTP requests finished with a 3xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.4xx`*::
-+
---
-Total number of HTTP requests finished with a 4xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.5xx`*::
-+
---
-Total number of HTTP requests finished with a 5xx response code since the start of the instance.
-
-type: long
-
---
-
-[float]
-=== queues
-
-Aggregate stats on the functioning of the background jobs processing pipeline within Enterprise Search.
-
-
-*`enterprisesearch.stats.queues.engine_destroyer.count`*::
-+
---
-Total number of jobs processed via the engine_destroyer queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.mailer.count`*::
-+
---
-Total number of jobs processed via the mailer queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.process_crawl.count`*::
-+
---
-Total number of jobs processed via the process_crawl queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.failed.count`*::
-+
---
-Total number of jobs waiting in the failed queue.
-
-type: long
-
---
-
-[float]
-=== crawler
-
-Aggregate stats on the functioning of the crawler subsystem within Enterprise Search.
-
-
-[float]
-=== global
-
-Global deployment-wide metrics for the crawler.
-
-
-[float]
-=== crawl_requests
-
-Crawl request summary for the deployment.
-
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.pending`*::
-+
---
-Total number of crawl requests waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.active`*::
-+
---
-Total number of crawl requests currently being processed (running crawls).
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.successful`*::
-+
---
-Total number of crawl requests that have succeeded.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.failed`*::
-+
---
-Total number of failed crawl requests.
-
-type: long
-
---
-
-[float]
-=== node
-
-Node-level statistics for the crawler.
-
-
-*`enterprisesearch.stats.crawler.node.pages_visited`*::
-+
---
-Total number of pages visited by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_allowed`*::
-+
---
-Total number of URLs allowed by the crawler during discovery since the instance start.
-
-type: long
-
---
-
-[float]
-=== urls_denied
-
-Total number of URLs denied by the crawler during discovery since the instance start, broken down by deny reason.
-
-
-*`enterprisesearch.stats.crawler.node.urls_denied.already_seen`*::
-+
---
-Total number of URLs not followed because of URL de-duplication (each URL is visited only once).
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.domain_filter_denied`*::
-+
---
-Total number of URLs denied because of an unknown domain.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.incorrect_protocol`*::
-+
---
-Total number of URLs with incorrect/invalid/unsupported protocols.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.link_too_deep`*::
-+
---
-Total number of URLs not followed due to crawl depth limits.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.nofollow`*::
-+
---
-Total number of URLs denied due to a nofollow meta tag or an HTML link attribute.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.unsupported_content_type`*::
-+
---
-Total number of URLs denied due to an unsupported content type.
-
-type: long
-
---
-
-[float]
-=== status_codes
-
-HTTP request result counts, by status code.
-
-
-*`enterprisesearch.stats.crawler.node.status_codes.200`*::
-+
---
-Total number of HTTP 200 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.301`*::
-+
---
-Total number of HTTP 301 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.302`*::
-+
---
-Total number of HTTP 302 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.400`*::
-+
---
-Total number of HTTP 400 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.401`*::
-+
---
-Total number of HTTP 401 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.402`*::
-+
---
-Total number of HTTP 402 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.403`*::
-+
---
-Total number of HTTP 403 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.404`*::
-+
---
-Total number of HTTP 404 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.405`*::
-+
---
-Total number of HTTP 405 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.410`*::
-+
---
-Total number of HTTP 410 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.422`*::
-+
---
-Total number of HTTP 422 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.429`*::
-+
---
-Total number of HTTP 429 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.500`*::
-+
---
-Total number of HTTP 500 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.501`*::
-+
---
-Total number of HTTP 501 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.502`*::
-+
---
-Total number of HTTP 502 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.503`*::
-+
---
-Total number of HTTP 503 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.504`*::
-+
---
-Total number of HTTP 504 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-[float]
-=== queue_size
-
-Total current URL queue size for the instance.
-
-
-*`enterprisesearch.stats.crawler.node.queue_size.primary`*::
-+
---
-Total number of URLs waiting to be crawled by the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.queue_size.purge`*::
-+
---
-Total number of URLs waiting to be checked by the purge crawl phase.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.active_threads`*::
-+
---
-Total number of crawler worker threads currently active on the instance.
-
-type: long
-
---
-
-[float]
-=== workers
-
-Crawler workers information for the instance.
-
-
-*`enterprisesearch.stats.crawler.node.workers.pool_size`*::
-+
---
-Total size of the crawl workers pool (number of concurrent crawls possible) for the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.workers.active`*::
-+
---
-Total number of currently active crawl workers (running crawls) for the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.workers.available`*::
-+
---
-Total number of currently available (free) crawl workers for the instance.
-
-type: long
-
---
-
-[float]
-=== product_usage
-
-Aggregate product usage statistics for the Enterprise Search deployment.
-
-
-[float]
-=== app_search
-
-App Search product usage statistics.
-
-
-*`enterprisesearch.stats.product_usage.app_search.total_engines`*::
-+
---
-Current number of App Search engines within the deployment.
-
-type: long
-
---
-
-[float]
-=== workplace_search
-
-Workplace Search product usage statistics.
-
-
-*`enterprisesearch.stats.product_usage.workplace_search.total_org_sources`*::
-+
---
-Current number of Workplace Search org-wide content sources within the deployment.
-
-type: long
-
---
-
-*`enterprisesearch.stats.product_usage.workplace_search.total_private_sources`*::
-+
---
-Current number of Workplace Search private content sources within the deployment.
-
-type: long
 
 --
 
@@ -40644,15 +40043,23 @@ type: text
 --
 
 [[exported-fields-horizon]]
-== horizon fields
+== Horizon module fields
 
-horizon module
+Horizon module collects metrics from VMware Horizon components.
+
 
 
 [float]
 === horizon
 
-Horizon module fields.
+
+
+
+[float]
+=== health
+
+health
+
 
 
 [float]
@@ -40661,35 +40068,36 @@ Horizon module fields.
 Horizon connection server information
 
 
-*`horizon.connection_server.name`*::
+
+*`horizon.health.connection_server.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.connection_server.status`*::
+*`horizon.health.connection_server.status`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.connection_server.connection_count`*::
+*`horizon.health.connection_server.connection_count`*::
 +
 --
 type: long
 
 --
 
-*`horizon.connection_server.tunnel_connection_count`*::
+*`horizon.health.connection_server.tunnel_connection_count`*::
 +
 --
 type: long
 
 --
 
-*`horizon.connection_server.default_certificate`*::
+*`horizon.health.connection_server.default_certificate`*::
 +
 --
 type: boolean
@@ -40702,21 +40110,22 @@ type: boolean
 Certificate info
 
 
-*`horizon.connection_server.certificate.valid`*::
+
+*`horizon.health.connection_server.certificate.valid`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.connection_server.certificate.valid_from`*::
+*`horizon.health.connection_server.certificate.valid_from`*::
 +
 --
 type: date
 
 --
 
-*`horizon.connection_server.certificate.valid_to`*::
+*`horizon.health.connection_server.certificate.valid_to`*::
 +
 --
 type: date
@@ -40729,14 +40138,15 @@ type: date
 Details about the connection server
 
 
-*`horizon.connection_server.details.version`*::
+
+*`horizon.health.connection_server.details.version`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.connection_server.details.build`*::
+*`horizon.health.connection_server.details.build`*::
 +
 --
 type: keyword
@@ -40749,49 +40159,50 @@ type: keyword
 Horizon desktop pool information
 
 
-*`horizon.desktop_pool.id`*::
+
+*`horizon.health.desktop_pool.id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.name`*::
+*`horizon.health.desktop_pool.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.display_name`*::
+*`horizon.health.desktop_pool.display_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.description`*::
+*`horizon.health.desktop_pool.description`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.type`*::
+*`horizon.health.desktop_pool.type`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.source`*::
+*`horizon.health.desktop_pool.source`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.enabled`*::
+*`horizon.health.desktop_pool.enabled`*::
 +
 --
 type: boolean
@@ -40804,42 +40215,43 @@ type: boolean
 Settings for the pool
 
 
-*`horizon.desktop_pool.settings.delete_in_progress`*::
+
+*`horizon.health.desktop_pool.settings.delete_in_progress`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.enable_client_restrictions`*::
+*`horizon.health.desktop_pool.settings.enable_client_restrictions`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.allow_multiple_sessions_per_user`*::
+*`horizon.health.desktop_pool.settings.allow_multiple_sessions_per_user`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.session_type`*::
+*`horizon.health.desktop_pool.settings.session_type`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.cloud_managed`*::
+*`horizon.health.desktop_pool.settings.cloud_managed`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.cloud_assigned`*::
+*`horizon.health.desktop_pool.settings.cloud_assigned`*::
 +
 --
 type: boolean
@@ -40852,49 +40264,50 @@ type: boolean
 Session settings
 
 
-*`horizon.desktop_pool.settings.session_settings.power_policy`*::
+
+*`horizon.health.desktop_pool.settings.session_settings.power_policy`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.disconnected_session_timeout_policy`*::
+*`horizon.health.desktop_pool.settings.session_settings.disconnected_session_timeout_policy`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.disconnected_session_timeout_minutes`*::
+*`horizon.health.desktop_pool.settings.session_settings.disconnected_session_timeout_minutes`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.allow_users_to_reset_machines`*::
+*`horizon.health.desktop_pool.settings.session_settings.allow_users_to_reset_machines`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.allow_multiple_sessions_per_user`*::
+*`horizon.health.desktop_pool.settings.session_settings.allow_multiple_sessions_per_user`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.delete_or_refresh_machine_after_logoff`*::
+*`horizon.health.desktop_pool.settings.session_settings.delete_or_refresh_machine_after_logoff`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.session_settings.refresh_os_disk_after_logoff`*::
+*`horizon.health.desktop_pool.settings.session_settings.refresh_os_disk_after_logoff`*::
 +
 --
 type: keyword
@@ -40907,63 +40320,64 @@ type: keyword
 Protocol settings
 
 
-*`horizon.desktop_pool.settings.display_protocol_settings.display_protocols`*::
+
+*`horizon.health.desktop_pool.settings.display_protocol_settings.display_protocols`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.default_display_protocol`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.default_display_protocol`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.allow_users_to_choose_protocol`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.allow_users_to_choose_protocol`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.html_access_enabled`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.html_access_enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.session_collaboration_enabled`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.session_collaboration_enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.renderer3d`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.renderer3d`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.grid_vgpus_enabled`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.grid_vgpus_enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.max_number_of_monitors`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.max_number_of_monitors`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.desktop_pool.settings.display_protocol_settings.max_resolution_of_any_one_monitor`*::
+*`horizon.health.desktop_pool.settings.display_protocol_settings.max_resolution_of_any_one_monitor`*::
 +
 --
 type: keyword
@@ -40976,38 +40390,39 @@ type: keyword
 Application installed in a desktop pool
 
 
-*`horizon.desktop_pool.installed_application.name`*::
+
+*`horizon.health.desktop_pool.installed_application.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.installed_application.version`*::
+*`horizon.health.desktop_pool.installed_application.version`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.installed_application.publisher`*::
+*`horizon.health.desktop_pool.installed_application.publisher`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.installed_application.executable_path`*::
+*`horizon.health.desktop_pool.installed_application.executable_path`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.desktop_pool.installed_application.file_types`*::
+*`horizon.health.desktop_pool.installed_application.file_types`*::
 +
 --
-type: flattened
+type: keyword
 
 --
 
@@ -41017,49 +40432,50 @@ type: flattened
 Horizon session information
 
 
-*`horizon.session.id`*::
+
+*`horizon.health.session.id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.user_id`*::
+*`horizon.health.session.user_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.broker_user_id`*::
+*`horizon.health.session.broker_user_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.access_group_id`*::
+*`horizon.health.session.access_group_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.machine_id`*::
+*`horizon.health.session.machine_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.desktop_pool_id`*::
+*`horizon.health.session.desktop_pool_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.agent_version`*::
+*`horizon.health.session.agent_version`*::
 +
 --
 type: keyword
@@ -41072,35 +40488,36 @@ type: keyword
 Client data
 
 
-*`horizon.session.client_data.location_id`*::
+
+*`horizon.health.session.client_data.location_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.client_data.type`*::
+*`horizon.health.session.client_data.type`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.client_data.address`*::
+*`horizon.health.session.client_data.address`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.client_data.name`*::
+*`horizon.health.session.client_data.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.client_data.version`*::
+*`horizon.health.session.client_data.version`*::
 +
 --
 type: keyword
@@ -41113,84 +40530,85 @@ type: keyword
 Gateway info
 
 
-*`horizon.session.security_gateway_data.domain_name`*::
+
+*`horizon.health.session.security_gateway_data.domain_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.security_gateway_data.address`*::
+*`horizon.health.session.security_gateway_data.address`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.security_gateway_data.location`*::
+*`horizon.health.session.security_gateway_data.location`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.session_type`*::
+*`horizon.health.session.session_type`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.session_protocol`*::
+*`horizon.health.session.session_protocol`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.session_state`*::
+*`horizon.health.session.session_state`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.session.start_time`*::
+*`horizon.health.session.start_time`*::
 +
 --
 type: date
 
 --
 
-*`horizon.session.disconnected_time`*::
+*`horizon.health.session.disconnected_time`*::
 +
 --
 type: date
 
 --
 
-*`horizon.session.last_session_duration`*::
+*`horizon.health.session.last_session_duration`*::
 +
 --
 type: long
 
 --
 
-*`horizon.session.resourced_remotely`*::
+*`horizon.health.session.resourced_remotely`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.session.unauthenticated`*::
+*`horizon.health.session.unauthenticated`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.session.idle_duration`*::
+*`horizon.health.session.idle_duration`*::
 +
 --
 type: long
@@ -41203,76 +40621,67 @@ type: long
 Horizon gateway info
 
 
-*`horizon.gateway.id`*::
+
+*`horizon.health.gateway.id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.gateway.name`*::
+*`horizon.health.gateway.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.gateway.status`*::
+*`horizon.health.gateway.status`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.gateway.active_connection_count`*::
+*`horizon.health.gateway.active_connection_count`*::
 +
 --
 type: long
 
 --
 
-*`horizon.gateway.pcoip_connection_count`*::
+*`horizon.health.gateway.pcoip_connection_count`*::
 +
 --
 type: long
 
 --
 
-*`horizon.gateway.blast_connection_count`*::
+*`horizon.health.gateway.blast_connection_count`*::
 +
 --
 type: long
 
 --
 
-[float]
-=== details
-
+*`horizon.health.gateway.details`*::
++
+--
 Gateway details
 
 
-*`horizon.gateway.details.type`*::
-+
---
 type: keyword
 
 --
 
-*`horizon.gateway.details.address`*::
-+
---
-type: keyword
-
---
-
-*`horizon.gateway.details.internal`*::
+*`horizon.health.gateway.internal`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.gateway.details.version`*::
+*`horizon.health.gateway.version`*::
 +
 --
 type: keyword
@@ -41285,77 +40694,78 @@ type: keyword
 vCenter information
 
 
-*`horizon.virtual_center.id`*::
+
+*`horizon.health.virtual_center.id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.version`*::
+*`horizon.health.virtual_center.version`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.description`*::
+*`horizon.health.virtual_center.description`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.instance_uuid`*::
+*`horizon.health.virtual_center.instance_uuid`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.server_name`*::
+*`horizon.health.virtual_center.server_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.port`*::
+*`horizon.health.virtual_center.port`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.virtual_center.use_ssl`*::
+*`horizon.health.virtual_center.use_ssl`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.virtual_center.user_name`*::
+*`horizon.health.virtual_center.user_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.se_sparse_reclamation_enabled`*::
+*`horizon.health.virtual_center.se_sparse_reclamation_enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.virtual_center.enabled`*::
+*`horizon.health.virtual_center.enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.virtual_center.vmc_deployment`*::
+*`horizon.health.virtual_center.vmc_deployment`*::
 +
 --
 type: boolean
@@ -41368,21 +40778,22 @@ type: boolean
 Resource limits
 
 
-*`horizon.virtual_center.limits.provisioning_limit`*::
+
+*`horizon.health.virtual_center.limits.provisioning_limit`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.virtual_center.limits.power_operations_limit`*::
+*`horizon.health.virtual_center.limits.power_operations_limit`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.virtual_center.limits.instant_clone_engine_provisioning_limit`*::
+*`horizon.health.virtual_center.limits.instant_clone_engine_provisioning_limit`*::
 +
 --
 type: integer
@@ -41395,14 +40806,15 @@ type: integer
 Storage cache
 
 
-*`horizon.virtual_center.storage_accelerator_data.enabled`*::
+
+*`horizon.health.virtual_center.storage_accelerator_data.enabled`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.virtual_center.storage_accelerator_data.default_cache_size_mb`*::
+*`horizon.health.virtual_center.storage_accelerator_data.default_cache_size_mb`*::
 +
 --
 type: integer
@@ -41415,14 +40827,15 @@ type: integer
 Certificate override
 
 
-*`horizon.virtual_center.certificate_override.certificate`*::
+
+*`horizon.health.virtual_center.certificate_override.certificate`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.virtual_center.certificate_override.type`*::
+*`horizon.health.virtual_center.certificate_override.type`*::
 +
 --
 type: keyword
@@ -41435,112 +40848,113 @@ type: keyword
 Machine info
 
 
-*`horizon.machine.id`*::
+
+*`horizon.health.machine.id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.name`*::
+*`horizon.health.machine.name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.dns_name`*::
+*`horizon.health.machine.dns_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.desktop_pool_id`*::
+*`horizon.health.machine.desktop_pool_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.state`*::
+*`horizon.health.machine.state`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.type`*::
+*`horizon.health.machine.type`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.operating_system`*::
+*`horizon.health.machine.operating_system`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.operating_system_architecture`*::
+*`horizon.health.machine.operating_system_architecture`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.agent_version`*::
+*`horizon.health.machine.agent_version`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.agent_build_number`*::
+*`horizon.health.machine.agent_build_number`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.remote_experience_agent_build_number`*::
+*`horizon.health.machine.remote_experience_agent_build_number`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.message_security_mode`*::
+*`horizon.health.machine.message_security_mode`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.message_security_enhanced_mode_supported`*::
+*`horizon.health.machine.message_security_enhanced_mode_supported`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.machine.pairing_state`*::
+*`horizon.health.machine.pairing_state`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.configured_by_connection_server`*::
+*`horizon.health.machine.configured_by_connection_server`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.user_ids`*::
+*`horizon.health.machine.user_ids`*::
 +
 --
 type: keyword
@@ -41553,70 +40967,71 @@ type: keyword
 Managed machine data info
 
 
-*`horizon.machine.managed_machine_data.virtual_center_id`*::
+
+*`horizon.health.machine.managed_machine_data.virtual_center_id`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.managed_machine_data.host_name`*::
+*`horizon.health.machine.managed_machine_data.host_name`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.managed_machine_data.path`*::
+*`horizon.health.machine.managed_machine_data.path`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.managed_machine_data.virtual_machine_power_state`*::
+*`horizon.health.machine.managed_machine_data.virtual_machine_power_state`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.managed_machine_data.storage_accelerator_state`*::
+*`horizon.health.machine.managed_machine_data.storage_accelerator_state`*::
 +
 --
 type: keyword
 
 --
 
-*`horizon.machine.managed_machine_data.memory_mb`*::
+*`horizon.health.machine.managed_machine_data.memory_mb`*::
 +
 --
 type: integer
 
 --
 
-*`horizon.machine.managed_machine_data.missing_in_vcenter`*::
+*`horizon.health.machine.managed_machine_data.missing_in_vcenter`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.machine.managed_machine_data.in_hold_customization`*::
+*`horizon.health.machine.managed_machine_data.in_hold_customization`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.machine.managed_machine_data.create_time`*::
+*`horizon.health.machine.managed_machine_data.create_time`*::
 +
 --
 type: date
 
 --
 
-*`horizon.machine.managed_machine_data.in_maintenance_mode`*::
+*`horizon.health.machine.managed_machine_data.in_maintenance_mode`*::
 +
 --
 type: boolean
@@ -41624,19 +41039,30 @@ type: boolean
 --
 
 [float]
-=== health
+=== virtual_disk
 
-health
+Virtual disks info
 
 
 
-*`horizon.machine.managed_machine_data.health.example`*::
+*`horizon.health.machine.virtual_disk.path`*::
 +
 --
-Example field
-
-
 type: keyword
+
+--
+
+*`horizon.health.machine.virtual_disk.datastore_path`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.machine.virtual_disk.capacity_mb`*::
++
+--
+type: integer
 
 --
 
@@ -45179,99 +44605,6 @@ type: long
 --
 
 [float]
-=== settings
-
-Kibana stats and run-time metrics.
-
-
-
-*`kibana.settings.uuid`*::
-+
---
-Kibana instance UUID
-
-type: keyword
-
---
-
-*`kibana.settings.name`*::
-+
---
-Kibana instance name
-
-type: keyword
-
---
-
-*`kibana.settings.index`*::
-+
---
-Name of Kibana's internal index
-
-type: keyword
-
---
-
-*`kibana.settings.host`*::
-+
---
-Kibana instance hostname
-
-type: keyword
-
---
-
-*`kibana.settings.transport_address`*::
-+
---
-Kibana server's hostname and port
-
-type: keyword
-
---
-
-*`kibana.settings.version`*::
-+
---
-Kibana version
-
-type: keyword
-
---
-
-*`kibana.settings.snapshot`*::
-+
---
-Whether the Kibana build is a snapshot build
-
-type: boolean
-
---
-
-*`kibana.settings.status`*::
-+
---
-Kibana instance's health status
-
-type: keyword
-
---
-
-*`kibana.settings.locale`*::
-+
---
-type: keyword
-
---
-
-*`kibana.settings.port`*::
-+
---
-type: integer
-
---
-
-[float]
 === stats
 
 Kibana stats and run-time metrics.
@@ -48741,6 +48074,87 @@ type: integer
 --
 
 [float]
+=== horizontalpodautoscaler
+
+kubernetes horizontalpodautoscaler metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.name`*::
++
+--
+The Kubernetes Horizontal Pod Autoscaler name
+
+
+type: keyword
+
+--
+
+[float]
+=== replicas
+
+Kubernetes HPA replicas metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.replicas.max`*::
++
+--
+Kubernetes HPA maximum replicas from spec
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.min`*::
++
+--
+Kubernetes HPA minimum replicas from spec
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.current`*::
++
+--
+Kubernetes HPA current replicas from status
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.desired`*::
++
+--
+Kubernetes HPA desired replicas from status
+
+
+type: integer
+
+--
+
+[float]
+=== status
+
+Kubernetes HPA status metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.status.condition`*::
++
+--
+Kubernetes HPA scaling condition
+
+
+type: keyword
+
+--
+
+[float]
 === job
 
 Kubernetes job metrics
@@ -51996,6 +51410,87 @@ type: long
 +
 --
 Number of database commands executed.
+
+
+type: long
+
+--
+
+
+*`mongodb.collstats.stats.stats.size`*::
++
+--
+The total uncompressed size in memory of all records in a collection.
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.count`*::
++
+--
+The number of objects or documents in this collection.
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.avgObjSize`*::
++
+--
+The average size of an object in the collection (in bytes).
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.storageSize`*::
++
+--
+The total amount of storage allocated to this collection for document storage (in bytes).
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.totalIndexSize`*::
++
+--
+The total size of all indexes (in bytes).
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.totalSize`*::
++
+--
+The sum of the storageSize and totalIndexSize (in bytes).
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.max`*::
++
+--
+Shows the maximum number of documents that may be present in a capped collection.
+
+
+type: long
+
+--
+
+*`mongodb.collstats.stats.stats.nindexes`*::
++
+--
+The number of indexes on the collection. All collections have at least one index on the _id field.
 
 
 type: long
@@ -70986,6 +70481,12 @@ format: duration
 
 --
 
+[float]
+=== wmi
+
+wmi
+
+
 [[exported-fields-zookeeper]]
 == ZooKeeper fields
 
@@ -71053,16 +70554,6 @@ type: long
 `mntr` contains the metrics reported by the four-letter `mntr` command.
 
 
-
-*`zookeeper.mntr.hostname`*::
-+
---
-ZooKeeper hostname.
-
-
-type: keyword
-
---
 
 *`zookeeper.mntr.approximate_data_size`*::
 +

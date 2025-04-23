@@ -386,7 +386,7 @@ metricbeat.modules:
   password : "admin"
   enabled: true
 
-#------------------------------- Horizon Module -------------------------------
+#---------------------------- Horizon Module Module ----------------------------
 - module: horizon
   metricsets: ["health"]
   enabled: false

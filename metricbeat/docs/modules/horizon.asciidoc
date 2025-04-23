@@ -7,7 +7,7 @@ This file is generated! See scripts/mage/docs_collector.go
 
 
 [[metricbeat-module-horizon]]
-== horizon module
+== Horizon module module
 
 beta[]
 
@@ -20,7 +20,7 @@ This is the horizon module.
 [float]
 === Example configuration
 
-The horizon module supports the standard configuration options that are described
+The Horizon module module supports the standard configuration options that are described
 in <<configuration-metricbeat>>. Here is an example configuration:
 
 [source,yaml]

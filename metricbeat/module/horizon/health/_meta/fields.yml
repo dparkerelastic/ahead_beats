@@ -4,7 +4,353 @@
   description: >
     health
   fields:
-    - name: example
-      type: keyword
+    - name: connection_server
+      type: group
       description: >
-        Example field
+        Horizon connection server information
+      fields:
+        - name: name
+          type: keyword
+        - name: status
+          type: keyword
+        - name: connection_count
+          type: long
+        - name: tunnel_connection_count
+          type: long
+        - name: default_certificate
+          type: boolean
+        - name: certificate
+          type: group
+          description: >
+            Certificate info
+          fields:
+            - name: valid
+              type: boolean
+            - name: valid_from
+              type: date
+            - name: valid_to
+              type: date
+        - name: details
+          type: group
+          description: >
+            Details about the connection server
+          fields:
+            - name: version
+              type: keyword
+            - name: build
+              type: keyword
+    - name: desktop_pool
+      type: group
+      description: >
+        Horizon desktop pool information
+      fields:
+        - name: id
+          type: keyword
+        - name: name
+          type: keyword
+        - name: display_name
+          type: keyword
+        - name: description
+          type: keyword
+        - name: type
+          type: keyword
+        - name: source
+          type: keyword
+        - name: enabled
+          type: boolean
+        - name: settings
+          type: group
+          description: >
+            Settings for the pool
+          fields:
+            - name: delete_in_progress
+              type: boolean
+            - name: enable_client_restrictions
+              type: boolean
+            - name: allow_multiple_sessions_per_user
+              type: boolean
+            - name: session_type
+              type: keyword
+            - name: cloud_managed
+              type: boolean
+            - name: cloud_assigned
+              type: boolean
+            - name: session_settings
+              type: group
+              description: >
+                Session settings
+              fields:
+                - name: power_policy
+                  type: keyword
+                - name: disconnected_session_timeout_policy
+                  type: keyword
+                - name: disconnected_session_timeout_minutes
+                  type: integer
+                - name: allow_users_to_reset_machines
+                  type: boolean
+                - name: allow_multiple_sessions_per_user
+                  type: boolean
+                - name: delete_or_refresh_machine_after_logoff
+                  type: keyword
+                - name: refresh_os_disk_after_logoff
+                  type: keyword
+            - name: display_protocol_settings
+              type: group
+              description: >
+                Protocol settings
+              fields:
+                - name: display_protocols
+                  type: keyword
+                - name: default_display_protocol
+                  type: keyword
+                - name: allow_users_to_choose_protocol
+                  type: boolean
+                - name: html_access_enabled
+                  type: boolean
+                - name: session_collaboration_enabled
+                  type: boolean
+                - name: renderer3d
+                  type: keyword
+                - name: grid_vgpus_enabled
+                  type: boolean
+                - name: max_number_of_monitors
+                  type: integer
+                - name: max_resolution_of_any_one_monitor
+                  type: keyword
+        - name: installed_application
+          type: group
+          description: >
+            Application installed in a desktop pool
+          fields:
+            - name: name
+              type: keyword
+            - name: version
+              type: keyword
+            - name: publisher
+              type: keyword
+            - name: executable_path
+              type: keyword
+            - name: file_types
+              type: keyword
+    - name: session
+      type: group
+      description: >
+        Horizon session information
+      fields:
+        - name: id
+          type: keyword
+        - name: user_id
+          type: keyword
+        - name: broker_user_id
+          type: keyword
+        - name: access_group_id
+          type: keyword
+        - name: machine_id
+          type: keyword
+        - name: desktop_pool_id
+          type: keyword
+        - name: agent_version
+          type: keyword
+        - name: client_data
+          type: group
+          description: >
+            Client data
+          fields:
+            - name: location_id
+              type: keyword
+            - name: type
+              type: keyword
+            - name: address
+              type: keyword
+            - name: name
+              type: keyword
+            - name: version
+              type: keyword
+        - name: security_gateway_data
+          type: group
+          description: >
+            Gateway info
+          fields:
+            - name: domain_name
+              type: keyword
+            - name: address
+              type: keyword
+            - name: location
+              type: keyword
+        - name: session_type
+          type: keyword
+        - name: session_protocol
+          type: keyword
+        - name: session_state
+          type: keyword
+        - name: start_time
+          type: date
+        - name: disconnected_time
+          type: date
+        - name: last_session_duration
+          type: long
+        - name: resourced_remotely
+          type: boolean
+        - name: unauthenticated
+          type: boolean
+        - name: idle_duration
+          type: long
+    - name: gateway
+      type: group
+      description: >
+        Horizon gateway info
+      fields:
+        - name: id
+          type: keyword
+        - name: name
+          type: keyword
+        - name: status
+          type: keyword
+        - name: active_connection_count
+          type: long
+        - name: pcoip_connection_count
+          type: long
+        - name: blast_connection_count
+          type: long
+        - name: details
+          type: group
+          description: >
+            Gateway details
+          fields:
+            - name: type
+              type: keyword
+            -
+          type: keyword
+        - name: internal
+          type: boolean
+        - name: version
+          type: keyword
+    - name: virtual_center
+      type: group
+      description: >
+        vCenter information
+      fields:
+      - name: id
+        type: keyword
+      - name: version
+        type: keyword
+      - name: description
+        type: keyword
+      - name: instance_uuid
+        type: keyword
+      - name: server_name
+        type: keyword
+      - name: port
+        type: integer
+      - name: use_ssl
+        type: boolean
+      - name: user_name
+        type: keyword
+      - name: se_sparse_reclamation_enabled
+        type: boolean
+      - name: enabled
+        type: boolean
+      - name: vmc_deployment
+        type: boolean
+      - name: limits
+        type: group
+        description: >
+          Resource limits
+        fields:
+        - name: provisioning_limit
+          type: integer
+        - name: power_operations_limit
+          type: integer
+        - name: instant_clone_engine_provisioning_limit
+          type: integer
+      - name: storage_accelerator_data
+        type: group
+        description: >
+          Storage cache
+        fields:
+        - name: enabled
+          type: boolean
+        - name: default_cache_size_mb
+          type: integer
+      - name: certificate_override
+        type: group
+        description: >
+          Certificate override
+        fields:
+        - name: certificate
+          type: keyword
+        - name: type
+          type: keyword
+    - name: machine
+      type: group
+      description: >
+        Machine info
+      fields:
+      - name: id
+        type: keyword
+      - name: name
+        type: keyword
+      - name: dns_name
+        type: keyword
+      - name: desktop_pool_id
+        type: keyword
+      - name: state
+        type: keyword
+      - name: type
+        type: keyword
+      - name: operating_system
+        type: keyword
+      - name: operating_system_architecture
+        type: keyword
+      - name: agent_version
+        type: keyword
+      - name: agent_build_number
+        type: keyword
+      - name: remote_experience_agent_build_number
+        type: keyword
+      - name: message_security_mode
+        type: keyword
+      - name: message_security_enhanced_mode_supported
+        type: boolean
+      - name: pairing_state
+        type: keyword
+      - name: configured_by_connection_server
+        type: keyword
+      - name: user_ids
+        type: keyword
+      - name: managed_machine_data
+        type: group
+        description: >
+          Managed machine data info
+        fields:
+        - name: virtual_center_id
+          type: keyword
+        - name: host_name
+          type: keyword
+        - name: path
+          type: keyword
+        - name: virtual_machine_power_state
+          type: keyword
+        - name: storage_accelerator_state
+          type: keyword
+        - name: memory_mb
+          type: integer
+        - name: missing_in_vcenter
+          type: boolean
+        - name: in_hold_customization
+          type: boolean
+        - name: create_time
+          type: date
+        - name: in_maintenance_mode
+          type: boolean
+      - name: virtual_disk
+        type: group
+        description: >
+          Virtual disks info
+        fields:
+          - name: path
+            type: keyword
+          - name: datastore_path
+            type: keyword
+          - name: capacity_mb
+            type: integer
