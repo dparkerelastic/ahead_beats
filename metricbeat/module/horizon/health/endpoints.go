@@ -489,6 +489,7 @@ func getMachines(m *MetricSet) ([]mb.Event, error) {
 
 	return events, nil
 }
+
 func createMachineFields(machine Machine) mapstr.M {
 	return mapstr.M{
 		"machine": mapstr.M{
@@ -527,4 +528,256 @@ func createManagedMachineDataFields(data ManagedMachineData) mapstr.M {
 		"in_maintenance_mode":         data.InMaintenanceMode,
 	}
 
+}
+
+func getRDSServers(m *MetricSet) ([]mb.Event, error) {
+
+	timestamp := time.Now().UTC()
+	client := m.horizonClient
+	endpoint, err := getEndpoint("RDSServers")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get endpoint: %w", err)
+	}
+
+	response, err := client.Get(endpoint.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	var rdsServers []RDSServer
+	err = json.Unmarshal([]byte(response), &rdsServers)
+	if err != nil {
+		return nil, err
+	}
+
+	var events []mb.Event
+	for _, server := range rdsServers {
+		event := mb.Event{
+			Timestamp:       timestamp,
+			MetricSetFields: createRDSServerFields(server),
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func getFarms(m *MetricSet) ([]mb.Event, error) {
+	timestamp := time.Now().UTC()
+	client := m.horizonClient
+	endpoint, err := getEndpoint("Farms")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get endpoint: %w", err)
+	}
+
+	response, err := client.Get(endpoint.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	var farms []Farm
+	err = json.Unmarshal([]byte(response), &farms)
+	if err != nil {
+		return nil, err
+	}
+
+	var events []mb.Event
+	for _, farm := range farms {
+		event := mb.Event{
+			Timestamp:       timestamp,
+			MetricSetFields: createFarmFields(farm),
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func createFarmFields(farm Farm) mapstr.M {
+	return mapstr.M{
+		"farm": mapstr.M{
+			"id":           farm.ID,
+			"name":         farm.Name,
+			"display_name": farm.DisplayName,
+			"description":  farm.Description,
+			"enabled":      farm.Enabled,
+			"source":       farm.Source,
+			"type":         farm.Type,
+			"settings": mapstr.M{
+				"delete_in_progress": farm.Settings.DeleteInProgress,
+				"desktop_id":         farm.Settings.DesktopID,
+				"display_protocol_settings": mapstr.M{
+					"allow_display_protocol_override": farm.Settings.DisplayProtocolSettings.AllowDisplayProtocolOverride,
+					"default_display_protocol":        farm.Settings.DisplayProtocolSettings.DefaultDisplayProtocol,
+					"grid_vgpus_enabled":              farm.Settings.DisplayProtocolSettings.GridVGPUsEnabled,
+					"html_access_enabled":             farm.Settings.DisplayProtocolSettings.HTMLAccessEnabled,
+					"session_collaboration_enabled":   farm.Settings.DisplayProtocolSettings.SessionCollaborationEnabled,
+					"vgpu_grid_profile":               farm.Settings.DisplayProtocolSettings.VGPUGridProfile,
+				},
+				"load_balancer_settings": mapstr.M{
+					"custom_script_in_use": farm.Settings.LoadBalancerSettings.CustomScriptInUse,
+					"lb_metric_settings": mapstr.M{
+						"cpu_threshold":                farm.Settings.LoadBalancerSettings.LBMetricSettings.CPUThreshold,
+						"disk_queue_length_threshold":  farm.Settings.LoadBalancerSettings.LBMetricSettings.DiskQueueLengthThreshold,
+						"disk_read_latency_threshold":  farm.Settings.LoadBalancerSettings.LBMetricSettings.DiskReadLatencyThreshold,
+						"disk_write_latency_threshold": farm.Settings.LoadBalancerSettings.LBMetricSettings.DiskWriteLatencyThreshold,
+						"include_session_count":        farm.Settings.LoadBalancerSettings.LBMetricSettings.IncludeSessionCount,
+						"memory_threshold":             farm.Settings.LoadBalancerSettings.LBMetricSettings.MemoryThreshold,
+					},
+				},
+				"server_error_threshold": farm.Settings.ServerErrorThreshold,
+				"session_settings": mapstr.M{
+					"disconnected_session_timeout_minutes": farm.Settings.SessionSettings.DisconnectedSessionTimeoutMinutes,
+					"disconnected_session_timeout_policy":  farm.Settings.SessionSettings.DisconnectedSessionTimeoutPolicy,
+					"empty_session_timeout_minutes":        farm.Settings.SessionSettings.EmptySessionTimeoutMinutes,
+					"empty_session_timeout_policy":         farm.Settings.SessionSettings.EmptySessionTimeoutPolicy,
+					"logoff_after_timeout":                 farm.Settings.SessionSettings.LogoffAfterTimeout,
+					"pre_launch_session_timeout_minutes":   farm.Settings.SessionSettings.PreLaunchSessionTimeoutMinutes,
+					"pre_launch_session_timeout_policy":    farm.Settings.SessionSettings.PreLaunchSessionTimeoutPolicy,
+				},
+			},
+		},
+	}
+}
+
+func createRDSServerFields(server RDSServer) mapstr.M {
+	return mapstr.M{
+		"rds_server": mapstr.M{
+			"id":                                   server.ID,
+			"name":                                 server.Name,
+			"state":                                server.State,
+			"enabled":                              server.Enabled,
+			"farm_id":                              server.FarmID,
+			"access_group_id":                      server.AccessGroupID,
+			"description":                          server.Description,
+			"dns_name":                             server.DNSName,
+			"operating_system":                     server.OperatingSystem,
+			"agent_version":                        server.AgentVersion,
+			"agent_build_number":                   server.AgentBuildNumber,
+			"remote_experience_agent_version":      server.RemoteExperienceAgentVersion,
+			"remote_experience_agent_build_number": server.RemoteExperienceAgentBuildNumber,
+			"message_security_mode":                server.MessageSecurityMode,
+			"message_security_enhanced_mode_supported": server.MessageSecurityEnhancedModeSupported,
+			"load_index":                         server.LoadIndex,
+			"load_preference":                    server.LoadPreference,
+			"session_count":                      server.SessionCount,
+			"max_sessions_count":                 server.MaxSessionsCount,
+			"max_sessions_count_configured":      server.MaxSessionsCountConfigured,
+			"max_sessions_type":                  server.MaxSessionsType,
+			"max_sessions_type_configured":       server.MaxSessionsTypeConfigured,
+			"logoff_policy":                      server.LogoffPolicy,
+			"operation":                          server.Operation,
+			"operation_state":                    server.OperationState,
+			"base_vm_id":                         server.BaseVMID,
+			"base_vm_snapshot_id":                server.BaseVMSnapshotID,
+			"pending_base_vm_id":                 server.PendingBaseVMID,
+			"pending_base_vm_snapshot_id":        server.PendingBaseVMSnapshotID,
+			"image_management_stream_id":         server.ImageManagementStreamID,
+			"image_management_tag_id":            server.ImageManagementTagID,
+			"pending_image_management_stream_id": server.PendingImageManagementStreamID,
+			"pending_image_management_tag_id":    server.PendingImageManagementTagID,
+		},
+	}
+}
+
+func getCertificateData(m *MetricSet) ([]mb.Event, error) {
+
+	timestamp := time.Now().UTC()
+	client := m.horizonClient
+	endpoint, err := getEndpoint("CertificateData")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get endpoint: %w", err)
+	}
+
+	response, err := client.Get(endpoint.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	var certificates []CertificateData
+	err = json.Unmarshal([]byte(response), &certificates)
+	if err != nil {
+		return nil, err
+	}
+
+	var events []mb.Event
+	for _, certificate := range certificates {
+		event := mb.Event{
+			Timestamp:       timestamp,
+			MetricSetFields: createCertificateDataFields(certificate),
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func createCertificateDataFields(certificate CertificateData) mapstr.M {
+	return mapstr.M{
+		"certificate_data": mapstr.M{
+			"certificate_usage":             certificate.CertificateUsage,
+			"dns_subject_alternative_names": certificate.DNSSubjectAlternativeNames,
+			"in_use":                        certificate.InUse,
+			"invalid_reasons":               certificate.InvalidReasons,
+			"is_valid":                      certificate.IsValid,
+			"issuer_name":                   certificate.IssuerName,
+			"serial_number":                 certificate.SerialNumber,
+			"sha1_thumbprint":               certificate.SHA1Thumbprint,
+			"signature_algorithm":           certificate.SignatureAlgorithm,
+			"subject_name":                  certificate.SubjectName,
+			"valid_from":                    certificate.ValidFrom,
+			"valid_until":                   certificate.ValidUntil,
+		},
+	}
+}
+
+func getLicenseData(m *MetricSet) ([]mb.Event, error) {
+
+	timestamp := time.Now().UTC()
+	client := m.horizonClient
+	endpoint, err := getEndpoint("LicenseData")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get endpoint: %w", err)
+	}
+
+	response, err := client.Get(endpoint.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	var licenses []LicenseData
+	err = json.Unmarshal([]byte(response), &licenses)
+	if err != nil {
+		return nil, err
+	}
+
+	var events []mb.Event
+	for _, license := range licenses {
+		event := mb.Event{
+			Timestamp:       timestamp,
+			MetricSetFields: createLicenseDataFields(license),
+		}
+		events = append(events, event)
+	}
+
+	return events, nil
+}
+
+func createLicenseDataFields(license LicenseData) mapstr.M {
+	return mapstr.M{
+		"application_pool_launch_enabled": license.ApplicationPoolLaunchEnabled,
+		"desktop_pool_launch_enabled":     license.DesktopPoolLaunchEnabled,
+		"expiration_time":                 license.ExpirationTime,
+		"grace_period_days":               license.GracePeriodDays,
+		"help_desk_enabled":               license.HelpDeskEnabled,
+		"instant_clone_enabled":           license.InstantCloneEnabled,
+		"license_edition":                 license.LicenseEdition,
+		"license_health":                  license.LicenseHealth,
+		"license_key":                     license.LicenseKey,
+		"license_mode":                    license.LicenseMode,
+		"licensed":                        license.Licensed,
+		"session_collaboration_enabled":   license.SessionCollaborationEnabled,
+		"subscription_slice_expiry":       license.SubscriptionSliceExpiry,
+		"usage_model":                     license.UsageModel,
+	}
 }

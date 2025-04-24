@@ -354,3 +354,228 @@
             type: keyword
           - name: capacity_mb
             type: integer
+    - name: rds_server
+      type: group
+      description: >
+        RDS server information
+      fields:
+        - name: id
+          type: keyword
+        - name: name
+          type: keyword
+        - name: dns_name
+          type: keyword
+        - name: desktop_pool_id
+          type: keyword
+        - name: state
+          type: keyword
+        - name: type
+          type: keyword
+        - name: operating_system
+          type: keyword
+        - name: operating_system_architecture
+          type: keyword
+        - name: agent_version
+          type: keyword
+        - name: agent_build_number
+          type: keyword
+        - name: remote_experience_agent_build_number
+          type: keyword
+        - name: message_security_mode
+          type: keyword
+        - name: message_security_enhanced_mode_supported
+          type: boolean
+        - name: pairing_state
+          type: keyword
+        - name: configured_by_connection_server
+          type: keyword
+        - name: user_ids
+          type: keyword
+        - name: managed_machine_data
+          type: group
+          description: >
+            Managed machine data info
+          fields:
+            - name: virtual_center_id
+              type: keyword
+            - name: host_name
+              type: keyword
+            - name: path
+              type: keyword
+            - name: virtual_machine_power_state
+              type: keyword
+            - name: storage_accelerator_state
+              type: keyword
+            - name: memory_mb
+              type: integer
+            - name: missing_in_vcenter
+              type: boolean
+            - name: in_hold_customization
+              type: boolean
+            - name: create_time
+              type: date
+            - name: in_maintenance_mode
+              type: boolean
+            - name: virtual_disks
+              type: group
+              description: >
+                Virtual disks info
+              fields:
+                - name: path
+                  type: keyword
+                - name: datastore_path
+                  type: keyword
+                - name: capacity_mb
+                  type: integer
+    - name: farm
+      type: group
+      description: >
+        Horizon farm information
+      fields:
+      - name: id
+        type: keyword
+      - name: name
+        type: keyword
+      - name: display_name
+        type: keyword
+      - name: description
+        type: keyword
+      - name: enabled
+        type: boolean
+      - name: source
+        type: keyword
+      - name: type
+        type: keyword
+      - name: settings
+        type: group
+        description: >
+          Settings for the farm
+        fields:
+        - name: delete_in_progress
+          type: boolean
+        - name: desktop_id
+          type: keyword
+        - name: display_protocol_settings
+          type: group
+          description: >
+            Display protocol settings
+          fields:
+          - name: allow_display_protocol_override
+            type: boolean
+          - name: default_display_protocol
+            type: keyword
+          - name: grid_vgpus_enabled
+            type: boolean
+          - name: html_access_enabled
+            type: boolean
+          - name: session_collaboration_enabled
+            type: boolean
+          - name: vgpu_grid_profile
+            type: keyword
+        - name: load_balancer_settings
+          type: group
+          description: >
+            Load balancer settings
+          fields:
+          - name: custom_script_in_use
+            type: boolean
+          - name: lb_metric_settings
+            type: group
+            description: >
+              Load balancer metric settings
+            fields:
+            - name: cpu_threshold
+              type: integer
+            - name: disk_queue_length_threshold
+              type: integer
+            - name: disk_read_latency_threshold
+              type: integer
+            - name: disk_write_latency_threshold
+              type: integer
+            - name: include_session_count
+              type: boolean
+            - name: memory_threshold
+              type: integer
+        - name: server_error_threshold
+          type: integer
+        - name: session_settings
+          type: group
+          description: >
+            Session settings
+          fields:
+          - name: disconnected_session_timeout_minutes
+            type: integer
+          - name: disconnected_session_timeout_policy
+            type: keyword
+          - name: empty_session_timeout_minutes
+            type: integer
+          - name: empty_session_timeout_policy
+            type: keyword
+          - name: logoff_after_timeout
+            type: boolean
+          - name: pre_launch_session_timeout_minutes
+            type: integer
+          - name: pre_launch_session_timeout_policy
+            type: keyword
+    - name: certificate_data
+      type: group
+      description: >
+        Certificate data
+      fields:
+        - name: certificate_usage
+          type: keyword
+        - name: dns_subject_alternative_names
+          type: keyword
+        - name: in_use
+          type: boolean
+        - name: invalid_reasons
+          type: keyword
+        - name: is_valid
+          type: boolean
+        - name: issuer_name
+          type: keyword
+        - name: serial_number
+          type: keyword
+        - name: sha1_thumbprint
+          type: keyword
+        - name: signature_algorithm
+          type: keyword
+        - name: subject_name
+          type: keyword
+        - name: valid_from
+          type: date
+        - name: valid_until
+          type: date
+    - name: license_data
+      type: group
+      description: >
+        License data
+      fields:
+        - name: application_pool_launch_enabled
+          type: boolean
+        - name: desktop_pool_launch_enabled
+          type: boolean
+        - name: expiration_time
+          type: long
+        - name: grace_period_days
+          type: integer
+        - name: help_desk_enabled
+          type: boolean
+        - name: instant_clone_enabled
+          type: boolean
+        - name: license_edition
+          type: keyword
+        - name: license_health
+          type: keyword
+        - name: license_key
+          type: keyword
+        - name: license_mode
+          type: keyword
+        - name: licensed
+          type: boolean
+        - name: session_collaboration_enabled
+          type: boolean
+        - name: subscription_slice_expiry
+          type: long
+        - name: usage_model
+          type: keyword

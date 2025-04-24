@@ -41066,6 +41066,678 @@ type: integer
 
 --
 
+[float]
+=== rds_server
+
+RDS server information
+
+
+
+*`horizon.health.rds_server.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.dns_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.desktop_pool_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.state`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.type`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.operating_system`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.operating_system_architecture`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.agent_version`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.agent_build_number`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.remote_experience_agent_build_number`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.message_security_mode`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.message_security_enhanced_mode_supported`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.rds_server.pairing_state`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.configured_by_connection_server`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.user_ids`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== managed_machine_data
+
+Managed machine data info
+
+
+
+*`horizon.health.rds_server.managed_machine_data.virtual_center_id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.host_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.path`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.virtual_machine_power_state`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.storage_accelerator_state`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.memory_mb`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.missing_in_vcenter`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.in_hold_customization`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.create_time`*::
++
+--
+type: date
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.in_maintenance_mode`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== virtual_disks
+
+Virtual disks info
+
+
+
+*`horizon.health.rds_server.managed_machine_data.virtual_disks.path`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.virtual_disks.datastore_path`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.rds_server.managed_machine_data.virtual_disks.capacity_mb`*::
++
+--
+type: integer
+
+--
+
+[float]
+=== farm
+
+Horizon farm information
+
+
+
+*`horizon.health.farm.id`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.display_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.description`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.source`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.type`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== settings
+
+Settings for the farm
+
+
+
+*`horizon.health.farm.settings.delete_in_progress`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.desktop_id`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== display_protocol_settings
+
+Display protocol settings
+
+
+
+*`horizon.health.farm.settings.display_protocol_settings.allow_display_protocol_override`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.display_protocol_settings.default_display_protocol`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.settings.display_protocol_settings.grid_vgpus_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.display_protocol_settings.html_access_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.display_protocol_settings.session_collaboration_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.display_protocol_settings.vgpu_grid_profile`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== load_balancer_settings
+
+Load balancer settings
+
+
+
+*`horizon.health.farm.settings.load_balancer_settings.custom_script_in_use`*::
++
+--
+type: boolean
+
+--
+
+[float]
+=== lb_metric_settings
+
+Load balancer metric settings
+
+
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.cpu_threshold`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.disk_queue_length_threshold`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.disk_read_latency_threshold`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.disk_write_latency_threshold`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.include_session_count`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.load_balancer_settings.lb_metric_settings.memory_threshold`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.server_error_threshold`*::
++
+--
+type: integer
+
+--
+
+[float]
+=== session_settings
+
+Session settings
+
+
+
+*`horizon.health.farm.settings.session_settings.disconnected_session_timeout_minutes`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.session_settings.disconnected_session_timeout_policy`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.settings.session_settings.empty_session_timeout_minutes`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.session_settings.empty_session_timeout_policy`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.farm.settings.session_settings.logoff_after_timeout`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.farm.settings.session_settings.pre_launch_session_timeout_minutes`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.farm.settings.session_settings.pre_launch_session_timeout_policy`*::
++
+--
+type: keyword
+
+--
+
+[float]
+=== certificate_data
+
+Certificate data
+
+
+
+*`horizon.health.certificate_data.certificate_usage`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.dns_subject_alternative_names`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.in_use`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.certificate_data.invalid_reasons`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.is_valid`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.certificate_data.issuer_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.serial_number`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.sha1_thumbprint`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.signature_algorithm`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.subject_name`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.certificate_data.valid_from`*::
++
+--
+type: date
+
+--
+
+*`horizon.health.certificate_data.valid_until`*::
++
+--
+type: date
+
+--
+
+[float]
+=== license_data
+
+License data
+
+
+
+*`horizon.health.license_data.application_pool_launch_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.desktop_pool_launch_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.expiration_time`*::
++
+--
+type: long
+
+--
+
+*`horizon.health.license_data.grace_period_days`*::
++
+--
+type: integer
+
+--
+
+*`horizon.health.license_data.help_desk_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.instant_clone_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.license_edition`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.license_data.license_health`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.license_data.license_key`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.license_data.license_mode`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.license_data.licensed`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.session_collaboration_enabled`*::
++
+--
+type: boolean
+
+--
+
+*`horizon.health.license_data.subscription_slice_expiry`*::
++
+--
+type: long
+
+--
+
+*`horizon.health.license_data.usage_model`*::
++
+--
+type: keyword
+
+--
+
 [[exported-fields-host-processor]]
 == Host fields
 

@@ -258,3 +258,133 @@ type LoginToken struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
 }
+
+// RDSFarmServer represents a server in an RDS farm.
+type RDSServer struct {
+	AccessGroupID                        string  `json:"access_group_id"`
+	AgentBuildNumber                     int     `json:"agent_build_number"`
+	AgentVersion                         float64 `json:"agent_version"`
+	BaseVMID                             string  `json:"base_vm_id"`
+	BaseVMSnapshotID                     string  `json:"base_vm_snapshot_id"`
+	Description                          string  `json:"description"`
+	DNSName                              string  `json:"dns_name"`
+	Enabled                              bool    `json:"enabled"`
+	FarmID                               string  `json:"farm_id"`
+	ID                                   string  `json:"id"`
+	ImageManagementStreamID              string  `json:"image_management_stream_id"`
+	ImageManagementTagID                 string  `json:"image_management_tag_id"`
+	LoadIndex                            int     `json:"load_index"`
+	LoadPreference                       string  `json:"load_preference"`
+	LogoffPolicy                         string  `json:"logoff_policy"`
+	MaxSessionsCount                     int     `json:"max_sessions_count"`
+	MaxSessionsCountConfigured           int     `json:"max_sessions_count_configured"`
+	MaxSessionsType                      string  `json:"max_sessions_type"`
+	MaxSessionsTypeConfigured            string  `json:"max_sessions_type_configured"`
+	MessageSecurityEnhancedModeSupported bool    `json:"message_security_enhanced_mode_supported"`
+	MessageSecurityMode                  string  `json:"message_security_mode"`
+	Name                                 string  `json:"name"`
+	OperatingSystem                      string  `json:"operating_system"`
+	Operation                            string  `json:"operation"`
+	OperationState                       string  `json:"operation_state"`
+	PendingBaseVMID                      string  `json:"pending_base_vm_id"`
+	PendingBaseVMSnapshotID              string  `json:"pending_base_vm_snapshot_id"`
+	PendingImageManagementStreamID       string  `json:"pending_image_management_stream_id"`
+	PendingImageManagementTagID          string  `json:"pending_image_management_tag_id"`
+	RemoteExperienceAgentBuildNumber     int     `json:"remote_experience_agent_build_number"`
+	RemoteExperienceAgentVersion         float64 `json:"remote_experience_agent_version"`
+	SessionCount                         int     `json:"session_count"`
+	State                                string  `json:"state"`
+}
+
+// Farm represents a farm in the system.
+type Farm struct {
+	Description string       `json:"description"`
+	DisplayName string       `json:"display_name"`
+	Enabled     bool         `json:"enabled"`
+	ID          string       `json:"id"`
+	Name        string       `json:"name"`
+	Settings    FarmSettings `json:"settings"`
+	Source      string       `json:"source"`
+	Type        string       `json:"type"`
+}
+
+// FarmSettings represents the settings for a farm.
+type FarmSettings struct {
+	DeleteInProgress        bool                        `json:"delete_in_progess"`
+	DesktopID               string                      `json:"desktop_id"`
+	DisplayProtocolSettings FarmDisplayProtocolSettings `json:"display_protocol_settings"`
+	LoadBalancerSettings    LoadBalancerSettings        `json:"load_balancer_settings"`
+	ServerErrorThreshold    int                         `json:"server_error_threshold"`
+	SessionSettings         FarmSessionSettings         `json:"session_settings"`
+}
+
+// FarmDisplayProtocolSettings represents display protocol settings for a farm.
+type FarmDisplayProtocolSettings struct {
+	AllowDisplayProtocolOverride bool   `json:"allow_display_protocol_override"`
+	DefaultDisplayProtocol       string `json:"default_display_protocol"`
+	GridVGPUsEnabled             bool   `json:"grid_vgpus_enabled"`
+	HTMLAccessEnabled            bool   `json:"html_access_enabled"`
+	SessionCollaborationEnabled  bool   `json:"session_collaboration_enabled"`
+	VGPUGridProfile              string `json:"vgpu_grid_profile"`
+}
+
+// LoadBalancerSettings represents load balancer settings for a farm.
+type LoadBalancerSettings struct {
+	CustomScriptInUse bool             `json:"custom_script_in_use"`
+	LBMetricSettings  LBMetricSettings `json:"lb_metric_settings"`
+}
+
+// LBMetricSettings represents load balancer metric settings.
+type LBMetricSettings struct {
+	CPUThreshold              int  `json:"cpu_threshold"`
+	DiskQueueLengthThreshold  int  `json:"disk_queue_length_threshold"`
+	DiskReadLatencyThreshold  int  `json:"disk_read_latency_threshold"`
+	DiskWriteLatencyThreshold int  `json:"disk_write_latency_threshold"`
+	IncludeSessionCount       bool `json:"include_session_count"`
+	MemoryThreshold           int  `json:"memory_threshold"`
+}
+
+// FarmSessionSettings represents session settings for a farm.
+type FarmSessionSettings struct {
+	DisconnectedSessionTimeoutMinutes int    `json:"disconnected_session_timeout_minutes"`
+	DisconnectedSessionTimeoutPolicy  string `json:"disconnected_session_timeout_policy"`
+	EmptySessionTimeoutMinutes        int    `json:"empty_session_timeout_minutes"`
+	EmptySessionTimeoutPolicy         string `json:"empty_session_timeout_policy"`
+	LogoffAfterTimeout                bool   `json:"logoff_after_timeout"`
+	PreLaunchSessionTimeoutMinutes    int    `json:"pre_launch_session_timeout_minutes"`
+	PreLaunchSessionTimeoutPolicy     string `json:"pre_launch_session_timeout_policy"`
+}
+
+// CertificateDetails represents the details of a certificate.
+type CertificateData struct {
+	CertificateUsage           string   `json:"certificate_usage"`
+	DNSSubjectAlternativeNames []string `json:"dnssubject_alternative_names"`
+	InUse                      bool     `json:"in_use"`
+	InvalidReasons             []string `json:"invalid_reasons"`
+	IsValid                    bool     `json:"is_valid"`
+	IssuerName                 string   `json:"issuer_name"`
+	SerialNumber               string   `json:"serial_number"`
+	SHA1Thumbprint             string   `json:"sha1_thumbprint"`
+	SignatureAlgorithm         string   `json:"signature_algorithm"`
+	SubjectName                string   `json:"subject_name"`
+	ValidFrom                  string   `json:"valid_from"`
+	ValidUntil                 string   `json:"valid_until"`
+}
+
+// LicenseDetails represents the details of a license.
+type LicenseData struct {
+	ApplicationPoolLaunchEnabled bool   `json:"application_pool_launch_enabled"`
+	DesktopPoolLaunchEnabled     bool   `json:"desktop_pool_launch_enabled"`
+	ExpirationTime               int64  `json:"expiration_time"`
+	GracePeriodDays              int    `json:"grace_period_days"`
+	HelpDeskEnabled              bool   `json:"help_desk_enabled"`
+	InstantCloneEnabled          bool   `json:"instant_clone_enabled"`
+	LicenseEdition               string `json:"license_edition"`
+	LicenseHealth                string `json:"license_health"`
+	LicenseKey                   string `json:"license_key"`
+	LicenseMode                  string `json:"license_mode"`
+	Licensed                     bool   `json:"licensed"`
+	SessionCollaborationEnabled  bool   `json:"session_collaboration_enabled"`
+	SubscriptionSliceExpiry      int64  `json:"subscription_slice_expiry"`
+	UsageModel                   string `json:"usage_model"`
+}

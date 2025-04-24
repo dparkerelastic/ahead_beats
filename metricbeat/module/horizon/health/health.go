@@ -33,6 +33,10 @@ func init() {
 		"Gateways":          {Name: "Gateways", Endpoint: "rest/monitor/gateways", Fn: getGateways},
 		"VirtualCenters":    {Name: "VirtualCenters", Endpoint: "rest/config/v1/virtual-centers", Fn: getVirtualCenters},
 		"Machines":          {Name: "Machines", Endpoint: "rest/inventory/v1/machines", Fn: getMachines},
+		"RDSServers":        {Name: "RDSServers", Endpoint: "rest/monitor/rds-servers", Fn: getRDSServers},
+		"Farms":             {Name: "Farms", Endpoint: "rest/inventory/v1/farms", Fn: getFarms},
+		"CertificateData":   {Name: "CertificateData", Endpoint: "rest/config/v1/connection-servers/certificates", Fn: getCertificateData},
+		"LicenseData":       {Name: "LicenseData", Endpoint: "rest/config/v1/licenses", Fn: getLicenseData},
 	}
 
 	mb.Registry.MustAddMetricSet("horizon", "health", New)
