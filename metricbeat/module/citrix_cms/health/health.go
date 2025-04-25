@@ -83,7 +83,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	var metricData CMSData
 
-	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
+	LoadIndexesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexes_API+"?"+url.PathEscape(LoadIndexes_API_PATH()), metricData.loadIndexes)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
 		fmt.Println("##############################")
@@ -91,11 +91,11 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		fmt.Print(string(b))
 
 	} else {
-		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
-		metricData.serverOSDesktopSummaries.Message = message
+		metricData.loadIndexes = LoadIndexesData.(LoadIndexes_JSON)
+		metricData.loadIndexes.Message = message
 	}
-	// ##### Harvested via Machine Details API
-	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH), metricData.loadIndexSummaries)
+
+	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH()), metricData.loadIndexSummaries)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
 		fmt.Println("##############################")
@@ -105,97 +105,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	} else {
 		metricData.loadIndexSummaries = LoadIndexSummariesData.(LoadIndexSummaries_JSON)
 		metricData.loadIndexSummaries.Message = message
-	}
-
-	MachineMetricData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_API+"?"+url.PathEscape(Count_API), metricData.machineMetric)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.machineMetric = MachineMetricData.(MachineMetric_JSON)
-		metricData.machineMetric.Message = message
-	}
-
-	SessionActivitySummaries_Agg1_Data, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_API+"?"+url.PathEscape(SessionActivitySummaries_API_PATH), metricData.sessionActivitySummaries_Agg1)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.sessionActivitySummaries_Agg1 = SessionActivitySummaries_Agg1_Data.(SessionActivitySummaries_Agg1_JSON)
-		metricData.sessionActivitySummaries_Agg1.Message = message
-	}
-
-	MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH), metricData.machineMetricDetails)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
-		metricData.machineMetricDetails.Message = message
-	}
-
-	SessionsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsActive_Details_API_PATH), metricData.sessionDetails)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.sessionDetails = SessionsDetailsData.(SessionsDetails_JSON)
-		metricData.sessionDetails.Message = message
-	}
-
-	SessionsFailureData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsFailure_Details_API_PATH), metricData.sessionFailureDetails)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.sessionFailureDetails = SessionsFailureData.(SessionsDetails_JSON)
-		metricData.sessionFailureDetails.Message = message
-	}
-
-	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Machines_Details_API+"?"+url.PathEscape(Machines_Details_API_PATH), metricData.machineDetails)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
-		metricData.machineDetails.Message = message
-	}
-
-	ResourceUtilizationSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilizationSummary_API+"?"+url.PathEscape(ResourceUtilizationSummary_API_PATH()), metricData.resourceUtilizationSummary)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-		metricData.resourceUtilizationSummary = ResourceUtilizationSummaryData.(ResourceUtilizationSummary_JSON)
-		metricData.resourceUtilizationSummary.Message = message
-		RemoveResourceUtilizationSummaryDuplicatesByMachineID(&metricData.resourceUtilizationSummary)
-	}
-
-	ResourceUtilizationData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilization_API+"?"+url.PathEscape(ResourceUtilization_API_PATH()), metricData.resourceUtilization)
-	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
-	} else {
-
-		metricData.resourceUtilization = ResourceUtilizationData.(ResourceUtilization_JSON)
-		metricData.resourceUtilization.Message = message
-		RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
 	}
 
 	LogOnSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LogOnSummaries_API+"?"+url.PathEscape(LogOnSummaries_API_PATH()), metricData.logOnSummaries)
@@ -209,7 +118,29 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.logOnSummaries = LogOnSummariesData.(LogOnSummaries_JSON)
 		metricData.logOnSummaries.Message = message
 		RemoveLogOnSummariesDuplicatesByDesktopGroupID(&metricData.logOnSummaries)
-		//RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
+	}
+
+	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Machines_Details_API+"?"+url.PathEscape(Machines_Details_API_PATH), metricData.machineDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
+		metricData.machineDetails.Message = message
+	}
+
+	MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH()), metricData.machineMetricDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
+		metricData.machineMetricDetails.Message = message
+		RemoveMachineMetricDetailsDuplicatesByMachineID(&metricData.machineMetricDetails)
 	}
 
 	MachineSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineSummaries_API+"?"+url.PathEscape(MachineSummaries_API_PATH()), metricData.machineSummaries)
@@ -239,6 +170,31 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		RemoveMachineMetricSummaryDuplicatesByMachineID(&metricData.machineMetricSummary)
 	}
 
+	ResourceUtilizationSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilizationSummary_API+"?"+url.PathEscape(ResourceUtilizationSummary_API_PATH()), metricData.resourceUtilizationSummary)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.resourceUtilizationSummary = ResourceUtilizationSummaryData.(ResourceUtilizationSummary_JSON)
+		metricData.resourceUtilizationSummary.Message = message
+		RemoveResourceUtilizationSummaryDuplicatesByMachineID(&metricData.resourceUtilizationSummary)
+	}
+
+	ResourceUtilizationData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilization_API+"?"+url.PathEscape(ResourceUtilization_API_PATH()), metricData.resourceUtilization)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+
+		metricData.resourceUtilization = ResourceUtilizationData.(ResourceUtilization_JSON)
+		metricData.resourceUtilization.Message = message
+		RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
+	}
+
 	SessionActivitySummariesDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_details_API+"?"+url.PathEscape(SessionActivitySummaries_details_API_PATH()), metricData.sessionActivitySummaries)
 	if err != nil {
 		m.logger.Warnf("GetMetrics failed; %v", err)
@@ -250,6 +206,52 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		metricData.sessionActivitySummaries = SessionActivitySummariesDetailsData.(SessionActivitySummaries_JSON)
 		metricData.sessionActivitySummaries.Message = message
 		RemoveSessionActivitySummariesDuplicatesByDesktopGroupID(&metricData.sessionActivitySummaries)
+	}
+
+	SessionsFailureData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsFailure_Details_API_PATH()), metricData.sessionFailureDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.sessionFailureDetails = SessionsFailureData.(SessionsDetails_JSON)
+		metricData.sessionFailureDetails.Message = message
+	}
+
+	SessionMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionMetrics_Details_API+"?"+url.PathEscape(SessionMetrics_Details_API_PATH()), metricData.sessionMetricDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.sessionMetricDetails = SessionMetricDetailsData.(SessionMetricDetails_JSON)
+		metricData.sessionMetricDetails.Message = message
+		RemoveSessionMetricDetailsDuplicatesBySessionID(&metricData.sessionMetricDetails)
+
+	}
+	SessionsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsActive_Details_API_PATH), metricData.sessionDetails)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.sessionDetails = SessionsDetailsData.(SessionsDetails_JSON)
+		metricData.sessionDetails.Message = message
+	}
+
+	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
+	if err != nil {
+		m.logger.Warnf("GetMetrics failed; %v", err)
+		fmt.Println("##############################")
+		b, _ := json.MarshalIndent(message, "", "  ")
+		fmt.Print(string(b))
+
+	} else {
+		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
+		metricData.serverOSDesktopSummaries.Message = message
 	}
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
