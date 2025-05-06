@@ -403,7 +403,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
 				//fmt.Println("Field Name:", field.Name)
-				metricKey := fmt.Sprintf("health.resource.utilization.summary.one.hour.%s", field.Name)
+				//metricKey := fmt.Sprintf("health.resource.utilization.summary.one.hour.%s", field.Name)
+				metricKey := fmt.Sprintf("health.resource.utilization.summary.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
 			}
@@ -433,7 +434,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
 				//fmt.Println("Field Name:", field.Name)
-				metricKey := fmt.Sprintf("health.resource.utilization.five.minute.%s", field.Name)
+				//metricKey := fmt.Sprintf("health.resource.utilization.five.minute.%s", field.Name)
+				metricKey := fmt.Sprintf("health.resource.utilization.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
 			}
@@ -463,7 +465,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
 				//fmt.Println("Field Name:", field.Name)
-				metricKey := fmt.Sprintf("health.logon.summaries.one.hour.%s", field.Name)
+				//metricKey := fmt.Sprintf("health.logon.summaries.one.hour.%s", field.Name)
+				metricKey := fmt.Sprintf("health.logon.summaries.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
 			}
@@ -507,32 +510,32 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 		metrics = append(metrics, metric)
 	}
 
-	for _, metricData := range data.machineMetricSummary.MachineMetricSummaryEntries {
+	// for _, metricData := range data.machineMetricSummary.MachineMetricSummaryEntries {
 
-		metric := mapstr.M{}
-		v := reflect.ValueOf(metricData)
-		t := reflect.TypeOf(metricData)
+	// 	metric := mapstr.M{}
+	// 	v := reflect.ValueOf(metricData)
+	// 	t := reflect.TypeOf(metricData)
 
-		for i := 0; i < t.NumField(); i++ {
-			field := t.Field(i)
-			fieldValue := v.Field(i)
+	// 	for i := 0; i < t.NumField(); i++ {
+	// 		field := t.Field(i)
+	// 		fieldValue := v.Field(i)
 
-			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+	// 		if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				metricKey := fmt.Sprintf("health.machine.metric.summary.%s", field.Name)
-				metric[metricKey] = fieldValue.Interface()
+	// 			metricKey := fmt.Sprintf("health.machine.metric.summary.%s", field.Name)
+	// 			metric[metricKey] = fieldValue.Interface()
 
-			}
-		}
-		if debug {
-			metric["health.api.message"] = data.machineMetricSummary.Message
-		}
+	// 		}
+	// 	}
+	// 	if debug {
+	// 		metric["health.api.message"] = data.machineMetricSummary.Message
+	// 	}
 
-		metricKey := "health.api.odatacontext"
-		metric[metricKey] = data.machineMetricSummary.OdataContext
+	// 	metricKey := "health.api.odatacontext"
+	// 	metric[metricKey] = data.machineMetricSummary.OdataContext
 
-		metrics = append(metrics, metric)
-	}
+	// 	metrics = append(metrics, metric)
+	// }
 
 	for _, metricData := range data.sessionActivitySummaries.SessionActivitySummariesEntries {
 
@@ -846,4 +849,71 @@ func RemoveSessionMetricDetailsDuplicatesBySessionID(sessionMetricDetails *Sessi
 	for _, entry := range uniqueEntries {
 		sessionMetricDetails.SessionMetricEntries = append(sessionMetricDetails.SessionMetricEntries, entry)
 	}
+}
+
+func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetricDetails_JSON, timeParam time.Time) time.Time {
+	var filteredEntries []MachineMetricEntry
+	if timeParam.IsZero() {
+		timeParam = time.Time{}
+	}
+	for _, entry := range machineMetricDetails.MachineMetricEntries {
+		if entry.CollectedDate.After(timeParam) {
+			filteredEntries = append(filteredEntries, entry)
+			if entry.CollectedDate != nil {
+				timeParam = *entry.CollectedDate
+			}
+		}
+	}
+
+	// Update the original slice with filtered entries
+	machineMetricDetails.MachineMetricEntries = filteredEntries
+
+	return timeParam
+}
+
+func RemoveMachineMetricDetailsByCollectedDate2(machineMetricDetails *MachineMetricDetails_JSON, persistMap map[string]MachineMetric_Persist) map[string]MachineMetric_Persist {
+	var filteredEntries []MachineMetricEntry
+	for _, entry := range machineMetricDetails.MachineMetricEntries {
+		if entry.CollectedDate != nil {
+			if _, found := persistMap[entry.MachineID]; found {
+				if entry.CollectedDate.After(*persistMap[entry.MachineID].CollectedDate) {
+					filteredEntries = append(filteredEntries, entry)
+					persistMap[entry.MachineID] = MachineMetric_Persist{
+						CollectedDate: entry.CollectedDate,
+					}
+				}
+			} else {
+				persistMap[entry.MachineID] = MachineMetric_Persist{
+					CollectedDate: entry.CollectedDate,
+				}
+				filteredEntries = append(filteredEntries, entry)
+			}
+		}
+	}
+
+	// Update the original slice with filtered entries
+	machineMetricDetails.MachineMetricEntries = filteredEntries
+
+	return persistMap
+}
+
+// RemoveMachineMetricSummaryBySummaryDate removes entries from MachineMetricSummary_JSON based on the summary date
+func RemoveMachineMetricSummaryBySummaryDate(summary *MachineMetricSummary_JSON, timeParam time.Time) time.Time {
+	filteredSummaries := []MachineMetricSummaryEntry{}
+
+	if timeParam.IsZero() {
+		timeParam = time.Time{}
+	}
+
+	for _, entry := range summary.MachineMetricSummaryEntries {
+		if entry.SummaryDate.After(timeParam) {
+			filteredSummaries = append(filteredSummaries, entry)
+			if entry.SummaryDate != nil {
+				timeParam = *entry.SummaryDate
+			}
+		}
+	}
+
+	summary.MachineMetricSummaryEntries = filteredSummaries
+	return timeParam
 }
