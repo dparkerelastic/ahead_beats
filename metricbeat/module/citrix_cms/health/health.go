@@ -2,7 +2,6 @@ package health
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/url"
 	"time"
 
@@ -84,15 +83,8 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	currentTime := time.Now()
 
-	fmt.Println("Code is Running")
-	fmt.Println("Current time in desired format:", currentTime.UTC().Format("2006-01-02T15:04:05Z"))
-
 	if m.previousTime.IsZero() {
 		m.previousTime = time.Now().Add(-m.period)
-		fmt.Println("Previous time in desired format:", m.previousTime.UTC().Format("2006-01-02T15:04:05Z"))
-	} else {
-		fmt.Println("Previous time was already set:", m.previousTime.UTC().Format("2006-01-02T15:04:05Z"))
-
 	}
 
 	//Setup Connection Info for this Fetch
@@ -117,10 +109,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	LoadIndexesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexes_API+"?"+url.PathEscape(LoadIndexes_API_PATH(m.previousTime, limit_results)), metricData.loadIndexes)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
+		m.logger.Warnf("GetMetrics LoadIndex failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.loadIndexes = LoadIndexesData.(LoadIndexes_JSON)
@@ -129,10 +120,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	LoadIndexSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LoadIndexSummaries_API+"?"+url.PathEscape(LoadIndexSummaries_API_PATH(m.previousTime, limit_results)), metricData.loadIndexSummaries)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
+		m.logger.Warnf("GetMetrics LoadIndexSummaries failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.loadIndexSummaries = LoadIndexSummariesData.(LoadIndexSummaries_JSON)
@@ -141,9 +131,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	LogOnSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+LogOnSummaries_API+"?"+url.PathEscape(LogOnSummaries_API_PATH(m.previousTime, limit_results)), metricData.logOnSummaries)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics LogOnSummaries failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 
@@ -153,10 +143,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Machines_Details_API+"?"+url.PathEscape(Machines_Details_API_PATH(limit_results)), metricData.machineDetails)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
-
+		m.logger.Warnf("GetMetrics MachineDetails failed; %v", err)
 	} else {
 		metricData.machineDetails = MachineDetailsData.(MachineDetails_JSON)
 		metricData.machineDetails.Message = message
@@ -164,9 +151,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	MachineMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetric_Details_API+"?"+url.PathEscape(MachineMetric_Details_API_PATH(m.previousTime, limit_results)), metricData.machineMetricDetails)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics MachineMetricDetails failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
@@ -177,9 +164,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	MachineSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineSummaries_API+"?"+url.PathEscape(MachineSummaries_API_PATH(m.previousTime, limit_results)), metricData.machineSummaries)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics MachineSummaries failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 
@@ -190,9 +177,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	ResourceUtilizationSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilizationSummary_API+"?"+url.PathEscape(ResourceUtilizationSummary_API_PATH(m.previousTime, limit_results)), metricData.resourceUtilizationSummary)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics ResourceUtilizationSummary failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.resourceUtilizationSummary = ResourceUtilizationSummaryData.(ResourceUtilizationSummary_JSON)
@@ -201,9 +188,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	ResourceUtilizationData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilization_API+"?"+url.PathEscape(ResourceUtilization_API_PATH(m.previousTime, limit_results)), metricData.resourceUtilization)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics ResourceUtilization failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 
@@ -213,9 +200,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	SessionActivitySummariesDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_details_API+"?"+url.PathEscape(SessionActivitySummaries_details_API_PATH(m.previousTime, limit_results)), metricData.sessionActivitySummaries)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics SessionActivitySummaries failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 
@@ -225,9 +212,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	SessionsFailureData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsFailure_Details_API_PATH(m.previousTime, limit_results)), metricData.sessionFailureDetails)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics SessionsFailure failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.sessionFailureDetails = SessionsFailureData.(SessionsDetails_JSON)
@@ -236,9 +223,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	SessionMetricDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionMetrics_Details_API+"?"+url.PathEscape(SessionMetrics_Details_API_PATH(m.previousTime, limit_results)), metricData.sessionMetricDetails)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics SessionMetricDetails failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.sessionMetricDetails = SessionMetricDetailsData.(SessionMetricDetails_JSON)
@@ -247,9 +234,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	}
 	SessionsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsActive_Details_API_PATH(limit_results)), metricData.sessionDetails)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
+		m.logger.Warnf("GetMetrics SessionDetails failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.sessionDetails = SessionsDetailsData.(SessionsDetails_JSON)
@@ -258,10 +245,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	ServerOSDesktopSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ServerOSDesktopSummaries_API+"?"+url.PathEscape(Count_API), metricData.serverOSDesktopSummaries)
 	if err != nil {
-		m.logger.Warnf("GetMetrics failed; %v", err)
-		fmt.Println("##############################")
+		m.logger.Warnf("GetMetrics ServerOSDesktopSummaries failed; %v", err)
 		b, _ := json.MarshalIndent(message, "", "  ")
-		fmt.Print(string(b))
+		m.logger.Warn(string(b))
 
 	} else {
 		metricData.serverOSDesktopSummaries = ServerOSDesktopSummariesData.(ServerOSDesktopSummaries_JSON)
@@ -270,9 +256,7 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
 
-	fmt.Println("Done - Current time in desired format:", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	m.previousTime = currentTime
-
 	return nil
 }
 

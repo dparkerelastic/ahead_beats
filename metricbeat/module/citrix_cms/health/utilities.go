@@ -50,38 +50,35 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 	responseData, err := GetInstanceData(m, hostInfo, url)
 
 	if err != nil {
-		fmt.Println("Error fetching instance data:", err)
+		m.logger.Warnf("Error fetching instance data: %v", err)
 		return jsonInfo, "", err
 	}
 
 	if strings.Contains(string(responseData), "Invalid bearer token") {
-		fmt.Println("Invalid bearer token detected, fetching a new token...")
+		m.logger.Warnf("Invalid bearer token detected, fetching a new token...")
 		newToken, tokenErr := m.fetchAuthToken()
 		if tokenErr != nil {
 			return jsonInfo, "", fmt.Errorf("failed to fetch new auth token: %w", tokenErr)
 		}
 		m.authToken = newToken
-		fmt.Println("New Auth Token: ", m.authToken)
 
 		// Retry fetching instance data with the new token
 		responseData, err = GetInstanceData(m, hostInfo, url)
 		if err != nil {
-			fmt.Println("Error fetching instance data after refreshing token:", err)
+			m.logger.Warnf("Error fetching instance data after refreshing token: %v", err)
 			return jsonInfo, "", fmt.Errorf("failed to fetch instance data after refreshing token: %w", err)
 		}
 	}
 
 	output, err := ExcludeNullValues(responseData)
 	if err != nil {
-		fmt.Println("Error excluding null values:", err)
+		m.logger.Warnf("Error excluding null values: %v", err)
 		return jsonInfo, "", err
 	}
 	err = json.Unmarshal(output, &jsonInfo)
 
-	//err = json.Unmarshal(responseData, &jsonInfo)
-
 	if err != nil {
-		fmt.Println("Error unmarshalling JSON response:", err)
+		m.logger.Warnf("Error unmarshalling JSON response: %v", err)
 		if strings.Contains(string(responseData), "Invalid bearer token") {
 			m.authToken = ""
 		}
@@ -89,22 +86,17 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 	}
 
 	return jsonInfo, string(output), nil
-	//return jsonInfo, string(responseData), nil
 
 }
 
 func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, error) {
 
 	if m.authToken == "" {
-		fmt.Println("Auth Token is empty, fetching a new token...")
 		newToken, err := m.fetchAuthToken()
 		if err != nil {
 			return nil, fmt.Errorf("failed to fetch auth token: %w", err)
 		}
 		m.authToken = newToken
-		fmt.Println("New Auth Token: ", m.authToken)
-	} else {
-		fmt.Println("Auth Token is already set, using existing token...")
 	}
 
 	req, _ := http.NewRequest("GET", url, nil)
@@ -117,24 +109,23 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 
 	response, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error executing HTTP request:", err)
+		m.logger.Warnf("Error executing HTTP request: %v", err)
 		if strings.Contains(err.Error(), "401") {
-			fmt.Println("Token expired, fetching a new token...")
+			m.logger.Warnf("Token expired, fetching a new token...")
 			newToken, tokenErr := m.fetchAuthToken()
 			if tokenErr != nil {
 				return nil, fmt.Errorf("failed to fetch new auth token: %w", tokenErr)
 			}
 			m.authToken = newToken
-			fmt.Println("New Auth Token: ", m.authToken)
 
 			// Retry fetching machine data with the new token
 			response, err = client.Do(req)
 			if err != nil {
-				fmt.Println("Error executing HTTP request after refreshing token:", err)
+				m.logger.Warnf("Error executing HTTP request after refreshing token: %v", err)
 				return nil, fmt.Errorf("failed to fetch machine data after refreshing token: %w", err)
 			}
 		} else {
-			fmt.Println("Error executing HTTP request:", err)
+			m.logger.Warnf("Error executing HTTP request: %v", err)
 			return nil, err
 		}
 	}
@@ -142,7 +133,7 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 
 	responseData, err := io.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		m.logger.Warnf("Error reading response body: %v", err)
 		return nil, err
 	}
 
@@ -537,7 +528,6 @@ func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics .
 
 			for k, v := range metric {
 				if !isEmpty(v) {
-					//fmt.Println("k =" + k + " v=" + string(v))
 					event.ModuleFields.Put(k, v)
 				}
 			}
