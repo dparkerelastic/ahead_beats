@@ -27,13 +27,10 @@ func LogOnSummaries_API_PATH(previousTime time.Time, limit_results int) string {
 
 const MachineMetric_Details_API = "/monitorodata/MachineMetric"
 
-// This API is used to get the details of machine metrics, however it has no modified date filter, hence we are hard coding 24 hours
-// to get the data for the last 24 hours. This is not a good practice, but we have no other option as of now.
-// Thus the API will return redundant data for the last 24 hours.
+// IMO this Citrix API has a bug, it does not have ModifiedDate field. Therefore, we are using CollectedDate field and have to hardcode the time
+// to be 2 hours before the current time. This is not a good practice, but we have to do it for now.
 func MachineMetric_Details_API_PATH(previousTime time.Time, limit_results int) string {
-	//return "$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
-	//return "$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
-	return "$filter=CollectedDate gt " + time.Now().UTC().Add(-24*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
+	return "$filter=CollectedDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
 
 }
 
@@ -58,8 +55,6 @@ func MachineSummaries_API_PATH(previousTime time.Time, limit_results int) string
 const ResourceUtilization_API = "/monitorodata/ResourceUtilization"
 
 func ResourceUtilization_API_PATH(previousTime time.Time, limit_results int) string {
-
-	//return "$filter=CollectedDate gt " + time.Now().UTC().Add(-60*time.Minute).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
 	return "$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
 }
 
@@ -67,7 +62,6 @@ const ResourceUtilizationSummary_API = "/monitorodata/ResourceUtilizationSummary
 
 func ResourceUtilizationSummary_API_PATH(previousTime time.Time, limit_results int) string {
 	return "$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
-	//return "$filter=SummaryDate gt " + time.Now().UTC().Add(-2*time.Hour).Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=1000"
 }
 
 const ServerOSDesktopSummaries_API = "/monitorodata/ServerOSDesktopSummaries"

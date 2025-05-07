@@ -155,11 +155,9 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.serverOSDesktopSummaries.Value {
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
-
-		//OdataContext
 
 		for i := 0; i < t.NumField(); i++ {
 			field := t.Field(i)
@@ -182,7 +180,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.loadIndexes.LoadIndexEntries {
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -258,7 +256,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.sessionMetricDetails.SessionMetricEntries {
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -283,7 +281,7 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.sessionDetails.Value {
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -293,7 +291,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
 				if field.Name == "SessionMetrics" {
 					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
 						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
@@ -319,7 +316,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 	for _, metricData := range data.sessionFailureDetails.Value {
 
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -329,15 +325,14 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
 				if field.Name == "SessionMetrics" {
 					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
 						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
-						metricKey := fmt.Sprintf("health.session.failure.details.last.twentyfour.hours.%s.last", field.Name)
+						metricKey := fmt.Sprintf("health.session.failure.details.%s.latest", field.Name)
 						metric[metricKey] = lastValue
 					}
 				} else {
-					metricKey := fmt.Sprintf("health.session.failure.details.last.twentyfour.hours.%s", field.Name)
+					metricKey := fmt.Sprintf("health.session.failure.details.%s", field.Name)
 					metric[metricKey] = fieldValue.Interface()
 				}
 			}
@@ -355,7 +350,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 	for _, metricData := range data.machineDetails.Value {
 
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -365,11 +359,10 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
 				if field.Name == "SessionMetrics" {
 					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
 						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
-						metricKey := fmt.Sprintf("health.machine.details.%s.last", field.Name)
+						metricKey := fmt.Sprintf("health.machine.details.%s.lastest", field.Name)
 						metric[metricKey] = lastValue
 					}
 				} else {
@@ -390,9 +383,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.resourceUtilizationSummary.ResourceUtilizationSummaryEntries {
 
-		//fmt.Println("Current UTC Time (Truncated to Hour, Minus 1 Hour):", time.Now().UTC().Truncate(time.Hour).Add(-1*time.Hour).Format("2006-01-02T15:04:05Z"))
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -402,8 +394,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
-				//metricKey := fmt.Sprintf("health.resource.utilization.summary.one.hour.%s", field.Name)
 				metricKey := fmt.Sprintf("health.resource.utilization.summary.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
@@ -421,9 +411,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.resourceUtilization.ResourceUtilizationEntries {
 
-		//fmt.Println("Current UTC Time (Truncated to Hour, Minus 1 Hour):", time.Now().UTC().Truncate(time.Hour).Add(-1*time.Hour).Format("2006-01-02T15:04:05Z"))
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -433,8 +422,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
-				//metricKey := fmt.Sprintf("health.resource.utilization.five.minute.%s", field.Name)
 				metricKey := fmt.Sprintf("health.resource.utilization.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
@@ -452,9 +439,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.logOnSummaries.LogOnSummariesEntries {
 
-		//fmt.Println("Current UTC Time (Truncated to Hour, Minus 1 Hour):", time.Now().UTC().Truncate(time.Hour).Add(-1*time.Hour).Format("2006-01-02T15:04:05Z"))
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -464,8 +450,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
-				//metricKey := fmt.Sprintf("health.logon.summaries.one.hour.%s", field.Name)
 				metricKey := fmt.Sprintf("health.logon.summaries.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
@@ -483,9 +467,8 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 	for _, metricData := range data.machineSummaries.MachineSummariesEntries {
 
-		//fmt.Println("Current UTC Time (Truncated to Hour, Minus 1 Hour):", time.Now().UTC().Truncate(time.Hour).Add(-1*time.Hour).Format("2006-01-02T15:04:05Z"))
 		metric := mapstr.M{}
-		//metric["health.machine.id"] = metricData.ID
+
 		v := reflect.ValueOf(metricData)
 		t := reflect.TypeOf(metricData)
 
@@ -495,7 +478,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
 
-				//fmt.Println("Field Name:", field.Name)
 				metricKey := fmt.Sprintf("health.machine.summaries.%s", field.Name)
 				metric[metricKey] = fieldValue.Interface()
 
@@ -509,33 +491,6 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 
 		metrics = append(metrics, metric)
 	}
-
-	// for _, metricData := range data.machineMetricSummary.MachineMetricSummaryEntries {
-
-	// 	metric := mapstr.M{}
-	// 	v := reflect.ValueOf(metricData)
-	// 	t := reflect.TypeOf(metricData)
-
-	// 	for i := 0; i < t.NumField(); i++ {
-	// 		field := t.Field(i)
-	// 		fieldValue := v.Field(i)
-
-	// 		if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
-
-	// 			metricKey := fmt.Sprintf("health.machine.metric.summary.%s", field.Name)
-	// 			metric[metricKey] = fieldValue.Interface()
-
-	// 		}
-	// 	}
-	// 	if debug {
-	// 		metric["health.api.message"] = data.machineMetricSummary.Message
-	// 	}
-
-	// 	metricKey := "health.api.odatacontext"
-	// 	metric[metricKey] = data.machineMetricSummary.OdataContext
-
-	// 	metrics = append(metrics, metric)
-	// }
 
 	for _, metricData := range data.sessionActivitySummaries.SessionActivitySummariesEntries {
 
@@ -691,187 +646,7 @@ func filterNullValues(data interface{}) interface{} {
 	}
 }
 
-func RemoveResourceUtilizationDuplicatesByMachineID(resourceUtilization *ResourceUtilization_JSON) {
-	uniqueEntries := make(map[string]ResourceUtilizationEntry)
-	for _, entry := range resourceUtilization.ResourceUtilizationEntries {
-		if existing, found := uniqueEntries[entry.MachineID]; found {
-			// Keep the entry with the latest CollectedDate
-			if entry.CollectedDate.After(*existing.CollectedDate) {
-				uniqueEntries[entry.MachineID] = entry
-			}
-		} else {
-			uniqueEntries[entry.MachineID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	resourceUtilization.ResourceUtilizationEntries = make([]ResourceUtilizationEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		resourceUtilization.ResourceUtilizationEntries = append(resourceUtilization.ResourceUtilizationEntries, entry)
-	}
-}
-
-func RemoveResourceUtilizationSummaryDuplicatesByMachineID(resourceUtilizationSummary *ResourceUtilizationSummary_JSON) {
-	uniqueEntries := make(map[string]ResourceUtilizationSummaryEntry)
-	for _, entry := range resourceUtilizationSummary.ResourceUtilizationSummaryEntries {
-		if existing, found := uniqueEntries[entry.MachineID]; found {
-			// Keep the entry with the latest SummaryDate
-			if entry.SummaryDate.After(*existing.SummaryDate) {
-				uniqueEntries[entry.MachineID] = entry
-			}
-		} else {
-			uniqueEntries[entry.MachineID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	resourceUtilizationSummary.ResourceUtilizationSummaryEntries = make([]ResourceUtilizationSummaryEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		resourceUtilizationSummary.ResourceUtilizationSummaryEntries = append(resourceUtilizationSummary.ResourceUtilizationSummaryEntries, entry)
-	}
-}
-
-func RemoveMachineSummariesDuplicatesByDesktopGroupID(machineSummaries *MachineSummaries_JSON) {
-	uniqueEntries := make(map[string]MachineSummariesEntry)
-	for _, entry := range machineSummaries.MachineSummariesEntries {
-		if existing, found := uniqueEntries[entry.DesktopGroupID]; found {
-			// Keep the entry with the latest SummaryDate
-			if entry.SummaryDate.After(*existing.SummaryDate) {
-				uniqueEntries[entry.DesktopGroupID] = entry
-			}
-		} else {
-			uniqueEntries[entry.DesktopGroupID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	machineSummaries.MachineSummariesEntries = make([]MachineSummariesEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		machineSummaries.MachineSummariesEntries = append(machineSummaries.MachineSummariesEntries, entry)
-	}
-}
-
-func RemoveMachineMetricSummaryDuplicatesByMachineID(machineMetricSummary *MachineMetricSummary_JSON) {
-	uniqueEntries := make(map[string]MachineMetricSummaryEntry)
-	for _, entry := range machineMetricSummary.MachineMetricSummaryEntries {
-		if existing, found := uniqueEntries[entry.MachineID]; found {
-			// Keep the entry with the latest SummaryDate
-			if entry.SummaryDate.After(*existing.SummaryDate) {
-				uniqueEntries[entry.MachineID] = entry
-			}
-		} else {
-			uniqueEntries[entry.MachineID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	machineMetricSummary.MachineMetricSummaryEntries = make([]MachineMetricSummaryEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		machineMetricSummary.MachineMetricSummaryEntries = append(machineMetricSummary.MachineMetricSummaryEntries, entry)
-	}
-}
-
-func RemoveSessionActivitySummariesDuplicatesByDesktopGroupID(sessionActivitySummaries *SessionActivitySummaries_JSON) {
-	uniqueEntries := make(map[string]SessionActivitySummariesEntry)
-	for _, entry := range sessionActivitySummaries.SessionActivitySummariesEntries {
-		if existing, found := uniqueEntries[entry.DesktopGroupID]; found {
-			// Keep the entry with the latest SummaryDate
-			if entry.SummaryDate.After(*existing.SummaryDate) {
-				uniqueEntries[entry.DesktopGroupID] = entry
-			}
-		} else {
-			uniqueEntries[entry.DesktopGroupID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	sessionActivitySummaries.SessionActivitySummariesEntries = make([]SessionActivitySummariesEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		sessionActivitySummaries.SessionActivitySummariesEntries = append(sessionActivitySummaries.SessionActivitySummariesEntries, entry)
-	}
-}
-
-func RemoveLogOnSummariesDuplicatesByDesktopGroupID(logOnSummaries *LogOnSummaries_JSON) {
-	uniqueEntries := make(map[string]LogOnSummariesEntry)
-	for _, entry := range logOnSummaries.LogOnSummariesEntries {
-		if existing, found := uniqueEntries[entry.DesktopGroupID]; found {
-			// Keep the entry with the latest SummaryDate
-			if entry.SummaryDate.After(*existing.SummaryDate) {
-				uniqueEntries[entry.DesktopGroupID] = entry
-			}
-		} else {
-			uniqueEntries[entry.DesktopGroupID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	logOnSummaries.LogOnSummariesEntries = make([]LogOnSummariesEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		logOnSummaries.LogOnSummariesEntries = append(logOnSummaries.LogOnSummariesEntries, entry)
-	}
-}
-
-func RemoveMachineMetricDetailsDuplicatesByMachineID(machineMetricDetails *MachineMetricDetails_JSON) {
-	uniqueEntries := make(map[string]MachineMetricEntry)
-	for _, entry := range machineMetricDetails.MachineMetricEntries {
-		if existing, found := uniqueEntries[entry.MachineID]; found {
-			// Keep the entry with the latest CollectedDate
-			if entry.CollectedDate.After(*existing.CollectedDate) {
-				uniqueEntries[entry.MachineID] = entry
-			}
-		} else {
-			uniqueEntries[entry.MachineID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	machineMetricDetails.MachineMetricEntries = make([]MachineMetricEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		machineMetricDetails.MachineMetricEntries = append(machineMetricDetails.MachineMetricEntries, entry)
-	}
-}
-
-func RemoveSessionMetricDetailsDuplicatesBySessionID(sessionMetricDetails *SessionMetricDetails_JSON) {
-	uniqueEntries := make(map[string]SessionMetricEntry)
-	for _, entry := range sessionMetricDetails.SessionMetricEntries {
-		if existing, found := uniqueEntries[entry.SessionID]; found {
-			// Keep the entry with the latest CollectedDate
-			if entry.CollectedDate.After(*existing.CollectedDate) {
-				uniqueEntries[entry.SessionID] = entry
-			}
-		} else {
-			uniqueEntries[entry.SessionID] = entry
-		}
-	}
-
-	// Convert the map back to a slice
-	sessionMetricDetails.SessionMetricEntries = make([]SessionMetricEntry, 0, len(uniqueEntries))
-	for _, entry := range uniqueEntries {
-		sessionMetricDetails.SessionMetricEntries = append(sessionMetricDetails.SessionMetricEntries, entry)
-	}
-}
-
-func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetricDetails_JSON, timeParam time.Time) time.Time {
-	var filteredEntries []MachineMetricEntry
-	if timeParam.IsZero() {
-		timeParam = time.Time{}
-	}
-	for _, entry := range machineMetricDetails.MachineMetricEntries {
-		if entry.CollectedDate.After(timeParam) {
-			filteredEntries = append(filteredEntries, entry)
-			if entry.CollectedDate != nil {
-				timeParam = *entry.CollectedDate
-			}
-		}
-	}
-
-	// Update the original slice with filtered entries
-	machineMetricDetails.MachineMetricEntries = filteredEntries
-
-	return timeParam
-}
-
-func RemoveMachineMetricDetailsByCollectedDate2(machineMetricDetails *MachineMetricDetails_JSON, persistMap map[string]MachineMetric_Persist) map[string]MachineMetric_Persist {
+func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetricDetails_JSON, persistMap map[string]MachineMetric_Persist) map[string]MachineMetric_Persist {
 	var filteredEntries []MachineMetricEntry
 	for _, entry := range machineMetricDetails.MachineMetricEntries {
 		if entry.CollectedDate != nil {
@@ -895,25 +670,4 @@ func RemoveMachineMetricDetailsByCollectedDate2(machineMetricDetails *MachineMet
 	machineMetricDetails.MachineMetricEntries = filteredEntries
 
 	return persistMap
-}
-
-// RemoveMachineMetricSummaryBySummaryDate removes entries from MachineMetricSummary_JSON based on the summary date
-func RemoveMachineMetricSummaryBySummaryDate(summary *MachineMetricSummary_JSON, timeParam time.Time) time.Time {
-	filteredSummaries := []MachineMetricSummaryEntry{}
-
-	if timeParam.IsZero() {
-		timeParam = time.Time{}
-	}
-
-	for _, entry := range summary.MachineMetricSummaryEntries {
-		if entry.SummaryDate.After(timeParam) {
-			filteredSummaries = append(filteredSummaries, entry)
-			if entry.SummaryDate != nil {
-				timeParam = *entry.SummaryDate
-			}
-		}
-	}
-
-	summary.MachineMetricSummaryEntries = filteredSummaries
-	return timeParam
 }

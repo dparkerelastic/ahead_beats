@@ -35,19 +35,19 @@ type config struct {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	logger                   *logp.Logger
-	counter                  int
-	debug                    bool
-	customerId               string
-	clientId                 string
-	clientSecret             string
-	authToken                string
-	period                   time.Duration
-	previousTime             time.Time
-	limitResults             int
-	machineMetricSummaryTime time.Time
-	machineMetricDetailsTime time.Time
-	machineMetricLatest      map[string]MachineMetric_Persist // MachineID as the key
+	logger *logp.Logger
+	//counter      int
+	debug        bool
+	customerId   string
+	clientId     string
+	clientSecret string
+	authToken    string
+	period       time.Duration
+	previousTime time.Time
+	limitResults int
+	// machineMetricSummaryTime time.Time
+	// machineMetricDetailsTime time.Time
+	machineMetricLatest map[string]MachineMetric_Persist // MachineID as the key
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -67,14 +67,14 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 
 	return &MetricSet{
 		BaseMetricSet: base,
-		counter:       1,
-		debug:         config.DebugMode,
-		logger:        logger,
-		customerId:    config.CustomerId,
-		clientId:      config.ClientId,
-		clientSecret:  config.ClientSecret,
-		period:        config.Period,
-		limitResults:  config.LimitResults,
+		//counter:       1,
+		debug:        config.DebugMode,
+		logger:       logger,
+		customerId:   config.CustomerId,
+		clientId:     config.ClientId,
+		clientSecret: config.ClientSecret,
+		period:       config.Period,
+		limitResults: config.LimitResults,
 	}, nil
 }
 
@@ -83,10 +83,10 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	currentTime := time.Now()
+
 	fmt.Println("Code is Running")
-	//currentTime := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 	fmt.Println("Current time in desired format:", currentTime.UTC().Format("2006-01-02T15:04:05Z"))
-	//m.currentTime = time.Now()
+
 	if m.previousTime.IsZero() {
 		m.previousTime = time.Now().Add(-m.period)
 		fmt.Println("Previous time in desired format:", m.previousTime.UTC().Format("2006-01-02T15:04:05Z"))
@@ -94,8 +94,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 		fmt.Println("Previous time was already set:", m.previousTime.UTC().Format("2006-01-02T15:04:05Z"))
 
 	}
-
-	//fmt.Println("Started - Current time in desired format:", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 
 	//Setup Connection Info for this Fetch
 	hostInfo := Connection{}
@@ -151,7 +149,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 		metricData.logOnSummaries = LogOnSummariesData.(LogOnSummaries_JSON)
 		metricData.logOnSummaries.Message = message
-		RemoveLogOnSummariesDuplicatesByDesktopGroupID(&metricData.logOnSummaries)
 	}
 
 	MachineDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Machines_Details_API+"?"+url.PathEscape(Machines_Details_API_PATH(limit_results)), metricData.machineDetails)
@@ -174,36 +171,9 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	} else {
 		metricData.machineMetricDetails = MachineMetricDetailsData.(MachineMetricDetails_JSON)
 		metricData.machineMetricDetails.Message = message
-		// newTime := RemoveMachineMetricDetailsByCollectedDate(&metricData.machineMetricDetails, m.machineMetricDetailsTime)
+		m.machineMetricLatest = RemoveMachineMetricDetailsByCollectedDate(&metricData.machineMetricDetails, m.machineMetricLatest)
 
-		// if !newTime.IsZero() && newTime != m.machineMetricDetailsTime {
-		// 	m.machineMetricDetailsTime = newTime
-		// }
-		m.machineMetricLatest = RemoveMachineMetricDetailsByCollectedDate2(&metricData.machineMetricDetails, m.machineMetricLatest)
-
-		// if !newTime.IsZero() && newTime != m.machineMetricDetailsTime {
-		// 	m.machineMetricDetailsTime = newTime
-		// }
-
-		//RemoveMachineMetricDetailsDuplicatesByMachineID(&metricData.machineMetricDetails)
 	}
-	// MachineMetricSummaryData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineMetricSummary_API+"?"+url.PathEscape(MachineMetricSummary_API_PATH(m.previousTime, limit_results)), metricData.machineMetricSummary)
-	// if err != nil {
-	// 	m.logger.Warnf("GetMetrics failed; %v", err)
-	// 	b, _ := json.MarshalIndent(message, "", "  ")
-	// 	fmt.Print(string(b))
-
-	// } else {
-
-	// 	metricData.machineMetricSummary = MachineMetricSummaryData.(MachineMetricSummary_JSON)
-	// 	metricData.machineMetricSummary.Message = message
-
-	// 	newTime := RemoveMachineMetricSummaryBySummaryDate(&metricData.machineMetricSummary, m.machineMetricSummaryTime)
-	// 	if !newTime.IsZero() && newTime != m.machineMetricSummaryTime {
-	// 		m.machineMetricSummaryTime = newTime
-	// 	}
-	// 	//RemoveMachineMetricSummaryDuplicatesByMachineID(&metricData.machineMetricSummary)
-	// }
 
 	MachineSummariesData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+MachineSummaries_API+"?"+url.PathEscape(MachineSummaries_API_PATH(m.previousTime, limit_results)), metricData.machineSummaries)
 	if err != nil {
@@ -215,7 +185,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 		metricData.machineSummaries = MachineSummariesData.(MachineSummaries_JSON)
 		metricData.machineSummaries.Message = message
-		RemoveMachineSummariesDuplicatesByDesktopGroupID(&metricData.machineSummaries)
 
 	}
 
@@ -228,7 +197,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	} else {
 		metricData.resourceUtilizationSummary = ResourceUtilizationSummaryData.(ResourceUtilizationSummary_JSON)
 		metricData.resourceUtilizationSummary.Message = message
-		//RemoveResourceUtilizationSummaryDuplicatesByMachineID(&metricData.resourceUtilizationSummary)
 	}
 
 	ResourceUtilizationData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+ResourceUtilization_API+"?"+url.PathEscape(ResourceUtilization_API_PATH(m.previousTime, limit_results)), metricData.resourceUtilization)
@@ -241,7 +209,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 		metricData.resourceUtilization = ResourceUtilizationData.(ResourceUtilization_JSON)
 		metricData.resourceUtilization.Message = message
-		//RemoveResourceUtilizationDuplicatesByMachineID(&metricData.resourceUtilization)
 	}
 
 	SessionActivitySummariesDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+SessionActivitySummaries_details_API+"?"+url.PathEscape(SessionActivitySummaries_details_API_PATH(m.previousTime, limit_results)), metricData.sessionActivitySummaries)
@@ -254,7 +221,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 		metricData.sessionActivitySummaries = SessionActivitySummariesDetailsData.(SessionActivitySummaries_JSON)
 		metricData.sessionActivitySummaries.Message = message
-		//RemoveSessionActivitySummariesDuplicatesByDesktopGroupID(&metricData.sessionActivitySummaries)
 	}
 
 	SessionsFailureData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsFailure_Details_API_PATH(m.previousTime, limit_results)), metricData.sessionFailureDetails)
@@ -277,7 +243,6 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 	} else {
 		metricData.sessionMetricDetails = SessionMetricDetailsData.(SessionMetricDetails_JSON)
 		metricData.sessionMetricDetails.Message = message
-		//RemoveSessionMetricDetailsDuplicatesBySessionID(&metricData.sessionMetricDetails)
 
 	}
 	SessionsDetailsData, message, err := GetMetrics(m, hostInfo, hostInfo.baseurl+Sessions_Details_API+"?"+url.PathEscape(SessionsActive_Details_API_PATH(limit_results)), metricData.sessionDetails)
@@ -305,11 +270,8 @@ func (m *MetricSet) Fetch(reporter mb.ReporterV2) error {
 
 	reportMetrics(reporter, hostInfo.baseurl, metricData, m.debug)
 
-	//fmt.Println("Timestamp fetchMachineData at:", time.Now().Format(time.RFC3339))
-
 	fmt.Println("Done - Current time in desired format:", time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 	m.previousTime = currentTime
-	//fmt.Println("Time 5 minutes ago in desired format:", time.Now().UTC().Add(-5*time.Minute).Format("2006-01-02T15:04:05Z"))
 
 	return nil
 }
@@ -321,5 +283,3 @@ type Connection struct {
 	clientSecret string
 	authToken    string
 }
-
-//DesktopGroupID
