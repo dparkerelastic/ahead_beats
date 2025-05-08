@@ -24,6 +24,9 @@ import (
 // 	return base64.StdEncoding.EncodeToString([]byte(auth))
 // }
 
+// isEmpty checks if a given value is considered "empty".
+// It returns true if the value is nil, a nil pointer, an empty slice, or an empty string.
+// For non-pointer types, it evaluates the length for slices and strings to determine emptiness.
 func isEmpty(value interface{}) bool {
 	// we make use of the fact that all the dashboard API responses utilize
 	// pointers for non-string types to filter out empty values from metric events.
@@ -45,6 +48,10 @@ func isEmpty(value interface{}) bool {
 	return false
 }
 
+// GetMetrics is a generic function that retrieves metrics data from a specified URL.
+// It handles authentication, retries on token expiration, and excludes null values from the response.
+// The function takes a MetricSet, Connection details, a URL, and a generic type T to unmarshal the JSON response into.
+// It returns the unmarshalled JSON data, the filtered JSON string, and an error if any occurred during the process.
 func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T) (any, string, error) {
 
 	responseData, err := GetInstanceData(m, hostInfo, url)
@@ -89,6 +96,10 @@ func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T
 
 }
 
+// GetInstanceData retrieves data from a specified URL using the provided MetricSet and Connection details.
+// It handles authentication by including a bearer token in the request header.
+// If the token is expired or invalid, it fetches a new token and retries the request.
+// The function returns the response data as a byte slice or an error if any issues occur during the process.
 func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, error) {
 
 	if m.authToken == "" {
@@ -138,9 +149,12 @@ func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, err
 	}
 
 	return responseData, nil
-
 }
 
+// reportMetrics processes and reports metrics for various data categories in the CMSData structure.
+// It iterates through each category, extracts non-empty fields, and formats them into a mapstr.M structure.
+// The function supports debugging by including additional API messages in the metrics.
+// Finally, it delegates the reporting of the processed metrics to the reportMetricsForCitrixCMS function.
 func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug bool) {
 	metrics := []mapstr.M{}
 
@@ -512,6 +526,10 @@ func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug b
 	reportMetricsForCitrixCMS(reporter, baseURL, metrics)
 }
 
+// reportMetricsForCitrixCMS processes and reports metrics for the Citrix CMS module.
+// It iterates through the provided metrics slices, constructs events with module fields,
+// and reports them using the provided reporter. The function also handles optional
+// timestamp parsing and ensures non-empty values are included in the reported events.
 func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics ...[]mapstr.M) {
 	for _, metricSlice := range metrics {
 		for _, metric := range metricSlice {
@@ -537,6 +555,10 @@ func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics .
 	}
 }
 
+// fetchAuthToken retrieves an authentication token for the MetricSet.
+// It sends a POST request to the authentication endpoint with client credentials
+// and extracts the access token from the JSON response. The function returns the
+// token as a string or an error if the request or parsing fails.
 func (m *MetricSet) fetchAuthToken() (string, error) {
 	apiURL := fmt.Sprintf("%s/cctrustoauth2/%s/tokens/clients", m.Host(), m.customerId)
 
@@ -597,6 +619,10 @@ func (m *MetricSet) fetchAuthToken() (string, error) {
 	return token, nil
 }
 
+// ExcludeNullValues removes null values from a JSON byte array.
+// It unmarshals the input JSON into a map, filters out null values recursively,
+// and marshals the filtered map back into a JSON byte array.
+// The function returns the filtered JSON or an error if unmarshalling or marshalling fails.
 func ExcludeNullValues(input []byte) ([]byte, error) {
 	var raw map[string]interface{}
 	if err := json.Unmarshal(input, &raw); err != nil {
@@ -607,6 +633,9 @@ func ExcludeNullValues(input []byte) ([]byte, error) {
 	return json.Marshal(filtered)
 }
 
+// filterNullValues recursively filters out null values from a given data structure.
+// It processes maps and slices, removing any entries with nil values, and returns
+// the filtered data. For other types, it returns the data as-is.
 func filterNullValues(data interface{}) interface{} {
 	switch v := data.(type) {
 	case map[string]interface{}:
@@ -636,6 +665,10 @@ func filterNullValues(data interface{}) interface{} {
 	}
 }
 
+// RemoveMachineMetricDetailsByCollectedDate filters machine metric details based on the collected date.
+// It updates the provided MachineMetricDetails_JSON structure by retaining only the entries with the latest
+// collected date for each machine. The function also updates the persistMap with the latest collected dates
+// for each machine. It returns the updated persistMap.
 func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetricDetails_JSON, persistMap map[string]MachineMetric_Persist) map[string]MachineMetric_Persist {
 	var filteredEntries []MachineMetricEntry
 	for _, entry := range machineMetricDetails.MachineMetricEntries {
@@ -660,4 +693,29 @@ func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetr
 	machineMetricDetails.MachineMetricEntries = filteredEntries
 
 	return persistMap
+}
+
+// RemoveDuplicateLoadIndexEntries filters LoadIndexEntries by removing duplicates
+// and retaining only the entries with the latest CreatedDate for each MachineID.
+func RemoveDuplicateLoadIndexEntries(loadIndexes *LoadIndexes_JSON) {
+	latestEntries := make(map[string]LoadIndexEntry)
+
+	for _, entry := range loadIndexes.LoadIndexEntries {
+		if entry.CreatedDate != nil {
+			if existingEntry, found := latestEntries[entry.MachineID]; found {
+				if entry.CreatedDate.After(*existingEntry.CreatedDate) {
+					latestEntries[entry.MachineID] = entry
+				}
+			} else {
+				latestEntries[entry.MachineID] = entry
+			}
+		}
+	}
+
+	// Update the original slice with filtered entries
+	var filteredEntries []LoadIndexEntry
+	for _, entry := range latestEntries {
+		filteredEntries = append(filteredEntries, entry)
+	}
+	loadIndexes.LoadIndexEntries = filteredEntries
 }

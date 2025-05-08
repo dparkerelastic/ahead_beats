@@ -3,8 +3,2279 @@
   release: beta
   description: >
     health
-  fields:
-    - name: example
-      type: keyword
-      description: >
-        Example field
+  fields:        
+    - name: api
+      type: group      
+      fields:
+        - name: odatacontext
+          type: keyword
+          description: >
+            The OData context of the API response.
+    - name: load
+      type: group
+      fields:
+        - name: index
+          type: group
+          fields:
+            - name: ID
+              type: long
+              description: >
+                The unique identifier of the load summary.
+            - name: EffectiveLoadIndex
+              type: float
+              description: >
+                The effective load index value.
+            - name: CPU
+              type: float
+              description: >
+                The CPU load percentage.
+            - name: Memory
+              type: float
+              description: >
+                The memory load percentage.
+            - name: Disk
+              type: float
+              description: >
+                The disk load percentage.
+            - name: Network
+              type: float
+              description: >
+                The network load percentage.
+            - name: SessionCount
+              type: long
+              description: >
+                The session count on the machine.
+            - name: MachineID
+              type: keyword
+              description: >
+                The ID of the machine associated with the load summary.
+            - name: CreatedDate
+              type: date
+              description: >
+                The date when the load summary was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+                The date when the load summary was last modified.    
+            - name: summary
+              type: group
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the load summary.
+                - name: SummaryDate
+                  type: date
+                  description: >
+                    The date of the load summary.
+                - name: MachineId
+                  type: keyword
+                  description: >
+                    The ID of the machine associated with the load summary.
+                - name: SumCount
+                  type: long
+                  description: >
+                    The total count of load activities.
+                - name: SumLoadIndex
+                  type: long
+                  description: >
+                    The total load index value.
+                - name: SumCpu
+                  type: long
+                  description: >
+                    The total CPU load percentage.
+                - name: SumNetwork
+                  type: long
+                  description: >
+                    The total network load percentage.
+                - name: SumDisk
+                  type: long
+                  description: >
+                    The total disk load percentage.
+                - name: SumMemory
+                  type: long
+                  description: >
+                    The total memory load percentage.
+                - name: SumSessionCount
+                  type: long
+                  description: >
+                    The total session count on the machine.
+                - name: Granularity
+                  type: long
+                  description: >
+                    The granularity level of the load summary.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the load summary was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the load summary was last modified.
+    - name: logon
+      type: group
+      fields:
+        - name: summaries
+          type: group
+          fields:
+            - name: ID
+              type: long
+              description: >
+                The unique identifier of the logon summary.
+            - name: SummaryDate
+              type: date
+              description: >
+                The date of the logon summary.
+            - name: DesktopGroupID
+              type: keyword
+              description: >
+                The ID of the desktop group associated with the logon summary.
+            - name: TotalDuration
+              type: float
+              description: >
+                The total duration of logon activities.
+            - name: TotalCount
+              type: long
+              description: >
+                The total count of logon activities.
+            - name: BrokeringDuration
+              type: float
+              description: >
+                The duration of brokering activities.
+            - name: BrokeringCount
+              type: long
+              description: >
+                The count of brokering activities.
+            - name: VMStartDuration
+              type: float
+              description: >
+                The duration of virtual machine start activities.
+            - name: VMPowerOnDuration
+              type: float
+              description: >
+                The duration of virtual machine power-on activities.
+            - name: VMRegistrationDuration
+              type: float
+              description: >
+                The duration of virtual machine registration activities.
+            - name: VMStartCount
+              type: long
+              description: >
+                The count of virtual machine start activities.
+            - name: HdxDuration
+              type: float
+              description: >
+                The duration of HDX activities.
+            - name: HdxCount
+              type: long
+              description: >
+                The count of HDX activities.
+            - name: AuthenticationDuration
+              type: float
+              description: >
+                The duration of authentication activities.
+            - name: AuthenticationCount
+              type: long
+              description: >
+                The count of authentication activities.
+            - name: GpoDuration
+              type: float
+              description: >
+                The duration of Group Policy Object (GPO) activities.
+            - name: GpoCount
+              type: long
+              description: >
+                The count of Group Policy Object (GPO) activities.
+            - name: LogOnScriptsDuration
+              type: float
+              description: >
+                The duration of logon script activities.
+            - name: LogOnScriptsCount
+              type: long
+              description: >
+                The count of logon script activities.
+            - name: InteractiveDuration
+              type: float
+              description: >
+                The duration of interactive logon activities.
+            - name: InteractiveCount
+              type: long
+              description: >
+                The count of interactive logon activities.
+            - name: ProfileLoadDuration
+              type: float
+              description: >
+                The duration of profile load activities.
+            - name: ProfileLoadCount
+              type: long
+              description: >
+                The count of profile load activities.
+            - name: Granularity
+              type: long
+              description: >
+                The granularity level of the logon summary.
+            - name: CreatedDate
+              type: date
+              description: >
+                The date when the logon summary was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+                The date when the logon summary was last modified.    
+    - name: machine
+      type: group
+      fields:
+        - name: details
+          type: group
+          fields:                
+          - name: ID
+            type: keyword
+            description: >
+              The unique identifier of the machine.
+          - name: Sid
+            type: keyword
+            description: >
+              The security identifier of the machine.
+          - name: Name
+            type: keyword
+            description: >
+              The name of the machine.
+          - name: DNSName
+            type: keyword
+            description: >
+              The DNS name of the machine.
+          - name: LifecycleState
+            type: long
+            description: >
+             The lifecycle state of the machine.
+          - name: IPAddress
+            type: keyword
+            description: >
+             The IP address of the machine.
+          - name: HostedMachineID
+            type: keyword
+            description: >
+             The ID of the hosted machine.
+          - name: HostingServerName
+            type: keyword
+            description: >
+             The name of the hosting server.
+          - name: HostedMachineName
+            type: keyword
+            description: >
+             The name of the hosted machine.
+          - name: IsAssigned
+            type: boolean
+            description: >
+             Indicates if the machine is assigned.
+          - name: IsInMaintenanceMode
+            type: boolean
+            description: >
+             Indicates if the machine is in maintenance mode.
+          - name: IsPendingUpdate
+            type: boolean
+            description: >
+             Indicates if the machine has a pending update.
+          - name: AgentVersion
+            type: keyword
+            description: >
+             The version of the agent installed on the machine.
+          - name: AssociatedUserFullNames
+            type: keyword
+            description: >
+             The full names of associated users.
+          - name: AssociatedUserNames
+            type: keyword
+            description: >
+             The usernames of associated users.
+          - name: AssociatedUserUPNs
+            type: keyword
+            description: >
+             The UPNs of associated users.
+          - name: CurrentRegistrationState
+            type: long
+            description: >
+             The current registration state of the machine.
+          - name: RegistrationStateChangeDate
+            type: date
+            description: >
+             The date when the registration state last changed.
+          - name: LastDeregisteredCode
+            type: long
+            description: >
+             The code of the last deregistration event.
+          - name: LastDeregisteredDate
+            type: date
+            description: >
+             The date of the last deregistration event.
+          - name: CurrentPowerState
+            type: long
+            description: >
+             The current power state of the machine.
+          - name: CurrentSessionCount
+            type: long
+            description: >
+             The current session count on the machine.
+          - name: ControllerDNSName
+            type: keyword
+            description: >
+             The DNS name of the controller.
+          - name: PoweredOnDate
+            type: date
+            description: >
+             The date when the machine was powered on.
+          - name: PowerStateChangeDate
+            type: date
+            description: >
+             The date when the power state last changed.
+          - name: FunctionalLevel
+            type: long
+            description: >
+             The functional level of the machine.
+          - name: FailureDate
+            type: date
+            description: >
+             The date of the last failure event.
+          - name: WindowsConnectionSetting
+            type: long
+            description: >
+             The Windows connection setting of the machine.
+          - name: IsPreparing
+            type: boolean
+            description: >
+             Indicates if the machine is preparing.
+          - name: FaultState
+            type: long
+            description: >
+             The fault state of the machine.
+          - name: OSType
+            type: keyword
+            description: >
+             The operating system type of the machine.
+          - name: CurrentLoadIndexID
+            type: long
+            description: >
+             The ID of the current load index.
+          - name: CatalogID
+            type: keyword
+            description: >
+             The ID of the catalog.
+          - name: DesktopGroupID
+            type: keyword
+            description: >
+             The ID of the desktop group.
+          - name: HypervisorID
+            type: keyword
+            description: >
+             The ID of the hypervisor.
+          - name: LastPowerActionCompletedDate
+            type: date
+            description: >
+             The date when the last power action was completed.
+          - name: LastUpgradeState
+            type: long
+            description: >
+             The last upgrade state of the machine.
+          - name: LastUpgradeStateChangeDate
+            type: date
+            description: >
+             The date when the last upgrade state changed.
+          - name: Hash
+            type: keyword
+            description: >
+             The hash of the machine.
+          - name: MachineRole
+            type: long
+            description: >
+             The role of the machine.
+          - name: CreatedDate
+            type: date
+            description: >
+             The date when the machine was created.
+          - name: ModifiedDate
+            type: date
+            description: >
+             The date when the machine was last modified.
+          - name: CurrentLoadIndex
+            type: group
+            description: >
+             The current load index details of the machine.
+            fields:
+            - name: ID
+              type: long
+              description: >
+               The unique identifier of the load index.
+            - name: EffectiveLoadIndex
+              type: long
+              description: >
+               The effective load index value.
+            - name: CPU
+              type: float
+              description: >
+               The CPU load percentage.
+            - name: Memory
+              type: float
+              description: >
+               The memory load percentage.
+            - name: Disk
+              type: float
+              description: >
+               The disk load percentage.
+            - name: Network
+              type: float
+              description: >
+               The network load percentage.
+            - name: SessionCount
+              type: long
+              description: >
+               The session count on the machine.
+            - name: MachineID
+              type: keyword
+              description: >
+               The ID of the machine associated with the load index.
+            - name: CreatedDate
+              type: date
+              description: >
+               The date when the load index was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+               The date when the load index was last modified.
+          - name: Catalog
+            type: group
+            description: >
+             The catalog details of the machine.
+            fields:
+            - name: ID
+              type: keyword
+              description: >
+               The unique identifier of the catalog.
+            - name: Name
+              type: keyword
+              description: >
+               The name of the catalog.
+            - name: LifecycleState
+              type: long
+              description: >
+               The lifecycle state of the catalog.
+            - name: ProvisioningType
+              type: long
+              description: >
+               The provisioning type of the catalog.
+            - name: PersistentUserChanges
+              type: long
+              description: >
+               Indicates if persistent user changes are allowed.
+            - name: IsMachinePhysical
+              type: boolean
+              description: >
+               Indicates if the machine is physical.
+            - name: AllocationType
+              type: long
+              description: >
+               The allocation type of the catalog.
+            - name: SessionSupport
+              type: long
+              description: >
+               The session support type of the catalog.
+            - name: ProvisioningSchemeID
+              type: keyword
+              description: >
+               The ID of the provisioning scheme.
+            - name: ZoneUID
+              type: keyword
+              description: >
+               The unique identifier of the zone.
+            - name: ZoneName
+              type: keyword
+              description: >
+               The name of the zone.
+            - name: CreatedDate
+              type: date
+              description: >
+               The date when the catalog was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+               The date when the catalog was last modified.
+          - name: DesktopGroup
+            type: group
+            description: >
+             The desktop group details of the machine.
+            fields:
+            - name: ID
+              type: keyword
+              description: >
+               The unique identifier of the desktop group.
+            - name: Name
+              type: keyword
+              description: >
+               The name of the desktop group.
+            - name: IsRemotePC
+              type: boolean
+              description: >
+               Indicates if the desktop group is a remote PC.
+            - name: DesktopKind
+              type: long
+              description: >
+               The kind of desktop in the group.
+            - name: LifecycleState
+              type: long
+              description: >
+               The lifecycle state of the desktop group.
+            - name: SessionSupport
+              type: long
+              description: >
+               The session support type of the desktop group.
+            - name: DeliveryType
+              type: long
+              description: >
+               The delivery type of the desktop group.
+            - name: IsInMaintenanceMode
+              type: boolean
+              description: >
+               Indicates if the desktop group is in maintenance mode.
+            - name: MachineCost
+              type: float
+              description: >
+               The cost of the machine in the desktop group.
+            - name: AutoscaleTagID
+              type: long
+              description: >
+               The ID of the autoscale tag.
+            - name: CreatedDate
+              type: date
+              description: >
+               The date when the desktop group was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+               The date when the desktop group was last modified.
+          - name: Hypervisor
+            type: group
+            description: >
+             The hypervisor details of the machine.
+            fields:
+            - name: ID
+              type: keyword
+              description: >
+               The unique identifier of the hypervisor.
+            - name: Name
+              type: keyword
+              description: >
+               The name of the hypervisor.
+            - name: Type
+              type: keyword
+              description: >
+               The type of the hypervisor.
+            - name: LifecycleState
+              type: long
+              description: >
+               The lifecycle state of the hypervisor.
+            - name: CreatedDate
+              type: date
+              description: >
+               The date when the hypervisor was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+               The date when the hypervisor was last modified.
+          - name: MachineCost
+            type: group
+            description: >
+             The cost details of the machine.
+            fields:
+            - name: MachineID
+              type: keyword
+              description: >
+               The unique identifier of the machine.
+            - name: SpecID
+              type: long
+              description: >
+               The specification ID of the machine.
+            - name: CostPerHour
+              type: float
+              description: >
+               The cost per hour of the machine.
+            - name: PowerOnComputeCostPerHour
+              type: float
+              description: >
+               The compute cost per hour when powered on.
+            - name: PowerOnStorageCostPerHour
+              type: float
+              description: >
+               The storage cost per hour when powered on.
+            - name: PowerOffStorageCostPerHour
+              type: float
+              description: >
+               The storage cost per hour when powered off.
+            - name: CreatedDate
+              type: date
+              description: >
+               The date when the cost details were created.
+            - name: ModifiedDate
+              type: date
+              description: >
+               The date when the cost details were last modified.                        
+        - name: metric
+          type: group
+          fields:
+            - name: details
+              type: group
+              fields:
+                - name: MachineID
+                  type: keyword
+                  description: >
+                    The unique identifier of the machine.
+                - name: CollectedDate
+                  type: date
+                  description: >
+                    The date when the metrics were collected.
+                - name: Iops
+                  type: float
+                  description: >
+                    The input/output operations per second (IOPS) of the machine.
+                - name: Latency
+                  type: float
+                  description: >
+                    The latency of the machine in milliseconds.    
+        - name: summaries
+          type: group
+          fields: 
+            - name: ID
+              type: long
+              description: >
+                The unique identifier of the machine summary.
+            - name: SummaryDate
+              type: date
+              description: >
+                The date of the machine summary.
+            - name: DesktopGroupID
+              type: keyword
+              description: >
+                The ID of the desktop group associated with the machine summary.
+            - name: PoweredOnMachinesCount
+              type: long
+              description: >
+                The count of powered-on machines.
+            - name: RegisteredMachinesCount
+              type: long
+              description: >
+                The count of registered machines.
+            - name: MachinesInMaintenanceModeCount
+              type: long
+              description: >
+                The count of machines in maintenance mode.
+            - name: MachinesCount
+              type: long
+              description: >
+                The total count of machines.
+            - name: Granularity
+              type: long
+              description: >
+                The granularity level of the machine summary.
+            - name: CreatedDate
+              type: date
+              description: >
+                The date when the machine summary was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+                The date when the machine summary was last modified.
+    - name: resource
+      type: group
+      fields:
+        - name: utilization
+          type: group
+          fields:
+            - name: MachineID
+              type: keyword
+              description: >
+                The unique identifier of the machine.
+            - name: CollectedDate
+              type: date
+              description: >
+                The date when the resource utilization metrics were collected.
+            - name: PercentCPU
+              type: float
+              description: >
+                The percentage of CPU utilization.
+            - name: UsedMemory
+              type: float
+              description: >
+                The amount of memory used in megabytes.
+            - name: TotalMemory
+              type: float
+              description: >
+                The total memory available in megabytes.
+            - name: CreatedDate
+              type: date
+              description: >
+                The date when the resource utilization record was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+                The date when the resource utilization record was last modified.
+            - name: DesktopGroupID
+              type: keyword
+              description: >
+                The ID of the desktop group associated with the resource utilization.
+            - name: summary
+              type: group
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the resource utilization summary.
+                - name: SummaryDate
+                  type: date
+                  description: >
+                    The date of the resource utilization summary.
+                - name: DesktopGroupID
+                  type: keyword
+                  description: >
+                    The ID of the desktop group associated with the resource utilization summary.
+                - name: ConnectedSessionCount
+                  type: long
+                  description: >
+                    The count of connected sessions.
+                - name: DisconnectedSessionCount
+                  type: long
+                  description: >
+                    The count of disconnected sessions.
+                - name: ConcurrentSessionCount
+                  type: long
+                  description: >
+                    The count of concurrent sessions.
+                - name: TotalLogOnDuration
+                  type: float
+                  description: >
+                    The total duration of logon activities.
+                - name: TotalLogOnCount
+                  type: long
+                  description: >
+                    The total count of logon activities.
+                - name: Granularity
+                  type: long
+                  description: >
+                    The granularity level of the resource utilization summary.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the resource utilization summary was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the resource utilization summary was last modified.
+    - name: session
+      type: group
+      fields:
+        - name: metric
+          type: group
+          fields:
+            - name: details
+              type: group
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the session metric.
+                - name: CollectedDate
+                  type: date
+                  description: >
+                    The date when the metrics were collected.
+                - name: IcaRttMS
+                  type: float
+                  description: >
+                    The ICA round-trip time in milliseconds.
+                - name: IcaLatency
+                  type: float
+                  description: >
+                    The ICA latency in milliseconds.
+                - name: ClientL7Latency
+                  type: float
+                  description: >
+                    The client layer 7 latency in milliseconds.
+                - name: ServerL7Latency
+                  type: float
+                  description: >
+                    The server layer 7 latency in milliseconds.
+                - name: SessionID
+                  type: keyword
+                  description: >
+                    The unique identifier of the session.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the session metric was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the session metric was last modified.
+                - name: Session
+                  type: group
+                  description: >
+                    Details of the session.
+                  fields:
+                    - name: SessionKey
+                      type: keyword
+                      description: >
+                        The session key.
+                    - name: StartDate
+                      type: date
+                      description: >
+                        The start date of the session.
+                    - name: LogOnDuration
+                      type: long
+                      description: >
+                        The duration of the logon in seconds.
+                    - name: EndDate
+                      type: date
+                      description: >
+                        The end date of the session.
+                    - name: ExitCode
+                      type: long
+                      description: >
+                        The exit code of the session.
+                    - name: FailureID
+                      type: long
+                      description: >
+                        The failure ID associated with the session.
+                    - name: FailureDate
+                      type: date
+                      description: >
+                        The date of the failure.
+                    - name: ConnectionState
+                      type: long
+                      description: >
+                        The connection state of the session.
+                    - name: SessionIdleTime
+                      type: date
+                      description: >
+                        The idle time of the session.
+                    - name: ConnectionStateChangeDate
+                      type: date
+                      description: >
+                        The date when the connection state last changed.
+                    - name: LifecycleState
+                      type: long
+                      description: >
+                        The lifecycle state of the session.
+                    - name: CurrentConnectionID
+                      type: long
+                      description: >
+                        The ID of the current connection.
+                    - name: UserID
+                      type: long
+                      description: >
+                        The ID of the user associated with the session.
+                    - name: MachineID
+                      type: keyword
+                      description: >
+                        The ID of the machine associated with the session.
+                    - name: SessionType
+                      type: long
+                      description: >
+                        The type of the session.
+                    - name: IsAnonymous
+                      type: boolean
+                      description: >
+                        Indicates if the session is anonymous.
+                    - name: PublishedDesktopID
+                      type: long
+                      description: >
+                        The ID of the published desktop.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the session was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the session was last modified.
+        - name: activity
+          type: group
+          fields:
+            - name: summaries
+              type: group
+              fields:
+              - name: ID
+                type: long
+                description: >
+                  The unique identifier of the session activity summary.
+              - name: SummaryDate
+                type: date
+                description: >
+                  The date of the session activity summary.
+              - name: DesktopGroupID
+                type: keyword
+                description: >
+                  The ID of the desktop group associated with the session activity summary.
+              - name: ConnectedSessionCount
+                type: long
+                description: >
+                  The count of connected sessions.
+              - name: DisconnectedSessionCount
+                type: long
+                description: >
+                  The count of disconnected sessions.
+              - name: ConcurrentSessionCount
+                type: long
+                description: >
+                  The count of concurrent sessions.
+              - name: TotalLogOnDuration
+                type: float
+                description: >
+                  The total duration of logon activities.
+              - name: TotalLogOnCount
+                type: long
+                description: >
+                  The total count of logon activities.
+              - name: Granularity
+                type: long
+                description: >
+                  The granularity level of the session activity summary.
+              - name: CreatedDate
+                type: date
+                description: >
+                  The date when the session activity summary was created.
+              - name: ModifiedDate
+                type: date
+                description: >
+                  The date when the session activity summary was last modified.        
+        - name: details
+          type: group
+          fields:
+            - name: SessionKey
+              type: keyword
+              description: >
+                The session key.
+            - name: StartDate
+              type: date
+              description: >
+                The start date of the session.
+            - name: LogOnDuration
+              type: long
+              description: >
+                The duration of the logon in seconds.
+            - name: EndDate
+              type: date
+              description: >
+                The end date of the session.
+            - name: ExitCode
+              type: long
+              description: >
+                The exit code of the session.
+            - name: FailureID
+              type: long
+              description: >
+                The failure ID associated with the session.
+            - name: FailureDate
+              type: date
+              description: >
+                The date of the failure.
+            - name: ConnectionState
+              type: long
+              description: >
+                The connection state of the session.
+            - name: SessionIdleTime
+              type: date
+              description: >
+                The idle time of the session.
+            - name: ConnectionStateChangeDate
+              type: date
+              description: >
+                The date when the connection state last changed.
+            - name: LifecycleState
+              type: long
+              description: >
+                The lifecycle state of the session.
+            - name: CurrentConnectionID
+              type: long
+              description: >
+                The ID of the current connection.
+            - name: UserID
+              type: long
+              description: >
+                The ID of the user associated with the session.
+            - name: MachineID
+              type: keyword
+              description: >
+                The ID of the machine associated with the session.
+            - name: SessionType
+              type: long
+              description: >
+                The type of the session.
+            - name: IsAnonymous
+              type: boolean
+              description: >
+                Indicates if the session is anonymous.
+            - name: PublishedDesktopID
+              type: long
+              description: >
+                The ID of the published desktop.
+            - name: CreatedDate
+              type: date
+              description: >
+                The date when the session was created.
+            - name: ModifiedDate
+              type: date
+              description: >
+                The date when the session was last modified.
+            - name: Failure
+              type: group
+              description: >
+                Details of the failure associated with the session.
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the failure.
+                - name: ConnectionFailureEnumValue
+                  type: long
+                  description: >
+                    The connection failure enum value.
+                - name: Category
+                  type: long
+                  description: >
+                    The category of the failure.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the failure was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the failure was last modified.
+            - name: CurrentConnection
+              type: group
+              description: >
+                Details of the current connection associated with the session.
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the current connection.
+                - name: ClientName
+                  type: keyword
+                  description: >
+                    The name of the client.
+                - name: ClientAddress
+                  type: keyword
+                  description: >
+                    The address of the client.
+                - name: ClientPublicIP
+                  type: keyword
+                  description: >
+                    The public IP address of the client.
+                - name: ClientVersion
+                  type: keyword
+                  description: >
+                    The version of the client.
+                - name: ClientPlatform
+                  type: keyword
+                  description: >
+                    The platform of the client.
+                - name: ClientISP
+                  type: keyword
+                  description: >
+                    The ISP of the client.
+                - name: ClientLocationCountry
+                  type: keyword
+                  description: >
+                    The country of the client's location.
+                - name: ClientLocationCity
+                  type: keyword
+                  description: >
+                    The city of the client's location.
+                - name: ConnectedViaHostName
+                  type: keyword
+                  description: >
+                    The hostname through which the client is connected.
+                - name: ConnectedViaIPAddress
+                  type: keyword
+                  description: >
+                    The IP address through which the client is connected.
+                - name: LaunchedViaHostName
+                  type: keyword
+                  description: >
+                    The hostname through which the session was launched.
+                - name: LaunchedViaIPAddress
+                  type: keyword
+                  description: >
+                    The IP address through which the session was launched.
+                - name: IsReconnect
+                  type: boolean
+                  description: >
+                    Indicates if the session is a reconnect.
+                - name: IsSecureIca
+                  type: boolean
+                  description: >
+                    Indicates if the session uses Secure ICA.
+                - name: Protocol
+                  type: keyword
+                  description: >
+                    The protocol used for the session.
+                - name: LogOnStartDate
+                  type: date
+                  description: >
+                    The start date of the logon process.
+                - name: LogOnEndDate
+                  type: date
+                  description: >
+                    The end date of the logon process.
+                - name: BrokeringDuration
+                  type: long
+                  description: >
+                    The duration of the brokering process.
+                - name: BrokeringDate
+                  type: date
+                  description: >
+                    The date of the brokering process.
+                - name: DisconnectCode
+                  type: long
+                  description: >
+                    The disconnect code of the session.
+                - name: DisconnectDate
+                  type: date
+                  description: >
+                    The date of the disconnection.
+                - name: VMStartStartDate
+                  type: date
+                  description: >
+                    The start date of the virtual machine start process.
+                - name: VMPoweredOnDate
+                  type: date
+                  description: >
+                    The date when the virtual machine was powered on.
+                - name: VMStartEndDate
+                  type: date
+                  description: >
+                    The end date of the virtual machine start process.
+                - name: ClientSessionValidateDate
+                  type: date
+                  description: >
+                    The date when the client session was validated.
+                - name: ServerSessionValidateDate
+                  type: date
+                  description: >
+                    The date when the server session was validated.
+                - name: EstablishmentDate
+                  type: date
+                  description: >
+                    The date when the session was established.
+                - name: HdxStartDate
+                  type: date
+                  description: >
+                    The start date of the HDX process.
+                - name: HdxEndDate
+                  type: date
+                  description: >
+                    The end date of the HDX process.
+                - name: AuthenticationDuration
+                  type: long
+                  description: >
+                    The duration of the authentication process.
+                - name: GpoStartDate
+                  type: date
+                  description: >
+                    The start date of the GPO process.
+                - name: GpoEndDate
+                  type: date
+                  description: >
+                    The end date of the GPO process.
+                - name: LogOnScriptsStartDate
+                  type: date
+                  description: >
+                    The start date of the logon scripts process.
+                - name: LogOnScriptsEndDate
+                  type: date
+                  description: >
+                    The end date of the logon scripts process.
+                - name: ProfileLoadStartDate
+                  type: date
+                  description: >
+                    The start date of the profile load process.
+                - name: ProfileLoadEndDate
+                  type: date
+                  description: >
+                    The end date of the profile load process.
+                - name: InteractiveStartDate
+                  type: date
+                  description: >
+                    The start date of the interactive session.
+                - name: InteractiveEndDate
+                  type: date
+                  description: >
+                    The end date of the interactive session.
+                - name: SessionKey
+                  type: keyword
+                  description: >
+                    The session key.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the connection was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the connection was last modified.
+                - name: ConnectionFailureLog
+                  type: group
+                  description: >
+                    Details of the connection failure log.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the connection failure log.
+                    - name: SessionKey
+                      type: keyword
+                      description: >
+                        The session key associated with the failure log.
+                    - name: FailureDate
+                      type: date
+                      description: >
+                        The date of the failure.
+                    - name: UserID
+                      type: long
+                      description: >
+                        The ID of the user associated with the failure log.
+                    - name: MachineID
+                      type: keyword
+                      description: >
+                        The ID of the machine associated with the failure log.
+                    - name: ConnectionFailureEnumValue
+                      type: long
+                      description: >
+                        The connection failure enum value.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the failure log was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the failure log was last modified.
+            - name: User
+              type: group
+              description: >
+                Details of the user associated with the session.
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the user.
+                - name: Sid
+                  type: keyword
+                  description: >
+                    The security identifier of the user.
+                - name: Upn
+                  type: keyword
+                  description: >
+                    The UPN of the user.
+                - name: UserName
+                  type: keyword
+                  description: >
+                    The username of the user.
+                - name: FullName
+                  type: keyword
+                  description: >
+                    The full name of the user.
+                - name: Domain
+                  type: keyword
+                  description: >
+                    The domain of the user.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the user was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the user was last modified.
+            - name: Machine
+              type: group
+              description: >
+                Details of the machine associated with the session.
+              fields:
+                - name: ID
+                  type: keyword
+                  description: >
+                    The unique identifier of the machine.
+                - name: Sid
+                  type: keyword
+                  description: >
+                    The security identifier of the machine.
+                - name: Name
+                  type: keyword
+                  description: >
+                    The name of the machine.
+                - name: DNSName
+                  type: keyword
+                  description: >
+                    The DNS name of the machine.
+                - name: LifecycleState
+                  type: long
+                  description: >
+                    The lifecycle state of the machine.
+                - name: IPAddress
+                  type: keyword
+                  description: >
+                    The IP address of the machine.
+                - name: HostedMachineID
+                  type: keyword
+                  description: >
+                    The ID of the hosted machine.
+                - name: HostingServerName
+                  type: keyword
+                  description: >
+                    The name of the hosting server.
+                - name: HostedMachineName
+                  type: keyword
+                  description: >
+                    The name of the hosted machine.
+                - name: IsAssigned
+                  type: boolean
+                  description: >
+                    Indicates if the machine is assigned.
+                - name: IsInMaintenanceMode
+                  type: boolean
+                  description: >
+                    Indicates if the machine is in maintenance mode.
+                - name: IsPendingUpdate
+                  type: boolean
+                  description: >
+                    Indicates if the machine has a pending update.
+                - name: AgentVersion
+                  type: keyword
+                  description: >
+                    The version of the agent installed on the machine.
+                - name: AssociatedUserFullNames
+                  type: keyword
+                  description: >
+                    The full names of associated users.
+                - name: AssociatedUserNames
+                  type: keyword
+                  description: >
+                    The usernames of associated users.
+                - name: AssociatedUserUPNs
+                  type: keyword
+                  description: >
+                    The UPNs of associated users.
+                - name: CurrentRegistrationState
+                  type: long
+                  description: >
+                    The current registration state of the machine.
+                - name: RegistrationStateChangeDate
+                  type: date
+                  description: >
+                    The date when the registration state last changed.
+                - name: LastDeregisteredCode
+                  type: long
+                  description: >
+                    The code of the last deregistration event.
+                - name: LastDeregisteredDate
+                  type: date
+                  description: >
+                    The date of the last deregistration event.
+                - name: CurrentPowerState
+                  type: long
+                  description: >
+                    The current power state of the machine.
+                - name: CurrentSessionCount
+                  type: long
+                  description: >
+                    The current session count on the machine.
+                - name: ControllerDNSName
+                  type: keyword
+                  description: >
+                    The DNS name of the controller.
+                - name: PoweredOnDate
+                  type: date
+                  description: >
+                    The date when the machine was powered on.
+                - name: PowerStateChangeDate
+                  type: date
+                  description: >
+                    The date when the power state last changed.
+                - name: FunctionalLevel
+                  type: long
+                  description: >
+                    The functional level of the machine.
+                - name: FailureDate
+                  type: date
+                  description: >
+                    The date of the last failure event.
+                - name: WindowsConnectionSetting
+                  type: long
+                  description: >
+                    The Windows connection setting of the machine.
+                - name: IsPreparing
+                  type: boolean
+                  description: >
+                    Indicates if the machine is preparing.
+                - name: FaultState
+                  type: long
+                  description: >
+                    The fault state of the machine.
+                - name: OSType
+                  type: keyword
+                  description: >
+                    The operating system type of the machine.
+                - name: CurrentLoadIndexID
+                  type: long
+                  description: >
+                    The ID of the current load index.
+                - name: CatalogID
+                  type: keyword
+                  description: >
+                    The ID of the catalog.
+                - name: DesktopGroupID
+                  type: keyword
+                  description: >
+                    The ID of the desktop group.
+                - name: HypervisorID
+                  type: keyword
+                  description: >
+                    The ID of the hypervisor.
+                - name: LastPowerActionCompletedDate
+                  type: date
+                  description: >
+                    The date when the last power action was completed.
+                - name: LastUpgradeState
+                  type: long
+                  description: >
+                    The last upgrade state of the machine.
+                - name: LastUpgradeStateChangeDate
+                  type: date
+                  description: >
+                    The date when the last upgrade state changed.
+                - name: Hash
+                  type: keyword
+                  description: >
+                    The hash of the machine.
+                - name: MachineRole
+                  type: long
+                  description: >
+                    The role of the machine.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the machine was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the machine was last modified.
+            - name: SessionMetrics
+              type: group
+              description: >
+                Metrics related to the session.
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the session metric.
+                - name: CollectedDate
+                  type: date
+                  description: >
+                    The date when the metrics were collected.
+                - name: IcaRttMS
+                  type: long
+                  description: >
+                    The ICA round-trip time in milliseconds.
+                - name: IcaLatency
+                  type: long
+                  description: >
+                    The ICA latency in milliseconds.
+                - name: ClientL7Latency
+                  type: long
+                  description: >
+                    The client layer 7 latency in milliseconds.
+                - name: ServerL7Latency
+                  type: long
+                  description: >
+                    The server layer 7 latency in milliseconds.
+                - name: SessionID
+                  type: keyword
+                  description: >
+                    The unique identifier of the session.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the session metric was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the session metric was last modified.
+            - name: SessionRecordingServer
+              type: group
+              description: >
+                Details of the session recording server.
+              fields:
+                - name: SessionKey
+                  type: keyword
+                  description: >
+                    The session key associated with the recording server.
+                - name: SessionRecordingServerName
+                  type: keyword
+                  description: >
+                    The name of the session recording server.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the session recording server was created.
+            - name: PublishedDesktopName
+              type: group
+              description: >
+                Details of the published desktop name.
+              fields:
+                - name: ID
+                  type: long
+                  description: >
+                    The unique identifier of the published desktop.
+                - name: PublishedName
+                  type: keyword
+                  description: >
+                    The name of the published desktop.
+            - name: SessionMetricsLatest
+              type: group
+              description: >
+                Latest metrics related to the session.
+              fields:
+                - name: SessionKey
+                  type: keyword
+                  description: >
+                    The session key associated with the latest metrics.
+                - name: ClientL7Latency
+                  type: long
+                  description: >
+                    The client layer 7 latency in milliseconds.
+                - name: CloudConnectorName
+                  type: keyword
+                  description: >
+                    The name of the cloud connector.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the latest session metrics were created.
+                - name: EdtMtu
+                  type: keyword
+                  description: >
+                    The EDT MTU value.
+                - name: GatewayPopName
+                  type: keyword
+                  description: >
+                    The name of the gateway point of presence.
+                - name: HdxConnectionType
+                  type: long
+                  description: >
+                    The type of HDX connection.
+                - name: HdxProtocolName
+                  type: keyword
+                  description: >
+                    The name of the HDX protocol.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the latest session metrics were last modified.
+                - name: ServerL7Latency
+                  type: long
+                  description: >
+                    The server layer 7 latency in milliseconds.
+        - name: failure
+          type: group
+          fields: 
+            - name: details
+              type: group
+              fields:
+                - name: SessionKey
+                  type: keyword
+                  description: >
+                    The session key.
+                - name: StartDate
+                  type: date
+                  description: >
+                    The start date of the session.
+                - name: LogOnDuration
+                  type: long
+                  description: >
+                    The duration of the logon in seconds.
+                - name: EndDate
+                  type: date
+                  description: >
+                    The end date of the session.
+                - name: ExitCode
+                  type: long
+                  description: >
+                    The exit code of the session.
+                - name: FailureID
+                  type: long
+                  description: >
+                    The failure ID associated with the session.
+                - name: FailureDate
+                  type: date
+                  description: >
+                    The date of the failure.
+                - name: ConnectionState
+                  type: long
+                  description: >
+                    The connection state of the session.
+                - name: SessionIdleTime
+                  type: date
+                  description: >
+                    The idle time of the session.
+                - name: ConnectionStateChangeDate
+                  type: date
+                  description: >
+                    The date when the connection state last changed.
+                - name: LifecycleState
+                  type: long
+                  description: >
+                    The lifecycle state of the session.
+                - name: CurrentConnectionID
+                  type: long
+                  description: >
+                    The ID of the current connection.
+                - name: UserID
+                  type: long
+                  description: >
+                    The ID of the user associated with the session.
+                - name: MachineID
+                  type: keyword
+                  description: >
+                    The ID of the machine associated with the session.
+                - name: SessionType
+                  type: long
+                  description: >
+                    The type of the session.
+                - name: IsAnonymous
+                  type: boolean
+                  description: >
+                    Indicates if the session is anonymous.
+                - name: PublishedDesktopID
+                  type: long
+                  description: >
+                    The ID of the published desktop.
+                - name: CreatedDate
+                  type: date
+                  description: >
+                    The date when the session was created.
+                - name: ModifiedDate
+                  type: date
+                  description: >
+                    The date when the session was last modified.
+                - name: Failure
+                  type: group
+                  description: >
+                    Details of the failure associated with the session.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the failure.
+                    - name: ConnectionFailureEnumValue
+                      type: long
+                      description: >
+                        The connection failure enum value.
+                    - name: Category
+                      type: long
+                      description: >
+                        The category of the failure.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the failure was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the failure was last modified.
+                - name: CurrentConnection
+                  type: group
+                  description: >
+                    Details of the current connection associated with the session.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the current connection.
+                    - name: ClientName
+                      type: keyword
+                      description: >
+                        The name of the client.
+                    - name: ClientAddress
+                      type: keyword
+                      description: >
+                        The address of the client.
+                    - name: ClientPublicIP
+                      type: keyword
+                      description: >
+                        The public IP address of the client.
+                    - name: ClientVersion
+                      type: keyword
+                      description: >
+                        The version of the client.
+                    - name: ClientPlatform
+                      type: keyword
+                      description: >
+                        The platform of the client.
+                    - name: ClientISP
+                      type: keyword
+                      description: >
+                        The ISP of the client.
+                    - name: ClientLocationCountry
+                      type: keyword
+                      description: >
+                        The country of the client's location.
+                    - name: ClientLocationCity
+                      type: keyword
+                      description: >
+                        The city of the client's location.
+                    - name: ConnectedViaHostName
+                      type: keyword
+                      description: >
+                        The hostname through which the client is connected.
+                    - name: ConnectedViaIPAddress
+                      type: keyword
+                      description: >
+                        The IP address through which the client is connected.
+                    - name: LaunchedViaHostName
+                      type: keyword
+                      description: >
+                        The hostname through which the session was launched.
+                    - name: LaunchedViaIPAddress
+                      type: keyword
+                      description: >
+                        The IP address through which the session was launched.
+                    - name: IsReconnect
+                      type: boolean
+                      description: >
+                        Indicates if the session is a reconnect.
+                    - name: IsSecureIca
+                      type: boolean
+                      description: >
+                        Indicates if the session uses Secure ICA.
+                    - name: Protocol
+                      type: keyword
+                      description: >
+                        The protocol used for the session.
+                    - name: LogOnStartDate
+                      type: date
+                      description: >
+                        The start date of the logon process.
+                    - name: LogOnEndDate
+                      type: date
+                      description: >
+                        The end date of the logon process.
+                    - name: BrokeringDuration
+                      type: long
+                      description: >
+                        The duration of the brokering process.
+                    - name: BrokeringDate
+                      type: date
+                      description: >
+                        The date of the brokering process.
+                    - name: DisconnectCode
+                      type: long
+                      description: >
+                        The disconnect code of the session.
+                    - name: DisconnectDate
+                      type: date
+                      description: >
+                        The date of the disconnection.
+                    - name: VMStartStartDate
+                      type: date
+                      description: >
+                        The start date of the virtual machine start process.
+                    - name: VMPoweredOnDate
+                      type: date
+                      description: >
+                        The date when the virtual machine was powered on.
+                    - name: VMStartEndDate
+                      type: date
+                      description: >
+                        The end date of the virtual machine start process.
+                    - name: ClientSessionValidateDate
+                      type: date
+                      description: >
+                        The date when the client session was validated.
+                    - name: ServerSessionValidateDate
+                      type: date
+                      description: >
+                        The date when the server session was validated.
+                    - name: EstablishmentDate
+                      type: date
+                      description: >
+                        The date when the session was established.
+                    - name: HdxStartDate
+                      type: date
+                      description: >
+                        The start date of the HDX process.
+                    - name: HdxEndDate
+                      type: date
+                      description: >
+                        The end date of the HDX process.
+                    - name: AuthenticationDuration
+                      type: long
+                      description: >
+                        The duration of the authentication process.
+                    - name: GpoStartDate
+                      type: date
+                      description: >
+                        The start date of the GPO process.
+                    - name: GpoEndDate
+                      type: date
+                      description: >
+                        The end date of the GPO process.
+                    - name: LogOnScriptsStartDate
+                      type: date
+                      description: >
+                        The start date of the logon scripts process.
+                    - name: LogOnScriptsEndDate
+                      type: date
+                      description: >
+                        The end date of the logon scripts process.
+                    - name: ProfileLoadStartDate
+                      type: date
+                      description: >
+                        The start date of the profile load process.
+                    - name: ProfileLoadEndDate
+                      type: date
+                      description: >
+                        The end date of the profile load process.
+                    - name: InteractiveStartDate
+                      type: date
+                      description: >
+                        The start date of the interactive session.
+                    - name: InteractiveEndDate
+                      type: date
+                      description: >
+                        The end date of the interactive session.
+                    - name: SessionKey
+                      type: keyword
+                      description: >
+                        The session key.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the connection was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the connection was last modified.
+                    - name: ConnectionFailureLog
+                      type: group
+                      description: >
+                        Details of the connection failure log.
+                      fields:
+                        - name: ID
+                          type: long
+                          description: >
+                            The unique identifier of the connection failure log.
+                        - name: SessionKey
+                          type: keyword
+                          description: >
+                            The session key associated with the failure log.
+                        - name: FailureDate
+                          type: date
+                          description: >
+                            The date of the failure.
+                        - name: UserID
+                          type: long
+                          description: >
+                            The ID of the user associated with the failure log.
+                        - name: MachineID
+                          type: keyword
+                          description: >
+                            The ID of the machine associated with the failure log.
+                        - name: ConnectionFailureEnumValue
+                          type: long
+                          description: >
+                            The connection failure enum value.
+                        - name: CreatedDate
+                          type: date
+                          description: >
+                            The date when the failure log was created.
+                        - name: ModifiedDate
+                          type: date
+                          description: >
+                            The date when the failure log was last modified.
+                - name: User
+                  type: group
+                  description: >
+                    Details of the user associated with the session.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the user.
+                    - name: Sid
+                      type: keyword
+                      description: >
+                        The security identifier of the user.
+                    - name: Upn
+                      type: keyword
+                      description: >
+                        The UPN of the user.
+                    - name: UserName
+                      type: keyword
+                      description: >
+                        The username of the user.
+                    - name: FullName
+                      type: keyword
+                      description: >
+                        The full name of the user.
+                    - name: Domain
+                      type: keyword
+                      description: >
+                        The domain of the user.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the user was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the user was last modified.
+                - name: Machine
+                  type: group
+                  description: >
+                    Details of the machine associated with the session.
+                  fields:
+                    - name: ID
+                      type: keyword
+                      description: >
+                        The unique identifier of the machine.
+                    - name: Sid
+                      type: keyword
+                      description: >
+                        The security identifier of the machine.
+                    - name: Name
+                      type: keyword
+                      description: >
+                        The name of the machine.
+                    - name: DNSName
+                      type: keyword
+                      description: >
+                        The DNS name of the machine.
+                    - name: LifecycleState
+                      type: long
+                      description: >
+                        The lifecycle state of the machine.
+                    - name: IPAddress
+                      type: keyword
+                      description: >
+                        The IP address of the machine.
+                    - name: HostedMachineID
+                      type: keyword
+                      description: >
+                        The ID of the hosted machine.
+                    - name: HostingServerName
+                      type: keyword
+                      description: >
+                        The name of the hosting server.
+                    - name: HostedMachineName
+                      type: keyword
+                      description: >
+                        The name of the hosted machine.
+                    - name: IsAssigned
+                      type: boolean
+                      description: >
+                        Indicates if the machine is assigned.
+                    - name: IsInMaintenanceMode
+                      type: boolean
+                      description: >
+                        Indicates if the machine is in maintenance mode.
+                    - name: IsPendingUpdate
+                      type: boolean
+                      description: >
+                        Indicates if the machine has a pending update.
+                    - name: AgentVersion
+                      type: keyword
+                      description: >
+                        The version of the agent installed on the machine.
+                    - name: AssociatedUserFullNames
+                      type: keyword
+                      description: >
+                        The full names of associated users.
+                    - name: AssociatedUserNames
+                      type: keyword
+                      description: >
+                        The usernames of associated users.
+                    - name: AssociatedUserUPNs
+                      type: keyword
+                      description: >
+                        The UPNs of associated users.
+                    - name: CurrentRegistrationState
+                      type: long
+                      description: >
+                        The current registration state of the machine.
+                    - name: RegistrationStateChangeDate
+                      type: date
+                      description: >
+                        The date when the registration state last changed.
+                    - name: LastDeregisteredCode
+                      type: long
+                      description: >
+                        The code of the last deregistration event.
+                    - name: LastDeregisteredDate
+                      type: date
+                      description: >
+                        The date of the last deregistration event.
+                    - name: CurrentPowerState
+                      type: long
+                      description: >
+                        The current power state of the machine.
+                    - name: CurrentSessionCount
+                      type: long
+                      description: >
+                        The current session count on the machine.
+                    - name: ControllerDNSName
+                      type: keyword
+                      description: >
+                        The DNS name of the controller.
+                    - name: PoweredOnDate
+                      type: date
+                      description: >
+                        The date when the machine was powered on.
+                    - name: PowerStateChangeDate
+                      type: date
+                      description: >
+                        The date when the power state last changed.
+                    - name: FunctionalLevel
+                      type: long
+                      description: >
+                        The functional level of the machine.
+                    - name: FailureDate
+                      type: date
+                      description: >
+                        The date of the last failure event.
+                    - name: WindowsConnectionSetting
+                      type: long
+                      description: >
+                        The Windows connection setting of the machine.
+                    - name: IsPreparing
+                      type: boolean
+                      description: >
+                        Indicates if the machine is preparing.
+                    - name: FaultState
+                      type: long
+                      description: >
+                        The fault state of the machine.
+                    - name: OSType
+                      type: keyword
+                      description: >
+                        The operating system type of the machine.
+                    - name: CurrentLoadIndexID
+                      type: long
+                      description: >
+                        The ID of the current load index.
+                    - name: CatalogID
+                      type: keyword
+                      description: >
+                        The ID of the catalog.
+                    - name: DesktopGroupID
+                      type: keyword
+                      description: >
+                        The ID of the desktop group.
+                    - name: HypervisorID
+                      type: keyword
+                      description: >
+                        The ID of the hypervisor.
+                    - name: LastPowerActionCompletedDate
+                      type: date
+                      description: >
+                        The date when the last power action was completed.
+                    - name: LastUpgradeState
+                      type: long
+                      description: >
+                        The last upgrade state of the machine.
+                    - name: LastUpgradeStateChangeDate
+                      type: date
+                      description: >
+                        The date when the last upgrade state changed.
+                    - name: Hash
+                      type: keyword
+                      description: >
+                        The hash of the machine.
+                    - name: MachineRole
+                      type: long
+                      description: >
+                        The role of the machine.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the machine was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the machine was last modified.
+                - name: SessionMetrics
+                  type: group
+                  description: >
+                    Metrics related to the session.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the session metric.
+                    - name: CollectedDate
+                      type: date
+                      description: >
+                        The date when the metrics were collected.
+                    - name: IcaRttMS
+                      type: long
+                      description: >
+                        The ICA round-trip time in milliseconds.
+                    - name: IcaLatency
+                      type: long
+                      description: >
+                        The ICA latency in milliseconds.
+                    - name: ClientL7Latency
+                      type: long
+                      description: >
+                        The client layer 7 latency in milliseconds.
+                    - name: ServerL7Latency
+                      type: long
+                      description: >
+                        The server layer 7 latency in milliseconds.
+                    - name: SessionID
+                      type: keyword
+                      description: >
+                        The unique identifier of the session.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the session metric was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the session metric was last modified.
+                - name: SessionRecordingServer
+                  type: group
+                  description: >
+                    Details of the session recording server.
+                  fields:
+                    - name: SessionKey
+                      type: keyword
+                      description: >
+                        The session key associated with the recording server.
+                    - name: SessionRecordingServerName
+                      type: keyword
+                      description: >
+                        The name of the session recording server.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the session recording server was created.
+                - name: PublishedDesktopName
+                  type: group
+                  description: >
+                    Details of the published desktop name.
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the published desktop.
+                    - name: PublishedName
+                      type: keyword
+                      description: >
+                        The name of the published desktop.
+                - name: SessionMetricsLatest
+                  type: group
+                  description: >
+                    Latest metrics related to the session.
+                  fields:
+                    - name: SessionKey
+                      type: keyword
+                      description: >
+                        The session key associated with the latest metrics.
+                    - name: ClientL7Latency
+                      type: long
+                      description: >
+                        The client layer 7 latency in milliseconds.
+                    - name: CloudConnectorName
+                      type: keyword
+                      description: >
+                        The name of the cloud connector.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the latest session metrics were created.
+                    - name: EdtMtu
+                      type: keyword
+                      description: >
+                        The EDT MTU value.
+                    - name: GatewayPopName
+                      type: keyword
+                      description: >
+                        The name of the gateway point of presence.
+                    - name: HdxConnectionType
+                      type: long
+                      description: >
+                        The type of HDX connection.
+                    - name: HdxProtocolName
+                      type: keyword
+                      description: >
+                        The name of the HDX protocol.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the latest session metrics were last modified.
+                    - name: ServerL7Latency
+                      type: long
+                      description: >
+                        The server layer 7 latency in milliseconds.            
+    - name: server
+      type: group
+      fields:
+        - name: os
+          type: group
+          fields:
+            - name: desktop
+              type: group
+              fields:      
+                - name: summary
+                  type: group
+                  fields:
+                    - name: ID
+                      type: long
+                      description: >
+                        The unique identifier of the desktop OS summary.
+                    - name: SummaryDate
+                      type: date
+                      description: >
+                        The date of the desktop OS summary.
+                    - name: DesktopGroupId
+                      type: keyword
+                      description: >
+                        The ID of the desktop group associated with the desktop OS summary.
+                    - name: PeakConcurrentInstanceCount
+                      type: long
+                      description: >
+                        The peak count of concurrent instances.
+                    - name: TotalUsageDuration
+                      type: float
+                      description: >
+                        The total usage duration in hours.
+                    - name: TotalLaunchesCount
+                      type: long
+                      description: >
+                        The total count of launches.
+                    - name: StartingInstanceCount
+                      type: long
+                      description: >
+                        The count of starting instances.
+                    - name: Granularity
+                      type: long
+                      description: >
+                        The granularity level of the desktop OS summary.
+                    - name: CreatedDate
+                      type: date
+                      description: >
+                        The date when the desktop OS summary was created.
+                    - name: ModifiedDate
+                      type: date
+                      description: >
+                        The date when the desktop OS summary was last modified.
+
