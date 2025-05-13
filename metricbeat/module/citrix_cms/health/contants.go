@@ -102,9 +102,6 @@ func ResourceUtilizationSummary_API_PATH(previousTime time.Time, limit_results i
 	return "$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
 }
 
-// ServerOSDesktopSummaries_API is the endpoint for fetching server OS desktop summaries.
-const ServerOSDesktopSummaries_API = "/monitorodata/ServerOSDesktopSummaries"
-
 // SessionActivitySummaries_details_API is the endpoint for fetching session activity summaries.
 const SessionActivitySummaries_details_API = "/monitorodata/MachineSummaries"
 
@@ -140,4 +137,14 @@ func SessionsActive_Details_API_PATH(limit_results int) string {
 // greater than the provided previousTime. It also limits the results to the specified limit_results.
 func SessionsFailure_Details_API_PATH(previousTime time.Time, limit_results int) string {
 	return "$expand=Failure,CurrentConnection,CurrentConnection($expand=ConnectionFailureLog),User,Machine,SessionMetrics,SessionMetricsLatest&$filter=FailureId ne null and FailureDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
+}
+
+// ServerOSDesktopSummaries_API is the endpoint for fetching server OS desktop summaries.
+const ServerOSDesktopSummaries_API = "/monitorodata/ServerOSDesktopSummaries"
+
+// ServerOSDesktopSummaries_API_PATH generates a query string for fetching session metrics details.
+// The query expands the Session entity and filters results by the ModifiedDate greater than the provided previousTime.
+// It also limits the results to the specified limit_results.
+func ServerOSDesktopSummaries_API_PATH(previousTime time.Time, limit_results int) string {
+	return "$expand=Session&$filter=ModifiedDate gt " + previousTime.UTC().Format("2006-01-02T15:04:05Z") + "&$count=true&%$top=" + strconv.Itoa(limit_results)
 }
