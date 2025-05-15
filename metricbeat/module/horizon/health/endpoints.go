@@ -46,6 +46,7 @@ func getConnectionServers(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: serverFields,
+				RootFields:      createECSFields(m),
 			}
 			events = append(events, event)
 
@@ -64,6 +65,7 @@ func getConnectionServers(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: serverFields,
+				RootFields:      createECSFields(m),
 			}
 			events = append(events, event)
 
@@ -82,6 +84,7 @@ func getConnectionServers(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: serverFields,
+				RootFields:      createECSFields(m),
 			}
 			events = append(events, event)
 
@@ -146,6 +149,7 @@ func getDesktopPools(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: createDesktopPoolFields(pool),
+				RootFields:      createECSFields(m),
 			}
 			events = append(events, event)
 		} else {
@@ -225,6 +229,7 @@ func getInstalledAppEvents(pool DesktopPool, m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: poolFields,
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -282,6 +287,7 @@ func getSessions(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createSessionFields(session),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -348,6 +354,7 @@ func getGateways(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createGatewayFields(gateway),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -397,6 +404,7 @@ func getVirtualCenters(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createVirtualCenterFields(vc),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -471,6 +479,7 @@ func getMachines(m *MetricSet) ([]mb.Event, error) {
 				event := mb.Event{
 					Timestamp:       timestamp,
 					MetricSetFields: machineFields,
+					RootFields:      createECSFields(m),
 				}
 				events = append(events, event)
 			}
@@ -482,6 +491,7 @@ func getMachines(m *MetricSet) ([]mb.Event, error) {
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: machineFields,
+				RootFields:      createECSFields(m),
 			}
 			events = append(events, event)
 		}
@@ -555,6 +565,7 @@ func getRDSServers(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createRDSServerFields(server),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -586,6 +597,7 @@ func getFarms(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createFarmFields(farm),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -705,6 +717,7 @@ func getCertificateData(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createCertificateDataFields(certificate),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -756,6 +769,7 @@ func getLicenseData(m *MetricSet) ([]mb.Event, error) {
 		event := mb.Event{
 			Timestamp:       timestamp,
 			MetricSetFields: createLicenseDataFields(license),
+			RootFields:      createECSFields(m),
 		}
 		events = append(events, event)
 	}
@@ -779,5 +793,18 @@ func createLicenseDataFields(license LicenseData) mapstr.M {
 		"session_collaboration_enabled":   license.SessionCollaborationEnabled,
 		"subscription_slice_expiry":       license.SubscriptionSliceExpiry,
 		"usage_model":                     license.UsageModel,
+	}
+}
+
+func createECSFields(ms *MetricSet) mapstr.M {
+	//dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
+
+	return mapstr.M{
+		"observer": mapstr.M{
+			"hostname": ms.config.HostInfo.Hostname,
+			"ip":       ms.config.HostInfo.IP,
+			"type":     "virtual-desktop-infrastructure",
+			"vendor":   "VMWare",
+		},
 	}
 }
