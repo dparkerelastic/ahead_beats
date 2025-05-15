@@ -1,0 +1,10 @@
+- key: nsxt
+  title: "nsxt"
+  release: beta
+  description: >
+    nsxt module
+  fields:
+    - name: nsxt
+      type: group
+      description: >
+      fields:

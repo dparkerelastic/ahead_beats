@@ -1,0 +1,6 @@
+- module: nsxt
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+

@@ -1,0 +1,9 @@
+# Module: nsxt
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-nsxt.html
+
+- module: nsxt
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
