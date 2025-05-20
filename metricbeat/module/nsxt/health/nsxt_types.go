@@ -39,7 +39,7 @@ type TransportNode struct {
 	IsOverridden           bool               `json:"is_overridden"`
 	MaintenanceMode        string             `json:"maintenance_mode"`
 	ResourceType           string             `json:"resource_type"`
-	s                      []Tag              `json:"tags,omitempty"`
+	Tags                   []Tag              `json:"tags,omitempty"`
 	HostSwitchSpec         HostSwitchSpec     `json:"host_switch_spec"`
 	TransportZoneEndpoints []TransportZoneRef `json:"transport_zone_endpoints"`
 	NodeDeploymentInfo     NodeDeploymentInfo `json:"node_deployment_info"`
