@@ -1,5 +1,10 @@
 package health
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 type BackupHistory struct {
 	ClusterBackupStatuses   []BackupStatus `json:"cluster_backup_statuses"`
 	NodeBackupStatuses      []BackupStatus `json:"node_backup_statuses"`
@@ -107,28 +112,28 @@ type TransportZoneProfile struct {
 }
 
 type NodeDeploymentInfo struct {
-	CreateTime       int64             `json:"_create_time"`
-	CreateUser       string            `json:"_create_user"`
-	LastModifiedTime int64             `json:"_last_modified_time"`
-	LastModifiedUser string            `json:"_last_modified_user"`
-	Protection       string            `json:"_protection"`
-	Revision         int               `json:"_revision"`
-	SystemOwned      bool              `json:"_system_owned"`
-	ResourceType     string            `json:"resource_type"`
-	DeploymentType   string            `json:"deployment_type,omitempty"`
-	DeploymentConfig *DeploymentConfig `json:"deployment_config,omitempty"`
-	DisplayName      string            `json:"display_name"`
-	Description      string            `json:"description,omitempty"`
-	ExternalID       string            `json:"external_id"`
-	ID               string            `json:"id"`
-	IPAddresses      []string          `json:"ip_addresses"`
-	NodeSettings     *NodeSettings     `json:"node_settings,omitempty"`
-	DiscoveredNodeID string            `json:"discovered_node_id,omitempty"`
-	FQDN             string            `json:"fqdn,omitempty"`
-	ManagedByServer  string            `json:"managed_by_server,omitempty"`
-	DiscoveredIPs    []string          `json:"discovered_ip_addresses,omitempty"`
-	OSType           string            `json:"os_type,omitempty"`
-	OSVersion        string            `json:"os_version,omitempty"`
+	CreateTime       int64            `json:"_create_time"`
+	CreateUser       string           `json:"_create_user"`
+	LastModifiedTime int64            `json:"_last_modified_time"`
+	LastModifiedUser string           `json:"_last_modified_user"`
+	Protection       string           `json:"_protection"`
+	Revision         int              `json:"_revision"`
+	SystemOwned      bool             `json:"_system_owned"`
+	ResourceType     string           `json:"resource_type"`
+	DeploymentType   string           `json:"deployment_type,omitempty"`
+	DeploymentConfig DeploymentConfig `json:"deployment_config,omitempty"`
+	DisplayName      string           `json:"display_name"`
+	Description      string           `json:"description,omitempty"`
+	ExternalID       string           `json:"external_id"`
+	ID               string           `json:"id"`
+	IPAddresses      []string         `json:"ip_addresses"`
+	NodeSettings     NodeSettings     `json:"node_settings,omitempty"`
+	DiscoveredNodeID string           `json:"discovered_node_id,omitempty"`
+	FQDN             string           `json:"fqdn,omitempty"`
+	ManagedByServer  string           `json:"managed_by_server,omitempty"`
+	DiscoveredIPs    []string         `json:"discovered_ip_addresses,omitempty"`
+	OSType           string           `json:"os_type,omitempty"`
+	OSVersion        string           `json:"os_version,omitempty"`
 }
 
 type DeploymentConfig struct {
@@ -500,22 +505,28 @@ type LogicalRouterPortList struct {
 }
 
 type LogicalRouterPort struct {
-	ID                        string           `json:"id"`
-	DisplayName               string           `json:"display_name"`
-	Description               string           `json:"description"`
-	ResourceType              string           `json:"resource_type"`
-	LogicalRouterID           string           `json:"logical_router_id"`
-	MacAddress                string           `json:"mac_address"`
-	Subnets                   []Subnet         `json:"subnets"`
-	LinkedLogicalRouterPortID *LinkedPortID    `json:"linked_logical_router_port_id,omitempty"`
-	LinkedLogicalSwitchPortID *LinkedPortID    `json:"linked_logical_switch_port_id,omitempty"`
-	EdgeClusterMemberIndex    []int            `json:"edge_cluster_member_index,omitempty"`
-	EnableMulticast           *bool            `json:"enable_multicast,omitempty"`
-	UrpFMode                  string           `json:"urpf_mode,omitempty"`
-	Mode                      string           `json:"mode,omitempty"`
-	MTU                       int              `json:"mtu,omitempty"`
-	Tags                      []Tag            `json:"tags,omitempty"`
-	ServiceBindings           []ServiceBinding `json:"service_bindings,omitempty"`
+	ID              string   `json:"id"`
+	DisplayName     string   `json:"display_name"`
+	Description     string   `json:"description"`
+	ResourceType    string   `json:"resource_type"`
+	LogicalRouterID string   `json:"logical_router_id"`
+	MacAddress      string   `json:"mac_address"`
+	Subnets         []Subnet `json:"subnets"`
+	// linked_logical_router_port_id can be either a string or a LinkPortID object
+	LinkedLogicalRouterPortID LinkedLogicalRouterPortID `json:"linked_logical_router_port_id,omitempty"`
+	LinkedLogicalSwitchPortID LinkedLogicalRouterPortID `json:"linked_logical_switch_port_id,omitempty"`
+	EdgeClusterMemberIndex    []int                     `json:"edge_cluster_member_index,omitempty"`
+	EnableMulticast           *bool                     `json:"enable_multicast,omitempty"`
+	UrpFMode                  string                    `json:"urpf_mode,omitempty"`
+	Mode                      string                    `json:"mode,omitempty"`
+	MTU                       int                       `json:"mtu,omitempty"`
+	Tags                      []Tag                     `json:"tags,omitempty"`
+	ServiceBindings           []ServiceBinding          `json:"service_bindings,omitempty"`
+}
+
+type LinkedLogicalRouterPortID struct {
+	ID     string        // if it's a string
+	Object *LinkedPortID // if it's an object
 }
 
 type LinkedPortID struct {
@@ -523,6 +534,24 @@ type LinkedPortID struct {
 	TargetID          string `json:"target_id"`
 	TargetType        string `json:"target_type"`
 	TargetDisplayName string `json:"target_display_name"`
+}
+
+func (l LinkedLogicalRouterPortID) UnmarshalJSON(data []byte) error {
+	// Try unmarshaling as string
+	var id string
+	if err := json.Unmarshal(data, &id); err == nil {
+		l.ID = id
+		return nil
+	}
+
+	// Try unmarshaling as LinkedPortID
+	var obj LinkedPortID
+	if err := json.Unmarshal(data, &obj); err == nil {
+		l.Object = &obj
+		return nil
+	}
+
+	return fmt.Errorf("linked_logical_router_port_id: unsupported format: %s", string(data))
 }
 
 type ServiceBinding struct {

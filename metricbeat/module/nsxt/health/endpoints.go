@@ -3,15 +3,15 @@ package health
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/beats/v7/metricbeat/module/nsxt"
 	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
 func createECSFields(ms *MetricSet) mapstr.M {
-	//dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
-
 	return mapstr.M{
 		"observer": mapstr.M{
 			"hostname": ms.config.HostInfo.Hostname,
@@ -56,20 +56,25 @@ func getClusterNodesEvents(ms *MetricSet) ([]mb.Event, error) {
 
 func createClusterNodeFields(node ClusterNode) mapstr.M {
 	return mapstr.M{
-		"id":                         node.ID,
-		"display_name":               node.DisplayName,
-		"external_id":                node.ExternalID,
-		"appliance_mgmt_listen_addr": node.ApplianceMgmtListenAddr,
-		"resource_type":              node.ResourceType,
-		"manager_role":               node.ManagerRole,
-		"controller_role":            node.ControllerRole,
-		"create_time":                node.CreateTime,
-		"create_user":                node.CreateUser,
-		"last_modified_time":         node.LastModifiedTime,
-		"last_modified_user":         node.LastModifiedUser,
-		"protection":                 node.Protection,
-		"revision":                   node.Revision,
-		"system_owned":               node.SystemOwned,
+		"cluster_node": mapstr.M{
+			"id":                         node.ID,
+			"display_name":               node.DisplayName,
+			"external_id":                node.ExternalID,
+			"appliance_mgmt_listen_addr": node.ApplianceMgmtListenAddr,
+			"resource_type":              node.ResourceType,
+			// FIXME: unpack manager role
+			// might have either manager or controller role
+			// FIXME: looks like controller objects contain certificate values so not sending....(?)
+			//"manager_role":       node.ManagerRole,
+			//"controller_role":    node.ControllerRole,
+			"create_time":        node.CreateTime,
+			"create_user":        node.CreateUser,
+			"last_modified_time": node.LastModifiedTime,
+			"last_modified_user": node.LastModifiedUser,
+			"protection":         node.Protection,
+			"revision":           node.Revision,
+			"system_owned":       node.SystemOwned,
+		},
 	}
 }
 
@@ -92,21 +97,43 @@ func getClusterStatusEvents(ms *MetricSet) ([]mb.Event, error) {
 	}
 
 	var events []mb.Event
-	event := mb.Event{
-		Timestamp:       timestamp,
-		MetricSetFields: createClusterStatusFields(clusterStatus),
-		RootFields:      createECSFields(ms),
-	}
-	events = append(events, event)
-	// TODO: Add logic to create events from cluster status
-	return events, nil
-}
+	clusterId := clusterStatus.ClusterID
+	status := clusterStatus.ControlClusterStatus.Status
 
-func createClusterStatusFields(clusterStatus ClusterStatus) mapstr.M {
-	return mapstr.M{
-		"cluster_id": clusterStatus.ClusterID,
-		// TODO
+	for _, group := range clusterStatus.DetailedStatus.Groups {
+		leaders, err := nsxt.ToJSONString(group.Leaders)
+		if err != nil {
+			leaders = "failed to convert leaders to JSON string"
+		}
+
+		for _, member := range group.Members {
+			memberFields := mapstr.M{
+				"fqdn":   member.FQDN,
+				"ip":     member.IP,
+				"status": member.Status,
+				"uuid":   member.UUID,
+			}
+			groupFields := mapstr.M{
+				"cluster_id":     clusterId,
+				"cluster_status": status,
+				"group_id":       group.GroupID,
+				"group_status":   group.GroupStatus,
+				"group_type":     group.GroupType,
+				"leaders":        leaders,
+				"member":         memberFields,
+			}
+
+			event := mb.Event{
+				Timestamp:  timestamp,
+				RootFields: createECSFields(ms),
+			}
+			event.MetricSetFields["cluster_status"] = groupFields
+
+			events = append(events, event)
+		}
 	}
+
+	return events, nil
 }
 
 func getEdgeClustersEvents(ms *MetricSet) ([]mb.Event, error) {
@@ -142,26 +169,31 @@ func getEdgeClustersEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createEdgeClusterFields(cluster EdgeCluster) mapstr.M {
+	members, err := nsxt.ToJSONString(cluster.Members)
+	if err != nil {
+		members = "failed to convert members to JSON string"
+	}
 	return mapstr.M{
-		"create_time":                  cluster.CreateTime,
-		"create_user":                  cluster.CreateUser,
-		"last_modified_time":           cluster.LastModifiedTime,
-		"last_modified_user":           cluster.LastModifiedUser,
-		"protection":                   cluster.Protection,
-		"revision":                     cluster.Revision,
-		"system_owned":                 cluster.SystemOwned,
-		"id":                           cluster.ID,
-		"display_name":                 cluster.DisplayName,
-		"description":                  cluster.Description,
-		"deployment_type":              cluster.DeploymentType,
-		"enable_inter_site_forwarding": cluster.EnableInterSiteForwarding,
-		"member_node_type":             cluster.MemberNodeType,
-		// FIXME members array
-		"members":                  cluster.Members,
-		"cluster_profile_bindings": cluster.ClusterProfileBindings,
-		"allocation_rules":         cluster.AllocationRules,
-		"resource_type":            cluster.ResourceType,
-		"tags":                     cluster.Tags,
+		"edge_cluster": mapstr.M{
+			"create_time":                  cluster.CreateTime,
+			"create_user":                  cluster.CreateUser,
+			"last_modified_time":           cluster.LastModifiedTime,
+			"last_modified_user":           cluster.LastModifiedUser,
+			"protection":                   cluster.Protection,
+			"revision":                     cluster.Revision,
+			"system_owned":                 cluster.SystemOwned,
+			"id":                           cluster.ID,
+			"display_name":                 cluster.DisplayName,
+			"description":                  cluster.Description,
+			"deployment_type":              cluster.DeploymentType,
+			"enable_inter_site_forwarding": cluster.EnableInterSiteForwarding,
+			"member_node_type":             cluster.MemberNodeType,
+			"members":                      members,
+			"cluster_profile_bindings":     cluster.ClusterProfileBindings,
+			"allocation_rules":             cluster.AllocationRules,
+			"resource_type":                cluster.ResourceType,
+			"tags":                         cluster.Tags,
+		},
 	}
 }
 
@@ -198,33 +230,39 @@ func getFirewallSectionsEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createFirewallSectionFields(firewallSection FirewallSection) mapstr.M {
+	applied_tos, err := nsxt.ToJSONString(firewallSection.AppliedTos)
+	if err != nil {
+		applied_tos = "failed to convert applied_tos to JSON string"
+	}
 	return mapstr.M{
-		"id":                 firewallSection.ID,
-		"display_name":       firewallSection.DisplayName,
-		"description":        firewallSection.Description,
-		"comments":           firewallSection.Comments,
-		"resource_type":      firewallSection.ResourceType,
-		"category":           firewallSection.Category,
-		"section_type":       firewallSection.SectionType,
-		"enforced_on":        firewallSection.EnforcedOn,
-		"is_default":         firewallSection.IsDefault,
-		"locked":             firewallSection.Locked,
-		"lock_modified_by":   firewallSection.LockModifiedBy,
-		"lock_modified_time": firewallSection.LockModifiedTime,
-		"stateful":           firewallSection.Stateful,
-		"tcp_strict":         firewallSection.TcpStrict,
-		"rule_count":         firewallSection.RuleCount,
-		"priority":           firewallSection.Priority,
-		"autoplumbed":        firewallSection.AutoPlumbed,
-		"applied_tos":        firewallSection.AppliedTos,
-		"tags":               firewallSection.Tags,
-		"create_time":        firewallSection.CreateTime,
-		"create_user":        firewallSection.CreateUser,
-		"last_modified_time": firewallSection.LastModifiedTime,
-		"last_modified_user": firewallSection.LastModifiedUser,
-		"protection":         firewallSection.Protection,
-		"revision":           firewallSection.Revision,
-		"system_owned":       firewallSection.SystemOwned,
+		"firewall_section": mapstr.M{
+			"id":                 firewallSection.ID,
+			"display_name":       firewallSection.DisplayName,
+			"description":        firewallSection.Description,
+			"comments":           firewallSection.Comments,
+			"resource_type":      firewallSection.ResourceType,
+			"category":           firewallSection.Category,
+			"section_type":       firewallSection.SectionType,
+			"enforced_on":        firewallSection.EnforcedOn,
+			"is_default":         firewallSection.IsDefault,
+			"locked":             firewallSection.Locked,
+			"lock_modified_by":   firewallSection.LockModifiedBy,
+			"lock_modified_time": firewallSection.LockModifiedTime,
+			"stateful":           firewallSection.Stateful,
+			"tcp_strict":         firewallSection.TcpStrict,
+			"rule_count":         firewallSection.RuleCount,
+			"priority":           firewallSection.Priority,
+			"autoplumbed":        firewallSection.AutoPlumbed,
+			"applied_tos":        applied_tos,
+			"tags":               firewallSection.Tags,
+			"create_time":        firewallSection.CreateTime,
+			"create_user":        firewallSection.CreateUser,
+			"last_modified_time": firewallSection.LastModifiedTime,
+			"last_modified_user": firewallSection.LastModifiedUser,
+			"protection":         firewallSection.Protection,
+			"revision":           firewallSection.Revision,
+			"system_owned":       firewallSection.SystemOwned,
+		},
 	}
 }
 
@@ -261,24 +299,55 @@ func getLogicalRouterPortsEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createRouterPortFields(routerPort LogicalRouterPort) mapstr.M {
-	return mapstr.M{
-		"id":                            routerPort.ID,
-		"display_name":                  routerPort.DisplayName,
-		"description":                   routerPort.Description,
-		"resource_type":                 routerPort.ResourceType,
-		"logical_router_id":             routerPort.LogicalRouterID,
-		"mac_address":                   routerPort.MacAddress,
-		"subnets":                       routerPort.Subnets,
-		"linked_logical_router_port_id": routerPort.LinkedLogicalRouterPortID,
-		"linked_logical_switch_port_id": routerPort.LinkedLogicalSwitchPortID,
-		"edge_cluster_member_index":     routerPort.EdgeClusterMemberIndex,
-		"enable_multicast":              routerPort.EnableMulticast,
-		"urpf_mode":                     routerPort.UrpFMode,
-		"mode":                          routerPort.Mode,
-		"mtu":                           routerPort.MTU,
-		"tags":                          routerPort.Tags,
-		"service_bindings":              routerPort.ServiceBindings,
+
+	subnets, err := nsxt.ToJSONString(routerPort.Subnets)
+	if err != nil {
+		subnets = "failed to convert subnets to JSON string"
 	}
+
+	routerPortFields := mapstr.M{
+		"logical_router_port": mapstr.M{
+			"id":                        routerPort.ID,
+			"display_name":              routerPort.DisplayName,
+			"description":               routerPort.Description,
+			"resource_type":             routerPort.ResourceType,
+			"logical_router_id":         routerPort.LogicalRouterID,
+			"mac_address":               routerPort.MacAddress,
+			"subnets":                   subnets,
+			"edge_cluster_member_index": routerPort.EdgeClusterMemberIndex,
+			"enable_multicast":          routerPort.EnableMulticast,
+			"urpf_mode":                 routerPort.UrpFMode,
+			"mode":                      routerPort.Mode,
+			"mtu":                       routerPort.MTU,
+			"tags":                      routerPort.Tags,
+			"service_bindings":          routerPort.ServiceBindings,
+		},
+	}
+
+	// because linked_logical_router_port_id in the json can be either string or object
+	if nil != routerPort.LinkedLogicalRouterPortID.Object {
+		routerPortFields["inked_logical_router_port"] = mapstr.M{
+			"is_valid":            routerPort.LinkedLogicalRouterPortID.Object.IsValid,
+			"target_id":           routerPort.LinkedLogicalRouterPortID.Object.TargetID,
+			"target_type":         routerPort.LinkedLogicalRouterPortID.Object.TargetType,
+			"target_display_name": routerPort.LinkedLogicalRouterPortID.Object.TargetDisplayName,
+		}
+	} else {
+		routerPortFields["inked_logical_router_port_id"] = routerPort.LinkedLogicalRouterPortID.ID
+	}
+	// because linked_logical_switch_port_id in the json can be either string or object
+	if nil != routerPort.LinkedLogicalSwitchPortID.Object {
+		routerPortFields["inked_logical_switch_port"] = mapstr.M{
+			"is_valid":            routerPort.LinkedLogicalSwitchPortID.Object.IsValid,
+			"target_id":           routerPort.LinkedLogicalSwitchPortID.Object.TargetID,
+			"target_type":         routerPort.LinkedLogicalSwitchPortID.Object.TargetType,
+			"target_display_name": routerPort.LinkedLogicalSwitchPortID.Object.TargetDisplayName,
+		}
+	} else {
+		routerPortFields["inked_logical_switch_port_id"] = routerPort.LinkedLogicalSwitchPortID.ID
+	}
+
+	return routerPortFields
 }
 
 func getNodeNetworkInterfacesEvents(ms *MetricSet) ([]mb.Event, error) {
@@ -314,18 +383,24 @@ func getNodeNetworkInterfacesEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createNetworkInterfaceFields(iface NetworkInterface) mapstr.M {
+	ip_addresses, err := nsxt.ToJSONString(iface.IPAddresses)
+	if err != nil {
+		ip_addresses = "failed to convert ip_addresses to JSON string"
+	}
 	return mapstr.M{
-		"schema":            iface.Schema,
-		"self":              iface.Self,
-		"admin_status":      iface.AdminStatus,
-		"broadcast_address": iface.BroadcastAddress,
-		"default_gateway":   iface.DefaultGateway,
-		"interface_id":      iface.InterfaceID,
-		"ip_addresses":      iface.IPAddresses,
-		"ip_configuration":  iface.IPConfiguration,
-		"link_status":       iface.LinkStatus,
-		"mtu":               iface.MTU,
-		"physical_address":  iface.PhysicalAddress,
+		"network_interface": mapstr.M{
+			"schema":            iface.Schema,
+			"self":              iface.Self,
+			"admin_status":      iface.AdminStatus,
+			"broadcast_address": iface.BroadcastAddress,
+			"default_gateway":   iface.DefaultGateway,
+			"interface_id":      iface.InterfaceID,
+			"ip_addresses":      ip_addresses,
+			"ip_configuration":  iface.IPConfiguration,
+			"link_status":       iface.LinkStatus,
+			"mtu":               iface.MTU,
+			"physical_address":  iface.PhysicalAddress,
+		},
 	}
 }
 
@@ -362,21 +437,32 @@ func getIPPoolsEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createIPPoolFields(pool IPPool) mapstr.M {
+	subnets, err := nsxt.ToJSONString(pool.Subnets)
+	if err != nil {
+		subnets = "Subnets could not be parsed: " + err.Error()
+	}
+
 	return mapstr.M{
-		"id":                 pool.ID,
-		"display_name":       pool.DisplayName,
-		"description":        pool.Description,
-		"pool_usage":         pool.PoolUsage,
-		"resource_type":      pool.ResourceType,
-		"subnets":            pool.Subnets,
-		"tags":               pool.Tags,
-		"create_time":        pool.CreateTime,
-		"create_user":        pool.CreateUser,
-		"last_modified_time": pool.LastModifiedTime,
-		"last_modified_user": pool.LastModifiedUser,
-		"protection":         pool.Protection,
-		"revision":           pool.Revision,
-		"system_owned":       pool.SystemOwned,
+		"ip_pool": mapstr.M{
+			"id":           pool.ID,
+			"display_name": pool.DisplayName,
+			"description":  pool.Description,
+			"pool_usage": mapstr.M{
+				"allocated_ids": pool.PoolUsage.AllocatedIDs,
+				"free_ids":      pool.PoolUsage.FreeIDs,
+				"total_ids":     pool.PoolUsage.TotalIDs,
+			},
+			"resource_type":      pool.ResourceType,
+			"subnets":            subnets,
+			"tags":               pool.Tags,
+			"create_time":        pool.CreateTime,
+			"create_user":        pool.CreateUser,
+			"last_modified_time": pool.LastModifiedTime,
+			"last_modified_user": pool.LastModifiedUser,
+			"protection":         pool.Protection,
+			"revision":           pool.Revision,
+			"system_owned":       pool.SystemOwned,
+		},
 	}
 }
 
@@ -399,40 +485,139 @@ func getTransportNodesEvents(ms *MetricSet) ([]mb.Event, error) {
 	}
 
 	var events []mb.Event
-	for _, node := range nodes.Results {
 
-		event := mb.Event{
-			Timestamp:       timestamp,
-			MetricSetFields: createTransportNodeFields(node),
-			RootFields:      createECSFields(ms),
+	for _, node := range nodes.Results {
+		// create an event for every host switch in the node
+		nodeFields := createTransportNodeFields(node)
+		for _, hostSwitch := range node.HostSwitchSpec.HostSwitches {
+			hostSwitchFields := createHostSwitchFields(hostSwitch, node.HostSwitchSpec.ResourceType)
+			nodeFields["host_switch"] = hostSwitchFields
+			event := mb.Event{
+				Timestamp:       timestamp,
+				MetricSetFields: nodeFields,
+				RootFields:      createECSFields(ms),
+			}
+			events = append(events, event)
 		}
-		events = append(events, event)
 	}
 
 	return events, nil
 }
 
-func createTransportNodeFields(node TransportNode) mapstr.M {
+func createHostSwitchFields(hostSwitch HostSwitch, resourceType string) mapstr.M {
+	// As of this writing, there is no data availble to determine the types of these arrays,
+	// so just put them in a string for now.
+	cpu_config, err := nsxt.ToJSONString(hostSwitch.CPUConfig)
+	if err != nil {
+		cpu_config = "CPUConfig could not be parsed: " + err.Error()
+	}
+
+	pnics_uninstall_migration, err := nsxt.ToJSONString(hostSwitch.PnicsUninstallMigration)
+	if err != nil {
+		pnics_uninstall_migration = "PnicsUninstallMigration could not be parsed: " + err.Error()
+	}
+
+	vmk_install_migration, err := nsxt.ToJSONString(hostSwitch.VmkInstallMigration)
+	if err != nil {
+		vmk_install_migration = "VmkInstallMigration could not be parsed: " + err.Error()
+	}
+	vmk_uninstall_migration, err := nsxt.ToJSONString(hostSwitch.VmkUninstallMigration)
+	if err != nil {
+		vmk_uninstall_migration = "VmkUninstallMigration could not be parsed: " + err.Error()
+	}
+
+	ipAssignmentSpec := mapstr.M{
+		"resource_type":   hostSwitch.IPAssignmentSpec.ResourceType,
+		"ip_pool_id":      hostSwitch.IPAssignmentSpec.IPPoolID,
+		"default_gateway": hostSwitch.IPAssignmentSpec.DefaultGateway,
+		"ip_list":         hostSwitch.IPAssignmentSpec.IPList,
+		"subnet_mask":     hostSwitch.IPAssignmentSpec.SubnetMask,
+	}
+
 	return mapstr.M{
-		"create_time":              node.CreateTime,
-		"create_user":              node.CreateUser,
-		"last_modified_time":       node.LastModifiedTime,
-		"last_modified_user":       node.LastModifiedUser,
-		"protection":               node.Protection,
-		"revision":                 node.Revision,
-		"system_owned":             node.SystemOwned,
-		"id":                       node.ID,
-		"node_id":                  node.NodeID,
-		"display_name":             node.DisplayName,
-		"description":              node.Description,
-		"failure_domain_id":        node.FailureDomainID,
-		"is_overridden":            node.IsOverridden,
-		"maintenance_mode":         node.MaintenanceMode,
-		"resource_type":            node.ResourceType,
-		"tags":                     node.Tags,
-		"host_switch_spec":         node.HostSwitchSpec,
-		"transport_zone_endpoints": node.TransportZoneEndpoints,
-		"node_deployment_info":     node.NodeDeploymentInfo,
+		"resource_type":             resourceType,
+		"cpu_config":                cpu_config,
+		"host_switch_id":            hostSwitch.HostSwitchID,
+		"host_switch_mode":          hostSwitch.HostSwitchMode,
+		"host_switch_name":          hostSwitch.HostSwitchName,
+		"host_switch_profile_ids":   hostSwitch.HostSwitchProfileIDs,
+		"host_switch_type":          hostSwitch.HostSwitchType,
+		"ip_assignment_spec":        ipAssignmentSpec,
+		"is_migrate_pnics":          hostSwitch.IsMigratePnics,
+		"not_ready":                 hostSwitch.NotReady,
+		"pnics":                     hostSwitch.Pnics,
+		"pnics_uninstall_migration": pnics_uninstall_migration,
+		"vmk_install_migration":     vmk_install_migration,
+		"vmk_uninstall_migration":   vmk_uninstall_migration,
+		"transport_zone_endpoints":  hostSwitch.TransportZoneEndpoints,
+		"uplinks":                   hostSwitch.Uplinks,
+	}
+}
+func createTransportNodeFields(node TransportNode) mapstr.M {
+	deploymentInfo := createNodeDeploymentInfoFields(node.NodeDeploymentInfo)
+	return mapstr.M{
+		"transport_node": mapstr.M{
+			"create_time":              node.CreateTime,
+			"create_user":              node.CreateUser,
+			"last_modified_time":       node.LastModifiedTime,
+			"last_modified_user":       node.LastModifiedUser,
+			"protection":               node.Protection,
+			"revision":                 node.Revision,
+			"system_owned":             node.SystemOwned,
+			"id":                       node.ID,
+			"node_id":                  node.NodeID,
+			"display_name":             node.DisplayName,
+			"description":              node.Description,
+			"failure_domain_id":        node.FailureDomainID,
+			"is_overridden":            node.IsOverridden,
+			"maintenance_mode":         node.MaintenanceMode,
+			"resource_type":            node.ResourceType,
+			"tags":                     node.Tags,
+			"transport_zone_endpoints": node.TransportZoneEndpoints,
+			"node_deployment_info":     deploymentInfo,
+		},
+	}
+}
+
+func createNodeDeploymentInfoFields(nodeDeploymentInfo NodeDeploymentInfo) mapstr.M {
+	deploymentConfig, err := nsxt.ToJSONString(nodeDeploymentInfo.DeploymentConfig)
+	if err != nil {
+		deploymentConfig = "DeploymentConfig could not be parsed: " + err.Error()
+	}
+
+	nodeSettings, err := nsxt.ToJSONString(nodeDeploymentInfo.NodeSettings)
+	if err != nil {
+		nodeSettings = "NodeSettings could not be parsed: " + err.Error()
+	}
+
+	ip_addresses, err := nsxt.ToJSONString(nodeDeploymentInfo.IPAddresses)
+	if err != nil {
+		ip_addresses = "IPAddresses could not be parsed: " + err.Error()
+	}
+
+	return mapstr.M{
+		"create_time":             nodeDeploymentInfo.CreateTime,
+		"create_user":             nodeDeploymentInfo.CreateUser,
+		"last_modified_time":      nodeDeploymentInfo.LastModifiedTime,
+		"last_modified_user":      nodeDeploymentInfo.LastModifiedUser,
+		"protection":              nodeDeploymentInfo.Protection,
+		"revision":                nodeDeploymentInfo.Revision,
+		"system_owned":            nodeDeploymentInfo.SystemOwned,
+		"resource_type":           nodeDeploymentInfo.ResourceType,
+		"deployment_type":         nodeDeploymentInfo.DeploymentType,
+		"deployment_config":       deploymentConfig,
+		"display_name":            nodeDeploymentInfo.DisplayName,
+		"description":             nodeDeploymentInfo.Description,
+		"external_id":             nodeDeploymentInfo.ExternalID,
+		"id":                      nodeDeploymentInfo.ID,
+		"ip_addresses":            ip_addresses,
+		"node_settings":           nodeSettings,
+		"discovered_node_id":      nodeDeploymentInfo.DiscoveredNodeID,
+		"fqdn":                    nodeDeploymentInfo.FQDN,
+		"managed_by_server":       nodeDeploymentInfo.ManagedByServer,
+		"discovered_ip_addresses": nodeDeploymentInfo.DiscoveredIPs,
+		"os_type":                 nodeDeploymentInfo.OSType,
+		"os_version":              nodeDeploymentInfo.OSVersion,
 	}
 }
 
@@ -469,30 +654,42 @@ func getTransportZonesEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createTransportZoneFields(zone TransportZone) mapstr.M {
+	transport_zone_profile_ids, err := nsxt.ToJSONString(zone.TransportZoneProfileIDs)
+	if err != nil {
+		transport_zone_profile_ids = "TransportZoneProfileIDs could not be parsed: " + err.Error()
+	}
+	uplink_teaming_policy_names, err := nsxt.ToJSONString(zone.UplinkTeamingPolicyNames)
+	if err != nil {
+		uplink_teaming_policy_names = "UplinkTeamingPolicyNames could not be parsed: " + err.Error()
+	}
 	return mapstr.M{
-		"create_time":                 zone.CreateTime,
-		"create_user":                 zone.CreateUser,
-		"last_modified_time":          zone.LastModifiedTime,
-		"last_modified_user":          zone.LastModifiedUser,
-		"protection":                  zone.Protection,
-		"revision":                    zone.Revision,
-		"schema":                      zone.Schema,
-		"system_owned":                zone.SystemOwned,
-		"id":                          zone.ID,
-		"display_name":                zone.DisplayName,
-		"host_switch_id":              zone.HostSwitchID,
-		"host_switch_name":            zone.HostSwitchName,
-		"host_switch_mode":            zone.HostSwitchMode,
-		"is_default":                  zone.IsDefault,
-		"nested_nsx":                  zone.NestedNSX,
-		"resource_type":               zone.ResourceType,
-		"transport_type":              zone.TransportType,
-		"tags":                        zone.Tags,
-		"transport_zone_profile_ids":  zone.TransportZoneProfileIDs,
-		"uplink_teaming_policy_names": zone.UplinkTeamingPolicyNames,
+		"transport_zone": mapstr.M{
+			"create_time":                 zone.CreateTime,
+			"create_user":                 zone.CreateUser,
+			"last_modified_time":          zone.LastModifiedTime,
+			"last_modified_user":          zone.LastModifiedUser,
+			"protection":                  zone.Protection,
+			"revision":                    zone.Revision,
+			"schema":                      zone.Schema,
+			"system_owned":                zone.SystemOwned,
+			"id":                          zone.ID,
+			"display_name":                zone.DisplayName,
+			"host_switch_id":              zone.HostSwitchID,
+			"host_switch_name":            zone.HostSwitchName,
+			"host_switch_mode":            zone.HostSwitchMode,
+			"is_default":                  zone.IsDefault,
+			"nested_nsx":                  zone.NestedNSX,
+			"resource_type":               zone.ResourceType,
+			"transport_type":              zone.TransportType,
+			"tags":                        zone.Tags,
+			"transport_zone_profile_ids":  transport_zone_profile_ids,
+			"uplink_teaming_policy_names": uplink_teaming_policy_names,
+		},
 	}
 }
 
+// Returns events for the latest backup status of cluster, node and inventory
+// The latest status is determined by the latest start time
 func getClusterBackupHistoryEvents(ms *MetricSet) ([]mb.Event, error) {
 	timestamp := time.Now().UTC()
 	client := ms.nsxtClient
@@ -512,33 +709,28 @@ func getClusterBackupHistoryEvents(ms *MetricSet) ([]mb.Event, error) {
 	}
 
 	var events []mb.Event
-	for _, backup := range backupHistory.ClusterBackupStatuses {
 
-		event := mb.Event{
-			Timestamp:       timestamp,
-			MetricSetFields: createBackupStatusFields(backup, "cluster"),
-			RootFields:      createECSFields(ms),
-		}
-		events = append(events, event)
-	}
-	for _, backup := range backupHistory.NodeBackupStatuses {
+	// Find the latest backup status for cluster, node and inventory
+	clusterBackupStatus := latestStatusValue(backupHistory.ClusterBackupStatuses)
+	nodeBackupStatus := latestStatusValue(backupHistory.NodeBackupStatuses)
+	inventoryBackupStatus := latestStatusValue(backupHistory.InventoryBackupStatuses)
 
-		event := mb.Event{
-			Timestamp:       timestamp,
-			MetricSetFields: createBackupStatusFields(backup, "node"),
-			RootFields:      createECSFields(ms),
-		}
-		events = append(events, event)
-	}
-	for _, backup := range backupHistory.InventoryBackupStatuses {
+	clusterFields := createBackupStatusFields(clusterBackupStatus, "cluster")
+	nodeFields := createBackupStatusFields(nodeBackupStatus, "node")
+	inventoryFields := createBackupStatusFields(inventoryBackupStatus, "inventory")
 
-		event := mb.Event{
-			Timestamp:       timestamp,
-			MetricSetFields: createBackupStatusFields(backup, "inventory"),
-			RootFields:      createECSFields(ms),
-		}
-		events = append(events, event)
+	event := mb.Event{
+		Timestamp: timestamp,
+		MetricSetFields: mapstr.M{
+			"backup_status": mapstr.M{
+				"cluster":   clusterFields,
+				"node":      nodeFields,
+				"inventory": inventoryFields,
+			},
+		},
+		RootFields: createECSFields(ms),
 	}
+	events = append(events, event)
 
 	return events, nil
 }
@@ -589,34 +781,56 @@ func getInfraTier0sEvents(ms *MetricSet) ([]mb.Event, error) {
 }
 
 func createTier0Fields(tier0 Tier0) mapstr.M {
+	internal_transit_subnets, err := nsxt.ToJSONString(tier0.InternalTransitSubnets)
+	if err != nil {
+		internal_transit_subnets = "InternalTransitSubnets could not be parsed: " + err.Error()
+	}
+
+	transit_subnets, err := nsxt.ToJSONString(tier0.TransitSubnets)
+	if err != nil {
+		transit_subnets = "TransitSubnets could not be parsed: " + err.Error()
+	}
+
+	ipv6_profile_paths, err := nsxt.ToJSONString(tier0.IPv6ProfilePaths)
+	if err != nil {
+		ipv6_profile_paths = "IPv6ProfilePaths could not be parsed: " + err.Error()
+	}
+
+	advanced_config := mapstr.M{
+		"connectivity":        tier0.AdvancedConfig.Connectivity,
+		"forwarding_up_timer": tier0.AdvancedConfig.ForwardingUpTimer,
+	}
+
 	return mapstr.M{
-		"create_time":              tier0.CreateTime,
-		"create_user":              tier0.CreateUser,
-		"last_modified_time":       tier0.LastModifiedTime,
-		"last_modified_user":       tier0.LastModifiedUser,
-		"protection":               tier0.Protection,
-		"revision":                 tier0.Revision,
-		"system_owned":             tier0.SystemOwned,
-		"id":                       tier0.ID,
-		"display_name":             tier0.DisplayName,
-		"description":              tier0.Description,
-		"resource_type":            tier0.ResourceType,
-		"path":                     tier0.Path,
-		"parent_path":              tier0.ParentPath,
-		"relative_path":            tier0.RelativePath,
-		"marked_for_delete":        tier0.MarkedForDelete,
-		"overridden":               tier0.Overridden,
-		"default_rule_logging":     tier0.DefaultRuleLogging,
-		"disable_firewall":         tier0.DisableFirewall,
-		"force_whitelisting":       tier0.ForceWhitelisting,
-		"failover_mode":            tier0.FailoverMode,
-		"ha_mode":                  tier0.HAMode,
-		"unique_id":                tier0.UniqueID,
-		"advanced_config":          tier0.AdvancedConfig,
-		"internal_transit_subnets": tier0.InternalTransitSubnets,
-		"transit_subnets":          tier0.TransitSubnets,
-		"ipv6_profile_paths":       tier0.IPv6ProfilePaths,
-		"tags":                     tier0.Tags,
+		"tier0": mapstr.M{
+			"create_time":              tier0.CreateTime,
+			"create_user":              tier0.CreateUser,
+			"last_modified_time":       tier0.LastModifiedTime,
+			"last_modified_user":       tier0.LastModifiedUser,
+			"protection":               tier0.Protection,
+			"revision":                 tier0.Revision,
+			"system_owned":             tier0.SystemOwned,
+			"id":                       tier0.ID,
+			"display_name":             tier0.DisplayName,
+			"description":              tier0.Description,
+			"resource_type":            tier0.ResourceType,
+			"path":                     tier0.Path,
+			"parent_path":              tier0.ParentPath,
+			"relative_path":            tier0.RelativePath,
+			"marked_for_delete":        tier0.MarkedForDelete,
+			"overridden":               tier0.Overridden,
+			"default_rule_logging":     tier0.DefaultRuleLogging,
+			"disable_firewall":         tier0.DisableFirewall,
+			"force_whitelisting":       tier0.ForceWhitelisting,
+			"failover_mode":            tier0.FailoverMode,
+			"ha_mode":                  tier0.HAMode,
+			"unique_id":                tier0.UniqueID,
+			"advanced_config":          advanced_config,
+			"internal_transit_subnets": internal_transit_subnets,
+			"transit_subnets":          transit_subnets,
+			"ipv6_profile_paths":       ipv6_profile_paths,
+			"tags":                     tier0.Tags,
+		},
 	}
 }
 
@@ -652,33 +866,53 @@ func getInfraTier1sEvents(ms *MetricSet) ([]mb.Event, error) {
 	return events, nil
 }
 func createTier1Fields(tier1 Tier1) mapstr.M {
-	return mapstr.M{
-		"create_time":               tier1.CreateTime,
-		"create_user":               tier1.CreateUser,
-		"last_modified_time":        tier1.LastModifiedTime,
-		"last_modified_user":        tier1.LastModifiedUser,
-		"protection":                tier1.Protection,
-		"revision":                  tier1.Revision,
-		"system_owned":              tier1.SystemOwned,
-		"id":                        tier1.ID,
-		"display_name":              tier1.DisplayName,
-		"description":               tier1.Description,
-		"resource_type":             tier1.ResourceType,
-		"path":                      tier1.Path,
-		"parent_path":               tier1.ParentPath,
-		"relative_path":             tier1.RelativePath,
-		"marked_for_delete":         tier1.MarkedForDelete,
-		"overridden":                tier1.Overridden,
-		"default_rule_logging":      tier1.DefaultRuleLogging,
-		"disable_firewall":          tier1.DisableFirewall,
-		"force_whitelisting":        tier1.ForceWhitelisting,
-		"failover_mode":             tier1.FailoverMode,
-		"enable_standby_relocation": tier1.EnableStandbyRelocation,
-		"pool_allocation":           tier1.PoolAllocation,
-		"ipv6_profile_paths":        tier1.IPv6ProfilePaths,
-		"route_advertisement_types": tier1.RouteAdvertisementTypes,
-		"tier0_path":                tier1.Tier0Path,
-		"unique_id":                 tier1.UniqueID,
-		"tags":                      tier1.Tags,
+	ipv6_profile_paths, err := nsxt.ToJSONString(tier1.IPv6ProfilePaths)
+	if err != nil {
+		ipv6_profile_paths = "IPv6ProfilePaths could not be parsed: " + err.Error()
 	}
+	route_advertisement_types, err := nsxt.ToJSONString(tier1.RouteAdvertisementTypes)
+	if err != nil {
+		route_advertisement_types = "RouteAdvertisementTypes could not be parsed: " + err.Error()
+	}
+
+	return mapstr.M{
+		"tier1": mapstr.M{
+			"create_time":               tier1.CreateTime,
+			"create_user":               tier1.CreateUser,
+			"last_modified_time":        tier1.LastModifiedTime,
+			"last_modified_user":        tier1.LastModifiedUser,
+			"protection":                tier1.Protection,
+			"revision":                  tier1.Revision,
+			"system_owned":              tier1.SystemOwned,
+			"id":                        tier1.ID,
+			"display_name":              tier1.DisplayName,
+			"description":               tier1.Description,
+			"resource_type":             tier1.ResourceType,
+			"path":                      tier1.Path,
+			"parent_path":               tier1.ParentPath,
+			"relative_path":             tier1.RelativePath,
+			"marked_for_delete":         tier1.MarkedForDelete,
+			"overridden":                tier1.Overridden,
+			"default_rule_logging":      tier1.DefaultRuleLogging,
+			"disable_firewall":          tier1.DisableFirewall,
+			"force_whitelisting":        tier1.ForceWhitelisting,
+			"failover_mode":             tier1.FailoverMode,
+			"enable_standby_relocation": tier1.EnableStandbyRelocation,
+			"pool_allocation":           tier1.PoolAllocation,
+			"ipv6_profile_paths":        ipv6_profile_paths,
+			"route_advertisement_types": route_advertisement_types,
+			"tier0_path":                tier1.Tier0Path,
+			"unique_id":                 tier1.UniqueID,
+			"tags":                      tier1.Tags,
+		},
+	}
+}
+
+func latestStatusValue(stats []BackupStatus) BackupStatus {
+	statsCopy := make([]BackupStatus, len(stats))
+	copy(statsCopy, stats)
+	sort.Slice(statsCopy, func(i, j int) bool {
+		return time.Unix(statsCopy[i].EndTime, 0).After(time.Unix(statsCopy[j].EndTime, 0))
+	})
+	return statsCopy[0]
 }
