@@ -47,7 +47,7 @@ func GetClient(config *nsxt.Config, base mb.BaseMetricSet) (*NsxtRestClient, err
 
 	client := NsxtRestClient{
 		config:  config,
-		baseUrl: fmt.Sprintf("https://%s:%d/", config.Host, config.Port),
+		baseUrl: fmt.Sprintf("https://%s:%d", config.Host, config.Port),
 		client:  &http.Client{Transport: tr},
 		headers: map[string]string{
 			"Content-Type":  "application/json",
@@ -60,8 +60,9 @@ func GetClient(config *nsxt.Config, base mb.BaseMetricSet) (*NsxtRestClient, err
 
 func (c *NsxtRestClient) Get(endpoint string) (string, error) {
 	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
+	url := req.URL.String()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to create request for URL %s: %w", url, err)
 	}
 	for key, value := range c.headers {
 		req.Header.Set(key, value)

@@ -78,6 +78,8 @@ func createClusterNodeFields(node ClusterNode) mapstr.M {
 	}
 }
 
+// LM gets the Control Cluster Status (control_cluster_status), The Management Cluster Status (mgmt_cluster_status)
+// and the count of Management Cluster Nodes.
 func getClusterStatusEvents(ms *MetricSet) ([]mb.Event, error) {
 	timestamp := time.Now().UTC()
 	client := ms.nsxtClient
@@ -98,8 +100,9 @@ func getClusterStatusEvents(ms *MetricSet) ([]mb.Event, error) {
 
 	var events []mb.Event
 	clusterId := clusterStatus.ClusterID
-	status := clusterStatus.ControlClusterStatus.Status
-
+	clStatus := clusterStatus.ControlClusterStatus.Status
+	mgrStatus := clusterStatus.MgmtClusterStatus.Status
+	mgrNodeCount := len(clusterStatus.MgmtClusterStatus.OnlineNodes)
 	for _, group := range clusterStatus.DetailedStatus.Groups {
 		leaders, err := nsxt.ToJSONString(group.Leaders)
 		if err != nil {
@@ -114,20 +117,24 @@ func getClusterStatusEvents(ms *MetricSet) ([]mb.Event, error) {
 				"uuid":   member.UUID,
 			}
 			groupFields := mapstr.M{
-				"cluster_id":     clusterId,
-				"cluster_status": status,
-				"group_id":       group.GroupID,
-				"group_status":   group.GroupStatus,
-				"group_type":     group.GroupType,
-				"leaders":        leaders,
-				"member":         memberFields,
+				"cluster_status": mapstr.M{
+					"cluster_id":              clusterId,
+					"control_cluster_status":  clStatus,
+					"mgmt_cluster_status":     mgrStatus,
+					"mgmt_cluster_node_count": mgrNodeCount,
+					"group_id":                group.GroupID,
+					"group_status":            group.GroupStatus,
+					"group_type":              group.GroupType,
+					"leaders":                 leaders,
+					"member_data":             memberFields,
+				},
 			}
 
 			event := mb.Event{
-				Timestamp:  timestamp,
-				RootFields: createECSFields(ms),
+				Timestamp:       timestamp,
+				MetricSetFields: groupFields,
+				RootFields:      createECSFields(ms),
 			}
-			event.MetricSetFields["cluster_status"] = groupFields
 
 			events = append(events, event)
 		}
@@ -488,10 +495,18 @@ func getTransportNodesEvents(ms *MetricSet) ([]mb.Event, error) {
 
 	for _, node := range nodes.Results {
 		// create an event for every host switch in the node
-		nodeFields := createTransportNodeFields(node)
 		for _, hostSwitch := range node.HostSwitchSpec.HostSwitches {
+
+			nodeFields := createTransportNodeFields(node)
 			hostSwitchFields := createHostSwitchFields(hostSwitch, node.HostSwitchSpec.ResourceType)
-			nodeFields["host_switch"] = hostSwitchFields
+
+			// Safely access "transport_node" as mapstr.M and set "host_switch"
+			if transportNode, ok := nodeFields["transport_node"].(mapstr.M); ok {
+				transportNode["host_switch"] = hostSwitchFields
+			} else {
+				return nil, fmt.Errorf("expected transport_node to be mapstr.M, got %T", nodeFields["transport_node"])
+			}
+
 			event := mb.Event{
 				Timestamp:       timestamp,
 				MetricSetFields: nodeFields,
@@ -527,6 +542,7 @@ func createHostSwitchFields(hostSwitch HostSwitch, resourceType string) mapstr.M
 	}
 
 	ipAssignmentSpec := mapstr.M{
+
 		"resource_type":   hostSwitch.IPAssignmentSpec.ResourceType,
 		"ip_pool_id":      hostSwitch.IPAssignmentSpec.IPPoolID,
 		"default_gateway": hostSwitch.IPAssignmentSpec.DefaultGateway,
@@ -535,6 +551,7 @@ func createHostSwitchFields(hostSwitch HostSwitch, resourceType string) mapstr.M
 	}
 
 	return mapstr.M{
+
 		"resource_type":             resourceType,
 		"cpu_config":                cpu_config,
 		"host_switch_id":            hostSwitch.HostSwitchID,
@@ -909,10 +926,13 @@ func createTier1Fields(tier1 Tier1) mapstr.M {
 }
 
 func latestStatusValue(stats []BackupStatus) BackupStatus {
-	statsCopy := make([]BackupStatus, len(stats))
-	copy(statsCopy, stats)
-	sort.Slice(statsCopy, func(i, j int) bool {
-		return time.Unix(statsCopy[i].EndTime, 0).After(time.Unix(statsCopy[j].EndTime, 0))
+	if len(stats) == 0 {
+		return BackupStatus{}
+	}
+
+	// Sort the stats by EndTime in descending order and return the first one
+	sort.Slice(stats, func(i, j int) bool {
+		return time.Unix(stats[i].EndTime, 0).After(time.Unix(stats[j].EndTime, 0))
 	})
-	return statsCopy[0]
+	return stats[0]
 }
