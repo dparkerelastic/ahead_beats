@@ -400,20 +400,20 @@ type ClusterNodesResponse struct {
 }
 
 type ClusterNode struct {
-	ID                      string          `json:"id"`
-	DisplayName             string          `json:"display_name"`
-	ExternalID              string          `json:"external_id,omitempty"`
-	ApplianceMgmtListenAddr string          `json:"appliance_mgmt_listen_addr,omitempty"`
-	ResourceType            string          `json:"resource_type"`
-	ManagerRole             *ManagerRole    `json:"manager_role,omitempty"`
-	ControllerRole          *ControllerRole `json:"controller_role,omitempty"`
-	CreateTime              int64           `json:"_create_time"`
-	CreateUser              string          `json:"_create_user"`
-	LastModifiedTime        int64           `json:"_last_modified_time"`
-	LastModifiedUser        string          `json:"_last_modified_user"`
-	Protection              string          `json:"_protection"`
-	Revision                int             `json:"_revision"`
-	SystemOwned             bool            `json:"_system_owned"`
+	ID                      string         `json:"id"`
+	DisplayName             string         `json:"display_name"`
+	ExternalID              string         `json:"external_id,omitempty"`
+	ApplianceMgmtListenAddr string         `json:"appliance_mgmt_listen_addr,omitempty"`
+	ResourceType            string         `json:"resource_type"`
+	ManagerRole             ManagerRole    `json:"manager_role,omitempty"`
+	ControllerRole          ControllerRole `json:"controller_role,omitempty"`
+	CreateTime              int64          `json:"_create_time"`
+	CreateUser              string         `json:"_create_user"`
+	LastModifiedTime        int64          `json:"_last_modified_time"`
+	LastModifiedUser        string         `json:"_last_modified_user"`
+	Protection              string         `json:"_protection"`
+	Revision                int            `json:"_revision"`
+	SystemOwned             bool           `json:"_system_owned"`
 }
 
 type ManagerRole struct {
@@ -516,7 +516,7 @@ type LogicalRouterPort struct {
 	LinkedLogicalRouterPortID LinkedLogicalRouterPortID `json:"linked_logical_router_port_id,omitempty"`
 	LinkedLogicalSwitchPortID LinkedLogicalRouterPortID `json:"linked_logical_switch_port_id,omitempty"`
 	EdgeClusterMemberIndex    []int                     `json:"edge_cluster_member_index,omitempty"`
-	EnableMulticast           *bool                     `json:"enable_multicast,omitempty"`
+	EnableMulticast           bool                      `json:"enable_multicast,omitempty"`
 	UrpFMode                  string                    `json:"urpf_mode,omitempty"`
 	Mode                      string                    `json:"mode,omitempty"`
 	MTU                       int                       `json:"mtu,omitempty"`
