@@ -47,7 +47,7 @@ func GetClient(config *horizon.Config, base mb.BaseMetricSet) (*HorizonRestClien
 
 	client := HorizonRestClient{
 		config:  config,
-		baseUrl: fmt.Sprintf("http://%s:%d/", config.Host, config.Port),
+		baseUrl: fmt.Sprintf("%s://%s:%d", config.Protocol, config.Host, config.Port),
 		client:  &http.Client{Transport: tr},
 		headers: map[string]string{
 			"Content-Type": "application/json",
@@ -56,52 +56,91 @@ func GetClient(config *horizon.Config, base mb.BaseMetricSet) (*HorizonRestClien
 
 	return &client, nil
 }
+
+// func (c *HorizonRestClient) login() error {
+// 	apiToken, err := login(c.baseUrl, c.config)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	// Update the Authorization header with the new token
+// 	c.headers["Authorization"] = "Bearer " + apiToken
+// 	return nil
+// }
+
+// func login(baseUrl string, config *horizon.Config) (string, error) {
+// 	url := fmt.Sprintf("%s/rest/login", baseUrl)
+// 	payload, err := buildLoginBody(config)
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to build login body: %v", err)
+// 	}
+// 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	req.Header.Set("Content-Type", "application/json")
+
+// 	response, err := http.DefaultClient.Do(req)
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to call login URL: %v", err)
+// 	}
+// 	defer response.Body.Close()
+
+// 	if response.StatusCode == 200 {
+// 		body, err := io.ReadAll(response.Body)
+// 		if err != nil {
+// 			return "", err
+// 		}
+// 		var login LoginToken
+// 		if err := json.Unmarshal([]byte(body), &login); err != nil {
+// 			return "", fmt.Errorf("failed to parse login response: %v", err)
+// 		}
+
+// 		// FIXME: might need to use the refresh token if doing login in Fetch does not work for some reason
+
+// 		return login.AccessToken, nil
+// 	} else {
+// 		return "", fmt.Errorf("failed to login: %d", response.StatusCode)
+// 	}
+
+// }
+
 func (c *HorizonRestClient) login() error {
-	apiToken, err := login(c.config)
+	url := fmt.Sprintf("%s/rest/login", c.baseUrl)
+
+	payload, err := buildLoginBody(c.config)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to build login body: %v", err)
 	}
 
-	// Update the Authorization header with the new token
-	c.headers["Authorization"] = "Bearer " + apiToken
-	return nil
-}
-
-func login(config *horizon.Config) (string, error) {
-	url := fmt.Sprintf("http://%s:%d/rest/login", config.Host, config.Port)
-	payload, err := buildLoginBody(config)
-	if err != nil {
-		return "", fmt.Errorf("failed to build login body: %v", err)
-	}
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
 	if err != nil {
-		return "", err
+		return fmt.Errorf("failed to create login request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	response, err := http.DefaultClient.Do(req)
+	response, err := c.client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to call login URL: %v", err)
+		return fmt.Errorf("failed to call login URL: %v", err)
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode == 200 {
-		body, err := io.ReadAll(response.Body)
-		if err != nil {
-			return "", err
-		}
-		var login LoginToken
-		if err := json.Unmarshal([]byte(body), &login); err != nil {
-			return "", fmt.Errorf("failed to parse login response: %v", err)
-		}
-
-		// FIXME: might need to use the refresh token if doing login in Fetch does not work for some reason
-
-		return login.AccessToken, nil
-	} else {
-		return "", fmt.Errorf("failed to login: %d", response.StatusCode)
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to login: %d", response.StatusCode)
 	}
 
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read login response: %v", err)
+	}
+
+	var loginResp LoginToken
+	if err := json.Unmarshal(body, &loginResp); err != nil {
+		return fmt.Errorf("failed to parse login response: %v", err)
+	}
+
+	c.headers["Authorization"] = "Bearer " + loginResp.AccessToken
+	return nil
 }
 
 func (c *HorizonRestClient) Get(endpoint string) (string, error) {
@@ -135,8 +174,8 @@ func (c *HorizonRestClient) Get(endpoint string) (string, error) {
 
 func buildLoginBody(config *horizon.Config) ([]byte, error) {
 	payload := map[string]string{
-		"domain":   "AD-TEST-DOMAIN",
-		"username": "Administrator",
+		"domain":   config.Domain,
+		"username": config.Username,
 		"password": config.Password,
 	}
 	return json.Marshal(payload)
