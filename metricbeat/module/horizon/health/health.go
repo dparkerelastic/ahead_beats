@@ -27,16 +27,16 @@ var (
 func init() {
 
 	endpoints = map[string]Endpoint{
-		"ConnectionServers": {Name: "ConnectionServers", Endpoint: "rest/monitor/connection-servers", Fn: getConnectionServers},
-		"DesktopPools":      {Name: "DesktopPools", Endpoint: "rest/inventory/v1/desktop-pools", Fn: getDesktopPools},
-		"Sessions":          {Name: "Sessions", Endpoint: "rest/inventory/v1/sessions", Fn: getSessions},
-		"Gateways":          {Name: "Gateways", Endpoint: "rest/monitor/gateways", Fn: getGateways},
-		"VirtualCenters":    {Name: "VirtualCenters", Endpoint: "rest/config/v1/virtual-centers", Fn: getVirtualCenters},
-		"Machines":          {Name: "Machines", Endpoint: "rest/inventory/v1/machines", Fn: getMachines},
-		"RDSServers":        {Name: "RDSServers", Endpoint: "rest/monitor/rds-servers", Fn: getRDSServers},
-		"Farms":             {Name: "Farms", Endpoint: "rest/inventory/v1/farms", Fn: getFarms},
-		"CertificateData":   {Name: "CertificateData", Endpoint: "rest/config/v1/connection-servers/certificates", Fn: getCertificateData},
-		"LicenseData":       {Name: "LicenseData", Endpoint: "rest/config/v1/licenses", Fn: getLicenseData},
+		"ConnectionServers": {Name: "ConnectionServers", Endpoint: "/rest/monitor/connection-servers", Fn: getConnectionServers},
+		"DesktopPools":      {Name: "DesktopPools", Endpoint: "/rest/inventory/v1/desktop-pools", Fn: getDesktopPools},
+		"Sessions":          {Name: "Sessions", Endpoint: "/rest/inventory/v1/sessions", Fn: getSessions},
+		"Gateways":          {Name: "Gateways", Endpoint: "/rest/monitor/gateways", Fn: getGateways},
+		"VirtualCenters":    {Name: "VirtualCenters", Endpoint: "/rest/config/v1/virtual-centers", Fn: getVirtualCenters},
+		"Machines":          {Name: "Machines", Endpoint: "/rest/inventory/v1/machines", Fn: getMachines},
+		"RDSServers":        {Name: "RDSServers", Endpoint: "/rest/monitor/rds-servers", Fn: getRDSServers},
+		"Farms":             {Name: "Farms", Endpoint: "/rest/inventory/v1/farms", Fn: getFarms},
+		"CertificateData":   {Name: "CertificateData", Endpoint: "/rest/config/v1/connection-servers/certificates", Fn: getCertificateData},
+		"LicenseData":       {Name: "LicenseData", Endpoint: "/rest/config/v1/licenses", Fn: getLicenseData},
 	}
 
 	mb.Registry.MustAddMetricSet("horizon", "health", New)
