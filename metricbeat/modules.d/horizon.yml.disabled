@@ -3,7 +3,11 @@
 
 - module: horizon
   metricsets: ["health"]
-  enabled: false
-  period: 10s
-  hosts: ["localhost"]
-
+  enabled: false 
+  period: 60s
+  host: "localhost"
+  protocol: "https"
+  port: 443
+  username: ${HORIZON_USERNAME}
+  password: ${HORIZON_PASSWORD}
+  domain: ${HORIZON_DOMAIN}

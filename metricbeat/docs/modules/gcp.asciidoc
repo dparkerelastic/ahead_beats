@@ -54,6 +54,9 @@ and metadata information from metricsets and fetch metrics only. At the moment,
 
 * *endpoint*: A custom endpoint to use for the GCP API calls. If not specified, the default endpoint will be used.
 
+* *collect_dataproc_user_labels*: (`true`/`false` default `false`) Retrieve additional
+user-defined labels from Dataproc clusters.
+
 [float]
 == Example configuration
 * `compute` metricset is enabled to collect metrics from `us-central1-a` zone
@@ -324,7 +327,6 @@ metricbeat.modules:
     - pubsub
     - loadbalancing
     - firestore
-    - dataproc
   zone: "us-central1-a"
   project_id: "your project id"
   credentials_file_path: "your JSON credentials file path"
@@ -383,6 +385,16 @@ metricbeat.modules:
   endpoint: http://your-endpoint
   dataset_id: "dataset id"
   table_pattern: "table pattern"
+
+- module: gcp
+  metricsets:
+    - dataproc
+  zone: "us-central1-a"
+  project_id: "your project id"
+  credentials_file_path: "your JSON credentials file path"
+  exclude_labels: false
+  period: 1m
+  collect_dataproc_user_labels: true
 ----
 
 [float]
