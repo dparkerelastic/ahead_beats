@@ -1,0 +1,46 @@
+////
+This file is generated! See scripts/mage/docs_collector.go
+////
+
+:modulename: citrix_cms
+:edit_url: https://github.com/elastic/beats/edit/main/metricbeat/module/citrix_cms/_meta/docs.asciidoc
+
+
+[[metricbeat-module-citrix_cms]]
+== citrix_cms module
+
+beta[]
+
+This is the citrix_cms module.
+
+
+
+:edit_url:
+
+[float]
+=== Example configuration
+
+The citrix_cms module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
+- module: citrix_cms
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-citrix_cms-health,health>>
+
+include::citrix_cms/health.asciidoc[]
+
+:edit_url!:

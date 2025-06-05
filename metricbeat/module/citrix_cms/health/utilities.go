@@ -1,0 +1,721 @@
+package health
+
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"reflect"
+	"strings"
+	"time"
+
+	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/elastic-agent-libs/mapstr"
+)
+
+// func redirectPolicyFunc(req *http.Request, via []*http.Request) error {
+// 	req.Header.Add("Authorization", "Basic "+basicAuth("username1", "password123"))
+// 	return nil
+// }
+
+// basicAuth converts the given username & password to Base64 encoded string.
+// func basicAuth(username, password string) string {
+// 	auth := username + ":" + password
+// 	return base64.StdEncoding.EncodeToString([]byte(auth))
+// }
+
+// isEmpty checks if a given value is considered "empty".
+// It returns true if the value is nil, a nil pointer, an empty slice, or an empty string.
+// For non-pointer types, it evaluates the length for slices and strings to determine emptiness.
+func isEmpty(value interface{}) bool {
+	// we make use of the fact that all the dashboard API responses utilize
+	// pointers for non-string types to filter out empty values from metric events.
+
+	if value == nil {
+		return true
+	}
+
+	t := reflect.TypeOf(value)
+
+	if t.Kind() == reflect.Ptr {
+		return reflect.ValueOf(value).IsNil()
+	}
+
+	if t.Kind() == reflect.Slice || t.Kind() == reflect.String {
+		return reflect.ValueOf(value).Len() == 0
+	}
+
+	return false
+}
+
+// GetMetrics is a generic function that retrieves metrics data from a specified URL.
+// It handles authentication, retries on token expiration, and excludes null values from the response.
+// The function takes a MetricSet, Connection details, a URL, and a generic type T to unmarshal the JSON response into.
+// It returns the unmarshalled JSON data, the filtered JSON string, and an error if any occurred during the process.
+func GetMetrics[T any](m *MetricSet, hostInfo Connection, url string, jsonInfo T) (any, string, error) {
+
+	responseData, err := GetInstanceData(m, hostInfo, url)
+
+	if err != nil {
+		m.logger.Warnf("Error fetching instance data: %v", err)
+		return jsonInfo, "", err
+	}
+
+	if strings.Contains(string(responseData), "Invalid bearer token") {
+		m.logger.Warnf("Invalid bearer token detected, fetching a new token...")
+		newToken, tokenErr := m.fetchAuthToken()
+		if tokenErr != nil {
+			return jsonInfo, "", fmt.Errorf("failed to fetch new auth token: %w", tokenErr)
+		}
+		m.authToken = newToken
+
+		// Retry fetching instance data with the new token
+		responseData, err = GetInstanceData(m, hostInfo, url)
+		if err != nil {
+			m.logger.Warnf("Error fetching instance data after refreshing token: %v", err)
+			return jsonInfo, "", fmt.Errorf("failed to fetch instance data after refreshing token: %w", err)
+		}
+	}
+
+	output, err := ExcludeNullValues(responseData)
+	if err != nil {
+		m.logger.Warnf("Error excluding null values: %v", err)
+		return jsonInfo, "", err
+	}
+	err = json.Unmarshal(output, &jsonInfo)
+
+	if err != nil {
+		m.logger.Warnf("Error unmarshalling JSON response: %v", err)
+		if strings.Contains(string(responseData), "Invalid bearer token") {
+			m.authToken = ""
+		}
+		return jsonInfo, "", err
+	}
+
+	return jsonInfo, string(output), nil
+
+}
+
+// GetInstanceData retrieves data from a specified URL using the provided MetricSet and Connection details.
+// It handles authentication by including a bearer token in the request header.
+// If the token is expired or invalid, it fetches a new token and retries the request.
+// The function returns the response data as a byte slice or an error if any issues occur during the process.
+func GetInstanceData(m *MetricSet, hostInfo Connection, url string) ([]byte, error) {
+
+	if m.authToken == "" {
+		newToken, err := m.fetchAuthToken()
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch auth token: %w", err)
+		}
+		m.authToken = newToken
+	}
+
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("Citrix-CustomerId", hostInfo.customerId)
+	req.Header.Set("Authorization", fmt.Sprintf("CWSAuth bearer=%s", m.authToken))
+
+	client := &http.Client{
+		Timeout: 90 * time.Second,
+	}
+
+	response, err := client.Do(req)
+	if err != nil {
+		m.logger.Warnf("Error executing HTTP request: %v", err)
+		if strings.Contains(err.Error(), "401") {
+			m.logger.Warnf("Token expired, fetching a new token...")
+			newToken, tokenErr := m.fetchAuthToken()
+			if tokenErr != nil {
+				return nil, fmt.Errorf("failed to fetch new auth token: %w", tokenErr)
+			}
+			m.authToken = newToken
+
+			// Retry fetching machine data with the new token
+			response, err = client.Do(req)
+			if err != nil {
+				m.logger.Warnf("Error executing HTTP request after refreshing token: %v", err)
+				return nil, fmt.Errorf("failed to fetch machine data after refreshing token: %w", err)
+			}
+		} else {
+			m.logger.Warnf("Error executing HTTP request: %v", err)
+			return nil, err
+		}
+	}
+	defer response.Body.Close()
+
+	responseData, err := io.ReadAll(response.Body)
+	if err != nil {
+		m.logger.Warnf("Error reading response body: %v", err)
+		return nil, err
+	}
+
+	return responseData, nil
+}
+
+// reportMetrics processes and reports metrics for various data categories in the CMSData structure.
+// It iterates through each category, extracts non-empty fields, and formats them into a mapstr.M structure.
+// The function supports debugging by including additional API messages in the metrics.
+// Finally, it delegates the reporting of the processed metrics to the reportMetricsForCitrixCMS function.
+func reportMetrics(reporter mb.ReporterV2, baseURL string, data CMSData, debug bool) {
+	metrics := []mapstr.M{}
+
+	for _, metricData := range data.serverOSDesktopSummaries.Value {
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.server.os.desktop.summary.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.serverOSDesktopSummaries.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.serverOSDesktopSummaries.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.loadIndexes.LoadIndexEntries {
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.load.index.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+
+		if debug {
+			metric["health.api.message"] = data.loadIndexes.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.loadIndexes.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.loadIndexSummaries.Value {
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.load.index.summary.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+
+		if debug {
+			metric["health.api.message"] = data.loadIndexSummaries.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.loadIndexSummaries.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineMetricDetails.MachineMetricEntries {
+		metric := mapstr.M{}
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.machine.metric.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.machineMetricDetails.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.machineMetricDetails.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.sessionMetricDetails.SessionMetricEntries {
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+				metricKey := fmt.Sprintf("health.session.metric.details.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.sessionMetricDetails.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.sessionMetricDetails.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.sessionDetails.Value {
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				if field.Name == "SessionMetrics" {
+					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
+						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
+						metricKey := fmt.Sprintf("health.session.details.%s.latest", field.Name)
+						metric[metricKey] = lastValue
+					}
+				} else {
+					metricKey := fmt.Sprintf("health.session.details.%s", field.Name)
+					metric[metricKey] = fieldValue.Interface()
+				}
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.sessionDetails.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.sessionDetails.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.sessionFailureDetails.Value {
+
+		metric := mapstr.M{}
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				if field.Name == "SessionMetrics" {
+					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
+						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
+						metricKey := fmt.Sprintf("health.session.failure.details.%s.latest", field.Name)
+						metric[metricKey] = lastValue
+					}
+				} else {
+					metricKey := fmt.Sprintf("health.session.failure.details.%s", field.Name)
+					metric[metricKey] = fieldValue.Interface()
+				}
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.sessionFailureDetails.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.sessionFailureDetails.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineDetails.Value {
+
+		metric := mapstr.M{}
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				if field.Name == "SessionMetrics" {
+					if fieldValue.Kind() == reflect.Slice && fieldValue.Len() > 0 {
+						lastValue := fieldValue.Index(fieldValue.Len() - 1).Interface()
+						metricKey := fmt.Sprintf("health.machine.details.%s.lastest", field.Name)
+						metric[metricKey] = lastValue
+					}
+				} else {
+					metricKey := fmt.Sprintf("health.machine.details.%s", field.Name)
+					metric[metricKey] = fieldValue.Interface()
+				}
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.machineDetails.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.machineDetails.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.resourceUtilizationSummary.ResourceUtilizationSummaryEntries {
+
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				metricKey := fmt.Sprintf("health.resource.utilization.summary.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.resourceUtilizationSummary.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.resourceUtilizationSummary.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.resourceUtilization.ResourceUtilizationEntries {
+
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				metricKey := fmt.Sprintf("health.resource.utilization.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.resourceUtilization.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.resourceUtilization.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.logOnSummaries.LogOnSummariesEntries {
+
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				metricKey := fmt.Sprintf("health.logon.summaries.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.logOnSummaries.Message
+		}
+
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.logOnSummaries.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.machineSummaries.MachineSummariesEntries {
+
+		metric := mapstr.M{}
+
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				metricKey := fmt.Sprintf("health.machine.summaries.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.machineSummaries.Message
+		}
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.machineSummaries.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	for _, metricData := range data.sessionActivitySummaries.SessionActivitySummariesEntries {
+
+		metric := mapstr.M{}
+		v := reflect.ValueOf(metricData)
+		t := reflect.TypeOf(metricData)
+
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			fieldValue := v.Field(i)
+
+			if fieldValue.IsValid() && fieldValue.CanInterface() && !isEmpty(fieldValue.Interface()) {
+
+				metricKey := fmt.Sprintf("health.session.activity.summaries.%s", field.Name)
+				metric[metricKey] = fieldValue.Interface()
+
+			}
+		}
+		if debug {
+			metric["health.api.message"] = data.sessionActivitySummaries.Message
+		}
+		metricKey := "health.api.odatacontext"
+		metric[metricKey] = data.sessionActivitySummaries.OdataContext
+
+		metrics = append(metrics, metric)
+	}
+
+	reportMetricsForCitrixCMS(reporter, baseURL, metrics)
+}
+
+// reportMetricsForCitrixCMS processes and reports metrics for the Citrix CMS module.
+// It iterates through the provided metrics slices, constructs events with module fields,
+// and reports them using the provided reporter. The function also handles optional
+// timestamp parsing and ensures non-empty values are included in the reported events.
+func reportMetricsForCitrixCMS(reporter mb.ReporterV2, baseURL string, metrics ...[]mapstr.M) {
+	for _, metricSlice := range metrics {
+		for _, metric := range metricSlice {
+			event := mb.Event{ModuleFields: mapstr.M{"base_url": baseURL}}
+			if ts, ok := metric["@timestamp"]; ok {
+				t, err := time.Parse(time.RFC3339, ts.(string))
+				if err == nil {
+					// if the timestamp parsing fails, we just fall back to the event time
+					// (and leave the additional timestamp in the event for posterity)
+					event.Timestamp = t
+					delete(metric, "@timestamp")
+				}
+			}
+
+			for k, v := range metric {
+				if !isEmpty(v) {
+					event.ModuleFields.Put(k, v)
+				}
+			}
+
+			reporter.Event(event)
+		}
+	}
+}
+
+// fetchAuthToken retrieves an authentication token for the MetricSet.
+// It sends a POST request to the authentication endpoint with client credentials
+// and extracts the access token from the JSON response. The function returns the
+// token as a string or an error if the request or parsing fails.
+func (m *MetricSet) fetchAuthToken() (string, error) {
+	apiURL := fmt.Sprintf("%s/cctrustoauth2/%s/tokens/clients", m.Host(), m.customerId)
+
+	// Prepare form data
+	formData := map[string]string{
+		"grant_type":    "client_credentials",
+		"client_secret": m.clientSecret,
+		"client_id":     m.clientId,
+	}
+
+	// Encode form data
+	form := ""
+	for key, value := range formData {
+		form += fmt.Sprintf("%s=%s&", key, value)
+	}
+	form = form[:len(form)-1] // Remove trailing '&'
+
+	// Create a new HTTP request
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(form))
+	if err != nil {
+		return "", fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// Make the HTTP request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to make HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check for HTTP errors
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected HTTP status: %s", resp.Status)
+	}
+
+	// Parse the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	// Extract the token from the response
+	var responseData map[string]interface{}
+	if err := json.Unmarshal(body, &responseData); err != nil {
+		return "", fmt.Errorf("failed to parse response JSON: %w", err)
+	}
+
+	token, ok := responseData["access_token"].(string)
+	if !ok {
+		return "", fmt.Errorf("access_token not found in response")
+	}
+
+	return token, nil
+}
+
+// ExcludeNullValues removes null values from a JSON byte array.
+// It unmarshals the input JSON into a map, filters out null values recursively,
+// and marshals the filtered map back into a JSON byte array.
+// The function returns the filtered JSON or an error if unmarshalling or marshalling fails.
+func ExcludeNullValues(input []byte) ([]byte, error) {
+	var raw map[string]interface{}
+	if err := json.Unmarshal(input, &raw); err != nil {
+		return nil, err
+	}
+
+	filtered := filterNullValues(raw)
+	return json.Marshal(filtered)
+}
+
+// filterNullValues recursively filters out null values from a given data structure.
+// It processes maps and slices, removing any entries with nil values, and returns
+// the filtered data. For other types, it returns the data as-is.
+func filterNullValues(data interface{}) interface{} {
+	switch v := data.(type) {
+	case map[string]interface{}:
+		result := make(map[string]interface{})
+		for key, value := range v {
+			if value != nil {
+				filteredValue := filterNullValues(value)
+				if filteredValue != nil {
+					result[key] = filteredValue
+				}
+			}
+		}
+		return result
+	case []interface{}:
+		var result []interface{}
+		for _, value := range v {
+			if value != nil {
+				filteredValue := filterNullValues(value)
+				if filteredValue != nil {
+					result = append(result, filteredValue)
+				}
+			}
+		}
+		return result
+	default:
+		return data
+	}
+}
+
+// RemoveMachineMetricDetailsByCollectedDate filters machine metric details based on the collected date.
+// It updates the provided MachineMetricDetails_JSON structure by retaining only the entries with the latest
+// collected date for each machine. The function also updates the persistMap with the latest collected dates
+// for each machine. It returns the updated persistMap.
+func RemoveMachineMetricDetailsByCollectedDate(machineMetricDetails *MachineMetricDetails_JSON, persistMap map[string]MachineMetric_Persist) map[string]MachineMetric_Persist {
+	var filteredEntries []MachineMetricEntry
+	for _, entry := range machineMetricDetails.MachineMetricEntries {
+		if entry.CollectedDate != nil {
+			if _, found := persistMap[entry.MachineID]; found {
+				if entry.CollectedDate.After(*persistMap[entry.MachineID].CollectedDate) {
+					filteredEntries = append(filteredEntries, entry)
+					persistMap[entry.MachineID] = MachineMetric_Persist{
+						CollectedDate: entry.CollectedDate,
+					}
+				}
+			} else {
+				persistMap[entry.MachineID] = MachineMetric_Persist{
+					CollectedDate: entry.CollectedDate,
+				}
+				filteredEntries = append(filteredEntries, entry)
+			}
+		}
+	}
+
+	// Update the original slice with filtered entries
+	machineMetricDetails.MachineMetricEntries = filteredEntries
+
+	return persistMap
+}
+
+// RemoveDuplicateLoadIndexEntries filters LoadIndexEntries by removing duplicates
+// and retaining only the entries with the latest CreatedDate for each MachineID.
+func RemoveDuplicateLoadIndexEntries(loadIndexes *LoadIndexes_JSON) {
+	latestEntries := make(map[string]LoadIndexEntry)
+
+	for _, entry := range loadIndexes.LoadIndexEntries {
+		if entry.CreatedDate != nil {
+			if existingEntry, found := latestEntries[entry.MachineID]; found {
+				if entry.CreatedDate.After(*existingEntry.CreatedDate) {
+					latestEntries[entry.MachineID] = entry
+				}
+			} else {
+				latestEntries[entry.MachineID] = entry
+			}
+		}
+	}
+
+	// Update the original slice with filtered entries
+	var filteredEntries []LoadIndexEntry
+	for _, entry := range latestEntries {
+		filteredEntries = append(filteredEntries, entry)
+	}
+	loadIndexes.LoadIndexEntries = filteredEntries
+}

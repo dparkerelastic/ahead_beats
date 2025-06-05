@@ -1,0 +1,10 @@
+- key: citrix_cms
+  title: "citrix_cms"
+  release: beta
+  description: >
+    citrix_cms module
+  fields:
+    - name: citrix_cms
+      type: group
+      description: >
+      fields:

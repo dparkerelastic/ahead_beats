@@ -231,6 +231,14 @@ metricbeat.modules:
   #username: "user"
   #password: "secret"
 
+#------------------------------ Citrix_cms Module ------------------------------
+- module: citrix_cms
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #-------------------------------- Consul Module --------------------------------
 - module: consul
   metricsets:
