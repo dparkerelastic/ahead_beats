@@ -45,6 +45,7 @@ import (
 	"github.com/elastic/beats/v7/libbeat/feature"
 	"github.com/elastic/beats/v7/libbeat/management/status"
 	"github.com/elastic/beats/v7/libbeat/monitoring/inputmon"
+	"github.com/elastic/beats/v7/libbeat/statestore"
 	"github.com/elastic/beats/v7/libbeat/version"
 	"github.com/elastic/beats/v7/x-pack/filebeat/input/internal/httplog"
 	"github.com/elastic/beats/v7/x-pack/filebeat/input/internal/httpmon"
@@ -73,7 +74,7 @@ const (
 // is not given a user-agent string, this user agent is added to the request.
 var userAgent = useragent.UserAgent("Filebeat", version.GetDefaultVersion(), version.Commit(), version.BuildTime().String())
 
-func Plugin(log *logp.Logger, store inputcursor.StateStore) v2.Plugin {
+func Plugin(log *logp.Logger, store statestore.States) v2.Plugin {
 	return v2.Plugin{
 		Name:      inputName,
 		Stability: feature.Stable,
@@ -169,7 +170,13 @@ func (i input) run(env v2.Context, src *source, cursor map[string]interface{}, p
 	}
 	wantDump := cfg.FailureDump.enabled() && cfg.FailureDump.Filename != ""
 	doCov := cfg.RecordCoverage && log.IsDebug()
-	prg, ast, cov, err := newProgram(ctx, cfg.Program, root, getEnv(cfg.AllowedEnvironment), client, limiter, auth, patterns, cfg.XSDs, log, trace, wantDump, doCov)
+	httpOptions := lib.HTTPOptions{
+		Limiter:     limiter,
+		BasicAuth:   auth,
+		Headers:     cfg.Resource.Headers,
+		MaxBodySize: cfg.Resource.MaxBodySize,
+	}
+	prg, ast, cov, err := newProgram(ctx, cfg.Program, root, getEnv(cfg.AllowedEnvironment), client, httpOptions, patterns, cfg.XSDs, log, trace, wantDump, doCov)
 	if err != nil {
 		return err
 	}
@@ -785,9 +792,8 @@ func newClient(ctx context.Context, cfg config, log *logp.Logger, reg *monitorin
 		)
 		traceLogger := zap.New(core)
 
-		const margin = 10e3 // 1OkB ought to be enough room for all the remainder of the trace details.
-		maxSize := cfg.Resource.Tracer.MaxSize * 1e6
-		trace = httplog.NewLoggingRoundTripper(c.Transport, traceLogger, max(0, maxSize-margin), log)
+		maxBodyLen := cfg.Resource.Tracer.MaxSize * 1e6 / 10 // 10% of file max
+		trace = httplog.NewLoggingRoundTripper(c.Transport, traceLogger, maxBodyLen, log)
 		c.Transport = trace
 	} else if cfg.Resource.Tracer != nil {
 		// We have a trace log name, but we are not enabled,
@@ -1048,7 +1054,7 @@ func getEnv(allowed []string) map[string]string {
 	return env
 }
 
-func newProgram(ctx context.Context, src, root string, vars map[string]string, client *http.Client, limiter *rate.Limiter, auth *lib.BasicAuth, patterns map[string]*regexp.Regexp, xsd map[string]string, log *logp.Logger, trace *httplog.LoggingRoundTripper, details, coverage bool) (cel.Program, *cel.Ast, *lib.Coverage, error) {
+func newProgram(ctx context.Context, src, root string, vars map[string]string, client *http.Client, httpOptions lib.HTTPOptions, patterns map[string]*regexp.Regexp, xsd map[string]string, log *logp.Logger, trace *httplog.LoggingRoundTripper, details, coverage bool) (cel.Program, *cel.Ast, *lib.Coverage, error) {
 	xml, err := lib.XML(nil, xsd)
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("failed to build xml type hints: %w", err)
@@ -1067,7 +1073,7 @@ func newProgram(ctx context.Context, src, root string, vars map[string]string, c
 		lib.Debug(debug(log, trace)),
 		lib.File(mimetypes),
 		lib.MIME(mimetypes),
-		lib.HTTPWithContext(ctx, client, limiter, auth),
+		lib.HTTPWithContextOpts(ctx, client, httpOptions),
 		lib.Limit(limitPolicies),
 		lib.Globals(map[string]interface{}{
 			"useragent": userAgent,
