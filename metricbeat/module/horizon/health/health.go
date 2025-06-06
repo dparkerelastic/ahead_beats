@@ -104,9 +104,9 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	}
 
 	for _, endpoint := range endpoints {
-		m.logger.Debugf("Calling endpoint %s ....", endpoint.Name)
+		m.logger.Infof("Calling endpoint %s ....", endpoint.Name)
 		events, err := endpoint.Fn(m)
-		m.logger.Debugf("Fetched %d %s events", len(events), endpoint.Name)
+		m.logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
 
 		if err != nil {
 			m.logger.Errorf("Error getting %s events: %s", endpoint.Name, err)

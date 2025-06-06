@@ -219,12 +219,12 @@
           fields:
             - name: type
               type: keyword
-            -
-          type: keyword
-        - name: internal
-          type: boolean
-        - name: version
-          type: keyword
+            - name: address
+              type: keyword
+            - name: internal
+              type: boolean
+            - name: version
+              type: keyword
     - name: virtual_center
       type: group
       description: >
