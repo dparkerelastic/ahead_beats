@@ -779,20 +779,22 @@ func getLicenseData(m *MetricSet) ([]mb.Event, error) {
 
 func createLicenseDataFields(license LicenseData) mapstr.M {
 	return mapstr.M{
-		"application_pool_launch_enabled": license.ApplicationPoolLaunchEnabled,
-		"desktop_pool_launch_enabled":     license.DesktopPoolLaunchEnabled,
-		"expiration_time":                 license.ExpirationTime,
-		"grace_period_days":               license.GracePeriodDays,
-		"help_desk_enabled":               license.HelpDeskEnabled,
-		"instant_clone_enabled":           license.InstantCloneEnabled,
-		"license_edition":                 license.LicenseEdition,
-		"license_health":                  license.LicenseHealth,
-		"license_key":                     license.LicenseKey,
-		"license_mode":                    license.LicenseMode,
-		"licensed":                        license.Licensed,
-		"session_collaboration_enabled":   license.SessionCollaborationEnabled,
-		"subscription_slice_expiry":       license.SubscriptionSliceExpiry,
-		"usage_model":                     license.UsageModel,
+		"license_data": mapstr.M{
+			"application_pool_launch_enabled": license.ApplicationPoolLaunchEnabled,
+			"desktop_pool_launch_enabled":     license.DesktopPoolLaunchEnabled,
+			"expiration_time":                 license.ExpirationTime,
+			"grace_period_days":               license.GracePeriodDays,
+			"help_desk_enabled":               license.HelpDeskEnabled,
+			"instant_clone_enabled":           license.InstantCloneEnabled,
+			"license_edition":                 license.LicenseEdition,
+			"license_health":                  license.LicenseHealth,
+			"license_key":                     license.LicenseKey,
+			"license_mode":                    license.LicenseMode,
+			"licensed":                        license.Licensed,
+			"session_collaboration_enabled":   license.SessionCollaborationEnabled,
+			"subscription_slice_expiry":       license.SubscriptionSliceExpiry,
+			"usage_model":                     license.UsageModel,
+		},
 	}
 }
 

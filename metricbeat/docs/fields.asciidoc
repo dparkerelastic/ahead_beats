@@ -40664,24 +40664,35 @@ type: long
 
 --
 
-*`horizon.health.gateway.details`*::
-+
---
+[float]
+=== details
+
 Gateway details
 
 
+
+*`horizon.health.gateway.details.type`*::
++
+--
 type: keyword
 
 --
 
-*`horizon.health.gateway.internal`*::
+*`horizon.health.gateway.details.address`*::
++
+--
+type: keyword
+
+--
+
+*`horizon.health.gateway.details.internal`*::
 +
 --
 type: boolean
 
 --
 
-*`horizon.health.gateway.version`*::
+*`horizon.health.gateway.details.version`*::
 +
 --
 type: keyword

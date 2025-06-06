@@ -18,6 +18,7 @@
 package horizon
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"strings"
@@ -87,6 +88,23 @@ func GetHostInfo(input string) (HostInfo, error) {
 	}
 
 	return hostInfo, nil
+}
+
+func ToJSONString(v interface{}) (string, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
+func FromJSONString(s string, v interface{}) error {
+
+	err := json.Unmarshal([]byte(s), v)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // func convertToSnakeCase(s string) string {

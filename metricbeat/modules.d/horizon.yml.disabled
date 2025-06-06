@@ -3,7 +3,7 @@
 
 - module: horizon
   metricsets: ["health"]
-  enabled: false 
+  enabled: true 
   period: 60s
   host: "localhost"
   protocol: "https"
