@@ -900,6 +900,14 @@ metricbeat.modules:
   # Path to server status. Default nginx_status
   server_status_path: "nginx_status"
 
+#--------------------------------- Nsxt Module ---------------------------------
+- module: nsxt
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #----------------------------- Openmetrics Module -----------------------------
 - module: openmetrics
   metricsets: ['collector']

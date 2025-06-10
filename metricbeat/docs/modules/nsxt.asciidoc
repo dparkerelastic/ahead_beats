@@ -1,0 +1,46 @@
+////
+This file is generated! See scripts/mage/docs_collector.go
+////
+
+:modulename: nsxt
+:edit_url: https://github.com/elastic/beats/edit/main/metricbeat/module/nsxt/_meta/docs.asciidoc
+
+
+[[metricbeat-module-nsxt]]
+== nsxt module
+
+beta[]
+
+This is the nsxt module.
+
+
+
+:edit_url:
+
+[float]
+=== Example configuration
+
+The nsxt module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+metricbeat.modules:
+- module: nsxt
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-nsxt-health,health>>
+
+include::nsxt/health.asciidoc[]
+
+:edit_url!:

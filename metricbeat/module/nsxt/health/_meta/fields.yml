@@ -1,0 +1,917 @@
+- name: health
+  type: group
+  release: beta
+  description: >
+    Metrics retrieve via the NSX-T REST API
+  fields:
+  - name: backup_status
+    type: group
+    description: Latest backup statuses.
+    fields:
+    - name: cluster
+      type: group
+      description: Latest cluster backup status.
+      fields: 
+      - name: backup_id
+        type: keyword
+        description: Cluster.backup id field.
+      - name: start_time
+        type: keyword
+        description: Cluster.start time field.
+      - name: end_time
+        type: keyword
+        description: Cluster.end time field.
+      - name: success
+        type: boolean
+        description: Cluster.success field.
+      - name: error_code
+        type: keyword
+        description: Cluster.error code field.
+      - name: error_message
+        type: keyword
+        description: Cluster.error message field.
+    - name: node
+      type: group
+      description: >
+        Latest node backup status.
+      fields: 
+      - name: backup_id
+        type: keyword
+        description: Cluster.backup id field.
+      - name: start_time
+        type: keyword
+        description: Cluster.start time field.
+      - name: end_time
+        type: keyword
+        description: Cluster.end time field.
+      - name: success
+        type: boolean
+        description: Cluster.success field.
+      - name: error_code
+        type: keyword
+        description: Cluster.error code field.
+      - name: error_message
+        type: keyword
+        description: Cluster.error message field.
+    - name: inventory
+      type: group
+      description: >
+        Latest inventory backup status.
+      fields: 
+      - name: backup_id
+        type: keyword
+        description: Cluster.backup id field.
+      - name: start_time
+        type: keyword
+        description: Cluster.start time field.
+      - name: end_time
+        type: keyword
+        description: Cluster.end time field.
+      - name: success
+        type: boolean
+        description: Cluster.success field.
+      - name: error_code
+        type: keyword
+        description: Cluster.error code field.
+      - name: error_message
+        type: keyword
+        description: Cluster.error message field.
+  - name: cluster_node
+    type: group
+    description: Cluster node field.
+    fields:
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: external_id
+      type: keyword
+      description: External id field.
+    - name: appliance_mgmt_listen_addr
+      type: keyword
+      description: Appliance mgmt listen addr field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: manager_role
+      type: keyword
+      description: Manager role field.
+    - name: controller_role
+      type: keyword
+      description: Controller role field.
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: keyword
+      description: Revision field.
+    - name: system_owned
+      type: keyword
+      description: System owned field.
+  - name: cluster_status
+    type: group
+    description: Cluster status field.
+    fields:
+    - name: cluster_id
+      type: keyword
+      description: Cluster id field.
+    - name: control_cluster_status
+      type: keyword
+      description: Control cluster status field.
+    - name: mgmt_cluster_status
+      type: keyword
+      description: Mgmt cluster status field.
+    - name: mgmt_cluster_node_count
+      type: keyword
+      description: Mgmt cluster node count field.
+    - name: group_id
+      type: keyword
+      description: Group id field.
+    - name: group_status
+      type: keyword
+      description: Group status field.
+    - name: group_type
+      type: keyword
+      description: Group type field.
+    - name: leaders
+      type: keyword
+      description: Leaders field.
+    - name: member_data
+      type: group
+      description: Member data field.
+      fields:
+      - name: fqdn
+        type: keyword
+        description: Member data.fqdn field.
+      - name: ip
+        type: keyword
+        description: Member data.ip field.
+      - name: status
+        type: keyword
+        description: Member data.status field.
+      - name: uuid
+        type: keyword
+        description: Member data.uuid field.
+  - name: edge_cluster
+    type: group
+    description: Edge cluster field.
+    fields:
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: keyword
+      description: Revision field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: deployment_type
+      type: keyword
+      description: Deployment type field.
+    - name: enable_inter_site_forwarding
+      type: keyword
+      description: Enable inter site forwarding field.
+    - name: member_node_type
+      type: keyword
+      description: Member node type field.
+    - name: members
+      type: keyword
+      description: Members field.
+    - name: cluster_profile_bindings
+      type: keyword
+      description: Cluster profile bindings field.
+    - name: allocation_rules
+      type: keyword
+      description: Allocation rules field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+  - name: firewall_section
+    type: group
+    description: Firewall section field.
+    fields:
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: comments
+      type: keyword
+      description: Comments field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: category
+      type: keyword
+      description: Category field.
+    - name: section_type
+      type: keyword
+      description: Section type field.
+    - name: enforced_on
+      type: keyword
+      description: Enforced on field.
+    - name: is_default
+      type: boolean
+      description: Is default field.
+    - name: locked
+      type: boolean
+      description: Locked field.
+    - name: lock_modified_by
+      type: keyword
+      description: Lock modified by field.
+    - name: lock_modified_time
+      type: date
+      description: Lock modified time field.
+    - name: stateful
+      type: boolean
+      description: Stateful field.
+    - name: tcp_strict
+      type: boolean
+      description: Tcp strict field.
+    - name: rule_count
+      type: integer
+      description: Rule count field.
+    - name: priority
+      type: keyword
+      description: Priority field.
+    - name: autoplumbed
+      type: keyword
+      description: Autoplumbed field.
+    - name: applied_tos
+      type: keyword
+      description: Applied tos field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: system_owned
+      type: keyword
+      description: System owned field.
+  - name: ip_pool
+    type: group
+    description: Ip pool field.
+    fields:
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: pool_usage
+      type: group
+      description: Pool usage field.
+      fields:
+      - name: allocated_ids
+        type: integer
+        description: Pool usage.allocated ids field.
+      - name: free_ids
+        type: integer
+        description: Pool usage.free ids field.
+      - name: total_ids
+        type: integer
+        description: Pool usage.total ids field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: subnets
+      type: keyword
+      description: Subnets field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: keyword
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+  - name: logical_router_port
+    type: group
+    description: Logical router port field.
+    fields:
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: logical_router_id
+      type: keyword
+      description: Logical router id field.
+    - name: mac_address
+      type: keyword
+      description: Mac address field.
+    - name: subnets
+      type: keyword
+      description: Subnets field.
+    - name: edge_cluster_member_index
+      type: keyword
+      description: Edge cluster member index field.
+    - name: enable_multicast
+      type: boolean
+      description: Enable multicast field.
+    - name: urpf_mode
+      type: keyword
+      description: Urpf mode field.
+    - name: mode
+      type: keyword
+      description: Mode field.
+    - name: mtu
+      type: keyword
+      description: Mtu field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+    - name: service_bindings
+      type: keyword
+      description: Service bindings field.
+    - name: linked_logical_router_port_id
+      type: keyword
+      description: Inked logical router port field.
+    - name: inked_logical_switch_port_id
+      type: keyword
+      description: Inked logical router port id field.
+    - name: linked_logical_router_port
+      type: group
+      description: Linked logical router port field.
+      fields:
+        - name: is_valid
+          type: boolean
+          description: Indicates if the linked logical router port is valid.
+        - name: target_id
+          type: keyword
+          description: Target ID of the linked logical router port.
+        - name: target_type
+          type: keyword
+          description: Target type of the linked logical router port.
+        - name: target_display_name
+          type: keyword
+          description: Target display name of the linked logical router port.
+    - name: linked_logical_switch_port
+      type: group
+      description: Linked logical router port field.
+      fields:
+        - name: is_valid
+          type: boolean
+          description: Indicates if the linked logical router port is valid.
+        - name: target_id
+          type: keyword
+          description: Target ID of the linked logical router port.
+        - name: target_type
+          type: keyword
+          description: Target type of the linked logical router port.
+        - name: target_display_name
+          type: keyword
+          description: Target display name of the linked logical router port.  
+  - name: network_interface
+    type: group
+    description: Network interface field.
+    fields:
+    - name: schema
+      type: keyword
+      description: Schema field.
+    - name: self
+      type: keyword
+      description: Self field.
+    - name: admin_status
+      type: keyword
+      description: Admin status field.
+    - name: broadcast_address
+      type: keyword
+      description: Broadcast address field.
+    - name: default_gateway
+      type: keyword
+      description: Default gateway field.
+    - name: interface_id
+      type: keyword
+      description: Interface id field.
+    - name: ip_addresses
+      type: keyword
+      description: Ip addresses field.
+    - name: ip_configuration
+      type: keyword
+      description: Ip configuration field.
+    - name: link_status
+      type: keyword
+      description: Link status field.
+    - name: mtu
+      type: integer
+      description: Mtu field.
+    - name: physical_address
+      type: keyword
+      description: Physical address field.
+  - name: tier0
+    type: group
+    description: Tier0 field.
+    fields:
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: path
+      type: keyword
+      description: Path field.
+    - name: parent_path
+      type: keyword
+      description: Parent path field.
+    - name: relative_path
+      type: keyword
+      description: Relative path field.
+    - name: marked_for_delete
+      type: boolean
+      description: Marked for delete field.
+    - name: overridden
+      type: boolean
+      description: Overridden field.
+    - name: default_rule_logging
+      type: boolean
+      description: Default rule logging field.
+    - name: disable_firewall
+      type: boolean
+      description: Disable firewall field.
+    - name: force_whitelisting
+      type: boolean
+      description: Force whitelisting field.
+    - name: failover_mode
+      type: keyword
+      description: Failover mode field.
+    - name: ha_mode
+      type: keyword
+      description: Ha mode field.
+    - name: unique_id
+      type: keyword
+      description: Unique id field.
+    - name: advanced_config
+      type: group
+      description: Advanced config field.
+      fields:
+      - name: connectivity
+        type: keyword
+        description: Advanced config.connectivity field.
+      - name: forwarding_up_timer
+        type: integer
+        description: Advanced config.forwarding up timer field.
+    - name: internal_transit_subnets
+      type: keyword
+      description: Internal transit subnets field.
+    - name: transit_subnets
+      type: keyword
+      description: Transit subnets field.
+    - name: ipv6_profile_paths
+      type: keyword
+      description: Ipv6 profile paths field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+  - name: tier1
+    type: group
+    description: Tier1 field.
+    fields:
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: path
+      type: keyword
+      description: Path field.
+    - name: parent_path
+      type: keyword
+      description: Parent path field.
+    - name: relative_path
+      type: keyword
+      description: Relative path field.
+    - name: marked_for_delete
+      type: boolean
+      description: Marked for delete field.
+    - name: overridden
+      type: boolean
+      description: Overridden field.
+    - name: default_rule_logging
+      type: boolean
+      description: Default rule logging field.
+    - name: disable_firewall
+      type: boolean
+      description: Disable firewall field.
+    - name: force_whitelisting
+      type: boolean
+      description: Force whitelisting field.
+    - name: failover_mode
+      type: keyword
+      description: Failover mode field.
+    - name: enable_standby_relocation
+      type: boolean
+      description: Enable standby relocation field.
+    - name: pool_allocation
+      type: keyword
+      description: Pool allocation field.
+    - name: ipv6_profile_paths
+      type: keyword
+      description: Ipv6 profile paths field.
+    - name: route_advertisement_types
+      type: keyword
+      description: Route advertisement types field.
+    - name: tier0_path
+      type: keyword
+      description: Tier0 path field.
+    - name: unique_id
+      type: keyword
+      description: Unique id field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+  - name: transport_node
+    type: group
+    description: Transport node field.
+    fields:
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: node_id
+      type: keyword
+      description: Node id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: description
+      type: keyword
+      description: Description field.
+    - name: failure_domain_id
+      type: keyword
+      description: Failure domain id field.
+    - name: is_overridden
+      type: boolean
+      description: Is overridden field.
+    - name: maintenance_mode
+      type: keyword
+      description: Maintenance mode field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+    - name: transport_zone_endpoints
+      type: keyword
+      description: Transport zone endpoints field.
+    - name: node_deployment_info
+      type: group
+      description: Node deployment info field.
+      fields:
+        - name: create_time
+          type: date
+          description: Node deployment info create time field.
+        - name: create_user
+          type: keyword
+          description: Node deployment info create user field.
+        - name: last_modified_time
+          type: date
+          description: Node deployment info last modified time field.
+        - name: last_modified_user
+          type: keyword
+          description: Node deployment info last modified user field.
+        - name: protection
+          type: keyword
+          description: Node deployment info protection field.
+        - name: revision
+          type: integer
+          description: Node deployment info revision field.
+        - name: system_owned
+          type: boolean
+          description: Node deployment info system owned field.
+        - name: resource_type
+          type: keyword
+          description: Node deployment info resource type field.
+        - name: deployment_type
+          type: keyword
+          description: Node deployment info deployment type field.
+        - name: deployment_config
+          type: keyword
+          description: Node deployment info deployment config field.
+        - name: display_name
+          type: keyword
+          description: Node deployment info display name field.
+        - name: description
+          type: keyword
+          description: Node deployment info description field.
+        - name: external_id
+          type: keyword
+          description: Node deployment info external id field.
+        - name: id
+          type: keyword
+          description: Node deployment info id field.
+        - name: ip_addresses
+          type: keyword
+          description: Node deployment info ip addresses field.
+        - name: node_settings
+          type: keyword
+          description: Node deployment info node settings field.
+        - name: discovered_node_id
+          type: keyword
+          description: Node deployment info discovered node id field.
+        - name: fqdn
+          type: keyword
+          description: Node deployment info fqdn field.
+        - name: managed_by_server
+          type: keyword
+          description: Node deployment info managed by server field.
+        - name: discovered_ip_addresses
+          type: keyword
+          description: Node deployment info discovered ip addresses field.
+        - name: os_type
+          type: keyword
+          description: Node deployment info os type field.
+        - name: os_version
+          type: keyword
+          description: Node deployment info os version field.
+    - name: host_switch
+      type: group
+      description: Host switch field.
+      fields:
+      - name: cpu_config
+        type: keyword
+        description: CPU configuration.
+      - name: host_switch_id
+        type: keyword
+        description: Host switch ID.
+      - name: host_switch_mode
+        type: keyword
+        description: Host switch mode.
+      - name: host_switch_name
+        type: keyword
+        description: Host switch name.
+      - name: host_switch_profile_ids
+        type: keyword
+        description: Host switch profile IDs.
+      - name: host_switch_type
+        type: keyword
+        description: Host switch type.
+      - name: ip_assignment_spec
+        type: group
+        description: IP assignment specification.
+        fields:
+          - name: resource_type
+            type: keyword
+            description: Resource type of the IP assignment specification.
+          - name: ip_pool_id
+            type: keyword
+            description: IP pool ID of the IP assignment specification.
+          - name: default_gateway
+            type: keyword
+            description: Default gateway of the IP assignment specification.
+          - name: ip_list
+            type: keyword
+            description: IP list of the IP assignment specification.
+          - name: subnet_mask
+            type: keyword
+            description: Subnet mask of the IP assignment specification.
+      - name: is_migrate_pnics
+        type: boolean
+        description: Indicates if PNICS are migrated.
+      - name: not_ready
+        type: boolean
+        description: Not ready flag.
+      - name: pnics
+        type: keyword
+        description: PNICS.
+      - name: pnics_uninstall_migration
+        type: keyword
+        description: PNICS uninstall migration.
+      - name: vmk_install_migration
+        type: keyword
+        description: VMK install migration.
+      - name: vmk_uninstall_migration
+        type: keyword
+        description: VMK uninstall migration.
+      - name: transport_zone_endpoints
+        type: keyword
+        description: Transport zone endpoints.
+      - name: uplinks
+        type: keyword
+        description: Uplinks.
+  - name: transport_zone
+    type: group
+    description: Transport zone field.
+    fields:
+    - name: create_time
+      type: date
+      description: Create time field.
+    - name: create_user
+      type: keyword
+      description: Create user field.
+    - name: last_modified_time
+      type: date
+      description: Last modified time field.
+    - name: last_modified_user
+      type: keyword
+      description: Last modified user field.
+    - name: protection
+      type: keyword
+      description: Protection field.
+    - name: revision
+      type: integer
+      description: Revision field.
+    - name: schema
+      type: keyword
+      description: Schema field.
+    - name: system_owned
+      type: boolean
+      description: System owned field.
+    - name: id
+      type: keyword
+      description: Id field.
+    - name: display_name
+      type: keyword
+      description: Display name field.
+    - name: host_switch_id
+      type: keyword
+      description: Host switch id field.
+    - name: host_switch_name
+      type: keyword
+      description: Host switch name field.
+    - name: host_switch_mode
+      type: keyword
+      description: Host switch mode field.
+    - name: is_default
+      type: boolean
+      description: Is default field.
+    - name: nested_nsx
+      type: boolean
+      description: Nested nsx field.
+    - name: resource_type
+      type: keyword
+      description: Resource type field.
+    - name: transport_type
+      type: keyword
+      description: Transport type field.
+    - name: tags
+      type: keyword
+      description: Tags field.
+    - name: transport_zone_profile_ids
+      type: keyword
+      description: Transport zone profile ids field.
+    - name: uplink_teaming_policy_names
+      type: keyword
+      description: Uplink teaming policy names field.
+  
