@@ -1,0 +1,13 @@
+# Module: horizon
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-horizon.html
+
+- module: horizon
+  metricsets: ["health"]
+  enabled: true 
+  period: 60s
+  host: "localhost"
+  protocol: "https"
+  port: 443
+  username: ${HORIZON_USERNAME}
+  password: ${HORIZON_PASSWORD}
+  domain: ${HORIZON_DOMAIN}

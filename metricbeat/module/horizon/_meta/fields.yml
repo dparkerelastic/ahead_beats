@@ -1,0 +1,10 @@
+- key: horizon
+  title: Horizon module
+  release: beta
+  description: >
+    Horizon module collects metrics from VMware Horizon components.
+  fields:
+    - name: horizon
+      type: group
+      description: >
+      fields:

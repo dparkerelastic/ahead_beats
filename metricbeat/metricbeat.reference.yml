@@ -410,6 +410,14 @@ metricbeat.modules:
   password : "admin"
   enabled: true
 
+#---------------------------- Horizon Module Module ----------------------------
+- module: horizon
+  metricsets: ["health"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #--------------------------------- HTTP Module ---------------------------------
 - module: http
   #metricsets:
