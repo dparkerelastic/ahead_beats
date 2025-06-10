@@ -25,6 +25,7 @@ grouped in the following categories:
 * <<exported-fields-beat>>
 * <<exported-fields-benchmark>>
 * <<exported-fields-ceph>>
+* <<exported-fields-citrix_cms>>
 * <<exported-fields-cloud>>
 * <<exported-fields-cloudfoundry>>
 * <<exported-fields-cockroachdb>>
@@ -41,7 +42,6 @@ grouped in the following categories:
 * <<exported-fields-ecs>>
 * <<exported-fields-elasticsearch>>
 * <<exported-fields-emcunity>>
-* <<exported-fields-enterprisesearch>>
 * <<exported-fields-envoyproxy>>
 * <<exported-fields-etcd>>
 * <<exported-fields-gcp>>
@@ -7576,6 +7576,91 @@ alias to: beat.stats.apm_server.root.unset
 
 --
 
+
+
+*`beats_stats.apm-server.sampling.tail.dynamic_service_groups`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.dynamic_service_groups
+
+--
+
+
+*`beats_stats.apm-server.sampling.tail.events.dropped`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.dropped
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.failed_writes`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.failed_writes
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.head_unsampled`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.head_unsampled
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.processed`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.processed
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.sampled`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.sampled
+
+--
+
+*`beats_stats.apm-server.sampling.tail.events.stored`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.events.stored
+
+--
+
+
+*`beats_stats.apm-server.sampling.tail.storage.lsm_size`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.storage.lsm_size
+
+--
+
+*`beats_stats.apm-server.sampling.tail.storage.value_log_size`*::
++
+--
+type: alias
+
+alias to: beat.stats.apm_server.sampling.tail.storage.value_log_size
+
+--
+
 *`beats_stats.apm-server.sampling.transactions_dropped`*::
 +
 --
@@ -9666,6 +9751,73 @@ type: long
 
 --
 
+
+
+*`beat.stats.apm_server.sampling.tail.dynamic_service_groups`*::
++
+--
+type: long
+
+--
+
+
+*`beat.stats.apm_server.sampling.tail.events.dropped`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.failed_writes`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.head_unsampled`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.processed`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.sampled`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.events.stored`*::
++
+--
+type: long
+
+--
+
+
+*`beat.stats.apm_server.sampling.tail.storage.lsm_size`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.apm_server.sampling.tail.storage.value_log_size`*::
++
+--
+type: long
+
+--
+
 *`beat.stats.apm_server.sampling.transactions_dropped`*::
 +
 --
@@ -10187,16 +10339,113 @@ type: long
 
 --
 
+
 *`beat.stats.libbeat.pipeline.queue.acked`*::
 +
 --
+Number of acknowledged events
+
+
 type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.added.bytes`*::
++
+--
+Number of bytes added to the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.added.events`*::
++
+--
+Number of events added to the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.consumed.bytes`*::
++
+--
+Number of bytes consumed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.consumed.events`*::
++
+--
+Number of events consumed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.bytes`*::
++
+--
+Number of bytes filled in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.events`*::
++
+--
+Number of events filled in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.filled.pct`*::
++
+--
+Percentage of the queue filled
+
+
+type: float
 
 --
 
 *`beat.stats.libbeat.pipeline.queue.max_events`*::
 +
 --
+Maximum number of events allowed in the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.removed.bytes`*::
++
+--
+Number of bytes removed from the queue
+
+
+type: long
+
+--
+
+*`beat.stats.libbeat.pipeline.queue.removed.events`*::
++
+--
+Number of events removed from the queue
+
+
 type: long
 
 --
@@ -10435,6 +10684,43 @@ Number of write errors
 
 
 type: long
+
+--
+
+
+
+*`beat.stats.libbeat.output.write.latency.histogram.count`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.max`*::
++
+--
+type: float
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.median`*::
++
+--
+type: long
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.p95`*::
++
+--
+type: float
+
+--
+
+*`beat.stats.libbeat.output.write.latency.histogram.p99`*::
++
+--
+type: float
 
 --
 
@@ -11429,6 +11715,5410 @@ Used kb of the pool
 
 
 type: long
+
+--
+
+[[exported-fields-citrix_cms]]
+== citrix_cms fields
+
+citrix_cms module
+
+
+
+[float]
+=== citrix_cms
+
+
+
+
+[float]
+=== health
+
+health
+
+
+
+
+*`citrix_cms.health.api.odatacontext`*::
++
+--
+The OData context of the API response.
+
+
+type: keyword
+
+--
+
+
+
+*`citrix_cms.health.load.index.ID`*::
++
+--
+The unique identifier of the load summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.EffectiveLoadIndex`*::
++
+--
+The effective load index value.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.load.index.CPU`*::
++
+--
+The CPU load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.load.index.Memory`*::
++
+--
+The memory load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.load.index.Disk`*::
++
+--
+The disk load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.load.index.Network`*::
++
+--
+The network load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.load.index.SessionCount`*::
++
+--
+The session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.MachineID`*::
++
+--
+The ID of the machine associated with the load summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.load.index.CreatedDate`*::
++
+--
+The date when the load summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.load.index.ModifiedDate`*::
++
+--
+The date when the load summary was last modified.    
+
+
+type: date
+
+--
+
+
+*`citrix_cms.health.load.index.summary.ID`*::
++
+--
+The unique identifier of the load summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SummaryDate`*::
++
+--
+The date of the load summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.load.index.summary.MachineId`*::
++
+--
+The ID of the machine associated with the load summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.load.index.summary.SumCount`*::
++
+--
+The total count of load activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumLoadIndex`*::
++
+--
+The total load index value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumCpu`*::
++
+--
+The total CPU load percentage.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumNetwork`*::
++
+--
+The total network load percentage.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumDisk`*::
++
+--
+The total disk load percentage.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumMemory`*::
++
+--
+The total memory load percentage.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.SumSessionCount`*::
++
+--
+The total session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.Granularity`*::
++
+--
+The granularity level of the load summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.load.index.summary.CreatedDate`*::
++
+--
+The date when the load summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.load.index.summary.ModifiedDate`*::
++
+--
+The date when the load summary was last modified.
+
+
+type: date
+
+--
+
+
+
+*`citrix_cms.health.logon.summaries.ID`*::
++
+--
+The unique identifier of the logon summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.SummaryDate`*::
++
+--
+The date of the logon summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.logon.summaries.DesktopGroupID`*::
++
+--
+The ID of the desktop group associated with the logon summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.logon.summaries.TotalDuration`*::
++
+--
+The total duration of logon activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.TotalCount`*::
++
+--
+The total count of logon activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.BrokeringDuration`*::
++
+--
+The duration of brokering activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.BrokeringCount`*::
++
+--
+The count of brokering activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.VMStartDuration`*::
++
+--
+The duration of virtual machine start activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.VMPowerOnDuration`*::
++
+--
+The duration of virtual machine power-on activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.VMRegistrationDuration`*::
++
+--
+The duration of virtual machine registration activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.VMStartCount`*::
++
+--
+The count of virtual machine start activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.HdxDuration`*::
++
+--
+The duration of HDX activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.HdxCount`*::
++
+--
+The count of HDX activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.AuthenticationDuration`*::
++
+--
+The duration of authentication activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.AuthenticationCount`*::
++
+--
+The count of authentication activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.GpoDuration`*::
++
+--
+The duration of Group Policy Object (GPO) activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.GpoCount`*::
++
+--
+The count of Group Policy Object (GPO) activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.LogOnScriptsDuration`*::
++
+--
+The duration of logon script activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.LogOnScriptsCount`*::
++
+--
+The count of logon script activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.InteractiveDuration`*::
++
+--
+The duration of interactive logon activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.InteractiveCount`*::
++
+--
+The count of interactive logon activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.ProfileLoadDuration`*::
++
+--
+The duration of profile load activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.logon.summaries.ProfileLoadCount`*::
++
+--
+The count of profile load activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.Granularity`*::
++
+--
+The granularity level of the logon summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.logon.summaries.CreatedDate`*::
++
+--
+The date when the logon summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.logon.summaries.ModifiedDate`*::
++
+--
+The date when the logon summary was last modified.    
+
+
+type: date
+
+--
+
+
+
+*`citrix_cms.health.machine.details.ID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Sid`*::
++
+--
+The security identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Name`*::
++
+--
+The name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.DNSName`*::
++
+--
+The DNS name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.LifecycleState`*::
++
+--
+The lifecycle state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.IPAddress`*::
++
+--
+The IP address of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.HostedMachineID`*::
++
+--
+The ID of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.HostingServerName`*::
++
+--
+The name of the hosting server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.HostedMachineName`*::
++
+--
+The name of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.IsAssigned`*::
++
+--
+Indicates if the machine is assigned.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.IsInMaintenanceMode`*::
++
+--
+Indicates if the machine is in maintenance mode.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.IsPendingUpdate`*::
++
+--
+Indicates if the machine has a pending update.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.AgentVersion`*::
++
+--
+The version of the agent installed on the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.AssociatedUserFullNames`*::
++
+--
+The full names of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.AssociatedUserNames`*::
++
+--
+The usernames of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.AssociatedUserUPNs`*::
++
+--
+The UPNs of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.CurrentRegistrationState`*::
++
+--
+The current registration state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.RegistrationStateChangeDate`*::
++
+--
+The date when the registration state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.LastDeregisteredCode`*::
++
+--
+The code of the last deregistration event.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.LastDeregisteredDate`*::
++
+--
+The date of the last deregistration event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.CurrentPowerState`*::
++
+--
+The current power state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CurrentSessionCount`*::
++
+--
+The current session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.ControllerDNSName`*::
++
+--
+The DNS name of the controller.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.PoweredOnDate`*::
++
+--
+The date when the machine was powered on.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.PowerStateChangeDate`*::
++
+--
+The date when the power state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.FunctionalLevel`*::
++
+--
+The functional level of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.FailureDate`*::
++
+--
+The date of the last failure event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.WindowsConnectionSetting`*::
++
+--
+The Windows connection setting of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.IsPreparing`*::
++
+--
+Indicates if the machine is preparing.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.FaultState`*::
++
+--
+The fault state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.OSType`*::
++
+--
+The operating system type of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndexID`*::
++
+--
+The ID of the current load index.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CatalogID`*::
++
+--
+The ID of the catalog.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroupID`*::
++
+--
+The ID of the desktop group.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.HypervisorID`*::
++
+--
+The ID of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.LastPowerActionCompletedDate`*::
++
+--
+The date when the last power action was completed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.LastUpgradeState`*::
++
+--
+The last upgrade state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.LastUpgradeStateChangeDate`*::
++
+--
+The date when the last upgrade state changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.Hash`*::
++
+--
+The hash of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.MachineRole`*::
++
+--
+The role of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CreatedDate`*::
++
+--
+The date when the machine was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.ModifiedDate`*::
++
+--
+The date when the machine was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== CurrentLoadIndex
+
+The current load index details of the machine.
+
+
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.ID`*::
++
+--
+The unique identifier of the load index.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.EffectiveLoadIndex`*::
++
+--
+The effective load index value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.CPU`*::
++
+--
+The CPU load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.Memory`*::
++
+--
+The memory load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.Disk`*::
++
+--
+The disk load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.Network`*::
++
+--
+The network load percentage.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.SessionCount`*::
++
+--
+The session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.MachineID`*::
++
+--
+The ID of the machine associated with the load index.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.CreatedDate`*::
++
+--
+The date when the load index was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.CurrentLoadIndex.ModifiedDate`*::
++
+--
+The date when the load index was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Catalog
+
+The catalog details of the machine.
+
+
+
+*`citrix_cms.health.machine.details.Catalog.ID`*::
++
+--
+The unique identifier of the catalog.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.Name`*::
++
+--
+The name of the catalog.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.LifecycleState`*::
++
+--
+The lifecycle state of the catalog.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.ProvisioningType`*::
++
+--
+The provisioning type of the catalog.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.PersistentUserChanges`*::
++
+--
+Indicates if persistent user changes are allowed.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.IsMachinePhysical`*::
++
+--
+Indicates if the machine is physical.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.AllocationType`*::
++
+--
+The allocation type of the catalog.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.SessionSupport`*::
++
+--
+The session support type of the catalog.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.ProvisioningSchemeID`*::
++
+--
+The ID of the provisioning scheme.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.ZoneUID`*::
++
+--
+The unique identifier of the zone.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.ZoneName`*::
++
+--
+The name of the zone.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.CreatedDate`*::
++
+--
+The date when the catalog was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.Catalog.ModifiedDate`*::
++
+--
+The date when the catalog was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== DesktopGroup
+
+The desktop group details of the machine.
+
+
+
+*`citrix_cms.health.machine.details.DesktopGroup.ID`*::
++
+--
+The unique identifier of the desktop group.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.Name`*::
++
+--
+The name of the desktop group.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.IsRemotePC`*::
++
+--
+Indicates if the desktop group is a remote PC.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.DesktopKind`*::
++
+--
+The kind of desktop in the group.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.LifecycleState`*::
++
+--
+The lifecycle state of the desktop group.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.SessionSupport`*::
++
+--
+The session support type of the desktop group.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.DeliveryType`*::
++
+--
+The delivery type of the desktop group.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.IsInMaintenanceMode`*::
++
+--
+Indicates if the desktop group is in maintenance mode.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.MachineCost`*::
++
+--
+The cost of the machine in the desktop group.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.AutoscaleTagID`*::
++
+--
+The ID of the autoscale tag.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.CreatedDate`*::
++
+--
+The date when the desktop group was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.DesktopGroup.ModifiedDate`*::
++
+--
+The date when the desktop group was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Hypervisor
+
+The hypervisor details of the machine.
+
+
+
+*`citrix_cms.health.machine.details.Hypervisor.ID`*::
++
+--
+The unique identifier of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Hypervisor.Name`*::
++
+--
+The name of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Hypervisor.Type`*::
++
+--
+The type of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.Hypervisor.LifecycleState`*::
++
+--
+The lifecycle state of the hypervisor.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.Hypervisor.CreatedDate`*::
++
+--
+The date when the hypervisor was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.Hypervisor.ModifiedDate`*::
++
+--
+The date when the hypervisor was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== MachineCost
+
+The cost details of the machine.
+
+
+
+*`citrix_cms.health.machine.details.MachineCost.MachineID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.SpecID`*::
++
+--
+The specification ID of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.CostPerHour`*::
++
+--
+The cost per hour of the machine.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.PowerOnComputeCostPerHour`*::
++
+--
+The compute cost per hour when powered on.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.PowerOnStorageCostPerHour`*::
++
+--
+The storage cost per hour when powered on.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.PowerOffStorageCostPerHour`*::
++
+--
+The storage cost per hour when powered off.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.CreatedDate`*::
++
+--
+The date when the cost details were created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.details.MachineCost.ModifiedDate`*::
++
+--
+The date when the cost details were last modified.                        
+
+
+type: date
+
+--
+
+
+
+*`citrix_cms.health.machine.metric.details.MachineID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.metric.details.CollectedDate`*::
++
+--
+The date when the metrics were collected.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.metric.details.Iops`*::
++
+--
+The input/output operations per second (IOPS) of the machine.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.machine.metric.details.Latency`*::
++
+--
+The latency of the machine in milliseconds.    
+
+
+type: float
+
+--
+
+
+*`citrix_cms.health.machine.summaries.ID`*::
++
+--
+The unique identifier of the machine summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.SummaryDate`*::
++
+--
+The date of the machine summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.summaries.DesktopGroupID`*::
++
+--
+The ID of the desktop group associated with the machine summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.machine.summaries.PoweredOnMachinesCount`*::
++
+--
+The count of powered-on machines.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.RegisteredMachinesCount`*::
++
+--
+The count of registered machines.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.MachinesInMaintenanceModeCount`*::
++
+--
+The count of machines in maintenance mode.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.MachinesCount`*::
++
+--
+The total count of machines.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.Granularity`*::
++
+--
+The granularity level of the machine summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.machine.summaries.CreatedDate`*::
++
+--
+The date when the machine summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.machine.summaries.ModifiedDate`*::
++
+--
+The date when the machine summary was last modified.
+
+
+type: date
+
+--
+
+
+
+*`citrix_cms.health.resource.utilization.MachineID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.resource.utilization.CollectedDate`*::
++
+--
+The date when the resource utilization metrics were collected.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.resource.utilization.PercentCPU`*::
++
+--
+The percentage of CPU utilization.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.resource.utilization.UsedMemory`*::
++
+--
+The amount of memory used in megabytes.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.resource.utilization.TotalMemory`*::
++
+--
+The total memory available in megabytes.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.resource.utilization.CreatedDate`*::
++
+--
+The date when the resource utilization record was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.resource.utilization.ModifiedDate`*::
++
+--
+The date when the resource utilization record was last modified.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.resource.utilization.DesktopGroupID`*::
++
+--
+The ID of the desktop group associated with the resource utilization.
+
+
+type: keyword
+
+--
+
+
+*`citrix_cms.health.resource.utilization.summary.ID`*::
++
+--
+The unique identifier of the resource utilization summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.SummaryDate`*::
++
+--
+The date of the resource utilization summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.DesktopGroupID`*::
++
+--
+The ID of the desktop group associated with the resource utilization summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.ConnectedSessionCount`*::
++
+--
+The count of connected sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.DisconnectedSessionCount`*::
++
+--
+The count of disconnected sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.ConcurrentSessionCount`*::
++
+--
+The count of concurrent sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.TotalLogOnDuration`*::
++
+--
+The total duration of logon activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.TotalLogOnCount`*::
++
+--
+The total count of logon activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.Granularity`*::
++
+--
+The granularity level of the resource utilization summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.CreatedDate`*::
++
+--
+The date when the resource utilization summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.resource.utilization.summary.ModifiedDate`*::
++
+--
+The date when the resource utilization summary was last modified.
+
+
+type: date
+
+--
+
+
+
+
+*`citrix_cms.health.session.metric.details.ID`*::
++
+--
+The unique identifier of the session metric.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.CollectedDate`*::
++
+--
+The date when the metrics were collected.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.IcaRttMS`*::
++
+--
+The ICA round-trip time in milliseconds.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.session.metric.details.IcaLatency`*::
++
+--
+The ICA latency in milliseconds.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.session.metric.details.ClientL7Latency`*::
++
+--
+The client layer 7 latency in milliseconds.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.session.metric.details.ServerL7Latency`*::
++
+--
+The server layer 7 latency in milliseconds.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.session.metric.details.SessionID`*::
++
+--
+The unique identifier of the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.metric.details.CreatedDate`*::
++
+--
+The date when the session metric was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.ModifiedDate`*::
++
+--
+The date when the session metric was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Session
+
+Details of the session.
+
+
+
+*`citrix_cms.health.session.metric.details.Session.SessionKey`*::
++
+--
+The session key.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.StartDate`*::
++
+--
+The start date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.LogOnDuration`*::
++
+--
+The duration of the logon in seconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.EndDate`*::
++
+--
+The end date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.ExitCode`*::
++
+--
+The exit code of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.FailureID`*::
++
+--
+The failure ID associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.FailureDate`*::
++
+--
+The date of the failure.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.ConnectionState`*::
++
+--
+The connection state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.SessionIdleTime`*::
++
+--
+The idle time of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.ConnectionStateChangeDate`*::
++
+--
+The date when the connection state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.LifecycleState`*::
++
+--
+The lifecycle state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.CurrentConnectionID`*::
++
+--
+The ID of the current connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.UserID`*::
++
+--
+The ID of the user associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.MachineID`*::
++
+--
+The ID of the machine associated with the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.SessionType`*::
++
+--
+The type of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.IsAnonymous`*::
++
+--
+Indicates if the session is anonymous.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.PublishedDesktopID`*::
++
+--
+The ID of the published desktop.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.CreatedDate`*::
++
+--
+The date when the session was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.metric.details.Session.ModifiedDate`*::
++
+--
+The date when the session was last modified.
+
+
+type: date
+
+--
+
+
+
+*`citrix_cms.health.session.activity.summaries.ID`*::
++
+--
+The unique identifier of the session activity summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.SummaryDate`*::
++
+--
+The date of the session activity summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.activity.summaries.DesktopGroupID`*::
++
+--
+The ID of the desktop group associated with the session activity summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.activity.summaries.ConnectedSessionCount`*::
++
+--
+The count of connected sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.DisconnectedSessionCount`*::
++
+--
+The count of disconnected sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.ConcurrentSessionCount`*::
++
+--
+The count of concurrent sessions.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.TotalLogOnDuration`*::
++
+--
+The total duration of logon activities.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.session.activity.summaries.TotalLogOnCount`*::
++
+--
+The total count of logon activities.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.Granularity`*::
++
+--
+The granularity level of the session activity summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.activity.summaries.CreatedDate`*::
++
+--
+The date when the session activity summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.activity.summaries.ModifiedDate`*::
++
+--
+The date when the session activity summary was last modified.        
+
+
+type: date
+
+--
+
+
+*`citrix_cms.health.session.details.SessionKey`*::
++
+--
+The session key.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.StartDate`*::
++
+--
+The start date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.LogOnDuration`*::
++
+--
+The duration of the logon in seconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.EndDate`*::
++
+--
+The end date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.ExitCode`*::
++
+--
+The exit code of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.FailureID`*::
++
+--
+The failure ID associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.FailureDate`*::
++
+--
+The date of the failure.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.ConnectionState`*::
++
+--
+The connection state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionIdleTime`*::
++
+--
+The idle time of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.ConnectionStateChangeDate`*::
++
+--
+The date when the connection state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.LifecycleState`*::
++
+--
+The lifecycle state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnectionID`*::
++
+--
+The ID of the current connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.UserID`*::
++
+--
+The ID of the user associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.MachineID`*::
++
+--
+The ID of the machine associated with the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionType`*::
++
+--
+The type of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.IsAnonymous`*::
++
+--
+Indicates if the session is anonymous.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.PublishedDesktopID`*::
++
+--
+The ID of the published desktop.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CreatedDate`*::
++
+--
+The date when the session was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.ModifiedDate`*::
++
+--
+The date when the session was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Failure
+
+Details of the failure associated with the session.
+
+
+
+*`citrix_cms.health.session.details.Failure.ID`*::
++
+--
+The unique identifier of the failure.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Failure.ConnectionFailureEnumValue`*::
++
+--
+The connection failure enum value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Failure.Category`*::
++
+--
+The category of the failure.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Failure.CreatedDate`*::
++
+--
+The date when the failure was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Failure.ModifiedDate`*::
++
+--
+The date when the failure was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== CurrentConnection
+
+Details of the current connection associated with the session.
+
+
+
+*`citrix_cms.health.session.details.CurrentConnection.ID`*::
++
+--
+The unique identifier of the current connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientName`*::
++
+--
+The name of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientAddress`*::
++
+--
+The address of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientPublicIP`*::
++
+--
+The public IP address of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientVersion`*::
++
+--
+The version of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientPlatform`*::
++
+--
+The platform of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientISP`*::
++
+--
+The ISP of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientLocationCountry`*::
++
+--
+The country of the client's location.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientLocationCity`*::
++
+--
+The city of the client's location.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectedViaHostName`*::
++
+--
+The hostname through which the client is connected.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectedViaIPAddress`*::
++
+--
+The IP address through which the client is connected.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LaunchedViaHostName`*::
++
+--
+The hostname through which the session was launched.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LaunchedViaIPAddress`*::
++
+--
+The IP address through which the session was launched.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.IsReconnect`*::
++
+--
+Indicates if the session is a reconnect.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.IsSecureIca`*::
++
+--
+Indicates if the session uses Secure ICA.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.Protocol`*::
++
+--
+The protocol used for the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LogOnStartDate`*::
++
+--
+The start date of the logon process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LogOnEndDate`*::
++
+--
+The end date of the logon process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.BrokeringDuration`*::
++
+--
+The duration of the brokering process.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.BrokeringDate`*::
++
+--
+The date of the brokering process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.DisconnectCode`*::
++
+--
+The disconnect code of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.DisconnectDate`*::
++
+--
+The date of the disconnection.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.VMStartStartDate`*::
++
+--
+The start date of the virtual machine start process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.VMPoweredOnDate`*::
++
+--
+The date when the virtual machine was powered on.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.VMStartEndDate`*::
++
+--
+The end date of the virtual machine start process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ClientSessionValidateDate`*::
++
+--
+The date when the client session was validated.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ServerSessionValidateDate`*::
++
+--
+The date when the server session was validated.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.EstablishmentDate`*::
++
+--
+The date when the session was established.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.HdxStartDate`*::
++
+--
+The start date of the HDX process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.HdxEndDate`*::
++
+--
+The end date of the HDX process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.AuthenticationDuration`*::
++
+--
+The duration of the authentication process.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.GpoStartDate`*::
++
+--
+The start date of the GPO process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.GpoEndDate`*::
++
+--
+The end date of the GPO process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LogOnScriptsStartDate`*::
++
+--
+The start date of the logon scripts process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.LogOnScriptsEndDate`*::
++
+--
+The end date of the logon scripts process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ProfileLoadStartDate`*::
++
+--
+The start date of the profile load process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ProfileLoadEndDate`*::
++
+--
+The end date of the profile load process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.InteractiveStartDate`*::
++
+--
+The start date of the interactive session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.InteractiveEndDate`*::
++
+--
+The end date of the interactive session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.SessionKey`*::
++
+--
+The session key.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.CreatedDate`*::
++
+--
+The date when the connection was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ModifiedDate`*::
++
+--
+The date when the connection was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== ConnectionFailureLog
+
+Details of the connection failure log.
+
+
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.ID`*::
++
+--
+The unique identifier of the connection failure log.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.SessionKey`*::
++
+--
+The session key associated with the failure log.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.FailureDate`*::
++
+--
+The date of the failure.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.UserID`*::
++
+--
+The ID of the user associated with the failure log.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.MachineID`*::
++
+--
+The ID of the machine associated with the failure log.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.ConnectionFailureEnumValue`*::
++
+--
+The connection failure enum value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.CreatedDate`*::
++
+--
+The date when the failure log was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.CurrentConnection.ConnectionFailureLog.ModifiedDate`*::
++
+--
+The date when the failure log was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== User
+
+Details of the user associated with the session.
+
+
+
+*`citrix_cms.health.session.details.User.ID`*::
++
+--
+The unique identifier of the user.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.User.Sid`*::
++
+--
+The security identifier of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.User.Upn`*::
++
+--
+The UPN of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.User.UserName`*::
++
+--
+The username of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.User.FullName`*::
++
+--
+The full name of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.User.Domain`*::
++
+--
+The domain of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.User.CreatedDate`*::
++
+--
+The date when the user was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.User.ModifiedDate`*::
++
+--
+The date when the user was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Machine
+
+Details of the machine associated with the session.
+
+
+
+*`citrix_cms.health.session.details.Machine.ID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.Sid`*::
++
+--
+The security identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.Name`*::
++
+--
+The name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.DNSName`*::
++
+--
+The DNS name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.LifecycleState`*::
++
+--
+The lifecycle state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.IPAddress`*::
++
+--
+The IP address of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.HostedMachineID`*::
++
+--
+The ID of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.HostingServerName`*::
++
+--
+The name of the hosting server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.HostedMachineName`*::
++
+--
+The name of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.IsAssigned`*::
++
+--
+Indicates if the machine is assigned.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.Machine.IsInMaintenanceMode`*::
++
+--
+Indicates if the machine is in maintenance mode.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.Machine.IsPendingUpdate`*::
++
+--
+Indicates if the machine has a pending update.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.Machine.AgentVersion`*::
++
+--
+The version of the agent installed on the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.AssociatedUserFullNames`*::
++
+--
+The full names of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.AssociatedUserNames`*::
++
+--
+The usernames of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.AssociatedUserUPNs`*::
++
+--
+The UPNs of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.CurrentRegistrationState`*::
++
+--
+The current registration state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.RegistrationStateChangeDate`*::
++
+--
+The date when the registration state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.LastDeregisteredCode`*::
++
+--
+The code of the last deregistration event.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.LastDeregisteredDate`*::
++
+--
+The date of the last deregistration event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.CurrentPowerState`*::
++
+--
+The current power state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.CurrentSessionCount`*::
++
+--
+The current session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.ControllerDNSName`*::
++
+--
+The DNS name of the controller.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.PoweredOnDate`*::
++
+--
+The date when the machine was powered on.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.PowerStateChangeDate`*::
++
+--
+The date when the power state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.FunctionalLevel`*::
++
+--
+The functional level of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.FailureDate`*::
++
+--
+The date of the last failure event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.WindowsConnectionSetting`*::
++
+--
+The Windows connection setting of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.IsPreparing`*::
++
+--
+Indicates if the machine is preparing.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.details.Machine.FaultState`*::
++
+--
+The fault state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.OSType`*::
++
+--
+The operating system type of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.CurrentLoadIndexID`*::
++
+--
+The ID of the current load index.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.CatalogID`*::
++
+--
+The ID of the catalog.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.DesktopGroupID`*::
++
+--
+The ID of the desktop group.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.HypervisorID`*::
++
+--
+The ID of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.LastPowerActionCompletedDate`*::
++
+--
+The date when the last power action was completed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.LastUpgradeState`*::
++
+--
+The last upgrade state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.LastUpgradeStateChangeDate`*::
++
+--
+The date when the last upgrade state changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.Hash`*::
++
+--
+The hash of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.Machine.MachineRole`*::
++
+--
+The role of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.Machine.CreatedDate`*::
++
+--
+The date when the machine was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.Machine.ModifiedDate`*::
++
+--
+The date when the machine was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== SessionMetrics
+
+Metrics related to the session.
+
+
+
+*`citrix_cms.health.session.details.SessionMetrics.ID`*::
++
+--
+The unique identifier of the session metric.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.CollectedDate`*::
++
+--
+The date when the metrics were collected.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.IcaRttMS`*::
++
+--
+The ICA round-trip time in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.IcaLatency`*::
++
+--
+The ICA latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.ClientL7Latency`*::
++
+--
+The client layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.ServerL7Latency`*::
++
+--
+The server layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.SessionID`*::
++
+--
+The unique identifier of the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.CreatedDate`*::
++
+--
+The date when the session metric was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.SessionMetrics.ModifiedDate`*::
++
+--
+The date when the session metric was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== SessionRecordingServer
+
+Details of the session recording server.
+
+
+
+*`citrix_cms.health.session.details.SessionRecordingServer.SessionKey`*::
++
+--
+The session key associated with the recording server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionRecordingServer.SessionRecordingServerName`*::
++
+--
+The name of the session recording server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionRecordingServer.CreatedDate`*::
++
+--
+The date when the session recording server was created.
+
+
+type: date
+
+--
+
+[float]
+=== PublishedDesktopName
+
+Details of the published desktop name.
+
+
+
+*`citrix_cms.health.session.details.PublishedDesktopName.ID`*::
++
+--
+The unique identifier of the published desktop.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.PublishedDesktopName.PublishedName`*::
++
+--
+The name of the published desktop.
+
+
+type: keyword
+
+--
+
+[float]
+=== SessionMetricsLatest
+
+Latest metrics related to the session.
+
+
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.SessionKey`*::
++
+--
+The session key associated with the latest metrics.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.ClientL7Latency`*::
++
+--
+The client layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.CloudConnectorName`*::
++
+--
+The name of the cloud connector.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.CreatedDate`*::
++
+--
+The date when the latest session metrics were created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.EdtMtu`*::
++
+--
+The EDT MTU value.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.GatewayPopName`*::
++
+--
+The name of the gateway point of presence.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.HdxConnectionType`*::
++
+--
+The type of HDX connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.HdxProtocolName`*::
++
+--
+The name of the HDX protocol.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.ModifiedDate`*::
++
+--
+The date when the latest session metrics were last modified.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.details.SessionMetricsLatest.ServerL7Latency`*::
++
+--
+The server layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+
+
+*`citrix_cms.health.session.failure.details.SessionKey`*::
++
+--
+The session key.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.StartDate`*::
++
+--
+The start date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.LogOnDuration`*::
++
+--
+The duration of the logon in seconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.EndDate`*::
++
+--
+The end date of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.ExitCode`*::
++
+--
+The exit code of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.FailureID`*::
++
+--
+The failure ID associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.FailureDate`*::
++
+--
+The date of the failure.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.ConnectionState`*::
++
+--
+The connection state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionIdleTime`*::
++
+--
+The idle time of the session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.ConnectionStateChangeDate`*::
++
+--
+The date when the connection state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.LifecycleState`*::
++
+--
+The lifecycle state of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnectionID`*::
++
+--
+The ID of the current connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.UserID`*::
++
+--
+The ID of the user associated with the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.MachineID`*::
++
+--
+The ID of the machine associated with the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionType`*::
++
+--
+The type of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.IsAnonymous`*::
++
+--
+Indicates if the session is anonymous.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.PublishedDesktopID`*::
++
+--
+The ID of the published desktop.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CreatedDate`*::
++
+--
+The date when the session was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.ModifiedDate`*::
++
+--
+The date when the session was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Failure
+
+Details of the failure associated with the session.
+
+
+
+*`citrix_cms.health.session.failure.details.Failure.ID`*::
++
+--
+The unique identifier of the failure.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Failure.ConnectionFailureEnumValue`*::
++
+--
+The connection failure enum value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Failure.Category`*::
++
+--
+The category of the failure.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Failure.CreatedDate`*::
++
+--
+The date when the failure was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Failure.ModifiedDate`*::
++
+--
+The date when the failure was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== CurrentConnection
+
+Details of the current connection associated with the session.
+
+
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ID`*::
++
+--
+The unique identifier of the current connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientName`*::
++
+--
+The name of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientAddress`*::
++
+--
+The address of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientPublicIP`*::
++
+--
+The public IP address of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientVersion`*::
++
+--
+The version of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientPlatform`*::
++
+--
+The platform of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientISP`*::
++
+--
+The ISP of the client.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientLocationCountry`*::
++
+--
+The country of the client's location.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientLocationCity`*::
++
+--
+The city of the client's location.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectedViaHostName`*::
++
+--
+The hostname through which the client is connected.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectedViaIPAddress`*::
++
+--
+The IP address through which the client is connected.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LaunchedViaHostName`*::
++
+--
+The hostname through which the session was launched.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LaunchedViaIPAddress`*::
++
+--
+The IP address through which the session was launched.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.IsReconnect`*::
++
+--
+Indicates if the session is a reconnect.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.IsSecureIca`*::
++
+--
+Indicates if the session uses Secure ICA.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.Protocol`*::
++
+--
+The protocol used for the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LogOnStartDate`*::
++
+--
+The start date of the logon process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LogOnEndDate`*::
++
+--
+The end date of the logon process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.BrokeringDuration`*::
++
+--
+The duration of the brokering process.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.BrokeringDate`*::
++
+--
+The date of the brokering process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.DisconnectCode`*::
++
+--
+The disconnect code of the session.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.DisconnectDate`*::
++
+--
+The date of the disconnection.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.VMStartStartDate`*::
++
+--
+The start date of the virtual machine start process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.VMPoweredOnDate`*::
++
+--
+The date when the virtual machine was powered on.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.VMStartEndDate`*::
++
+--
+The end date of the virtual machine start process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ClientSessionValidateDate`*::
++
+--
+The date when the client session was validated.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ServerSessionValidateDate`*::
++
+--
+The date when the server session was validated.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.EstablishmentDate`*::
++
+--
+The date when the session was established.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.HdxStartDate`*::
++
+--
+The start date of the HDX process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.HdxEndDate`*::
++
+--
+The end date of the HDX process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.AuthenticationDuration`*::
++
+--
+The duration of the authentication process.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.GpoStartDate`*::
++
+--
+The start date of the GPO process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.GpoEndDate`*::
++
+--
+The end date of the GPO process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LogOnScriptsStartDate`*::
++
+--
+The start date of the logon scripts process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.LogOnScriptsEndDate`*::
++
+--
+The end date of the logon scripts process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ProfileLoadStartDate`*::
++
+--
+The start date of the profile load process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ProfileLoadEndDate`*::
++
+--
+The end date of the profile load process.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.InteractiveStartDate`*::
++
+--
+The start date of the interactive session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.InteractiveEndDate`*::
++
+--
+The end date of the interactive session.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.SessionKey`*::
++
+--
+The session key.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.CreatedDate`*::
++
+--
+The date when the connection was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ModifiedDate`*::
++
+--
+The date when the connection was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== ConnectionFailureLog
+
+Details of the connection failure log.
+
+
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.ID`*::
++
+--
+The unique identifier of the connection failure log.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.SessionKey`*::
++
+--
+The session key associated with the failure log.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.FailureDate`*::
++
+--
+The date of the failure.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.UserID`*::
++
+--
+The ID of the user associated with the failure log.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.MachineID`*::
++
+--
+The ID of the machine associated with the failure log.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.ConnectionFailureEnumValue`*::
++
+--
+The connection failure enum value.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.CreatedDate`*::
++
+--
+The date when the failure log was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.CurrentConnection.ConnectionFailureLog.ModifiedDate`*::
++
+--
+The date when the failure log was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== User
+
+Details of the user associated with the session.
+
+
+
+*`citrix_cms.health.session.failure.details.User.ID`*::
++
+--
+The unique identifier of the user.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.User.Sid`*::
++
+--
+The security identifier of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.User.Upn`*::
++
+--
+The UPN of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.User.UserName`*::
++
+--
+The username of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.User.FullName`*::
++
+--
+The full name of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.User.Domain`*::
++
+--
+The domain of the user.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.User.CreatedDate`*::
++
+--
+The date when the user was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.User.ModifiedDate`*::
++
+--
+The date when the user was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== Machine
+
+Details of the machine associated with the session.
+
+
+
+*`citrix_cms.health.session.failure.details.Machine.ID`*::
++
+--
+The unique identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.Sid`*::
++
+--
+The security identifier of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.Name`*::
++
+--
+The name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.DNSName`*::
++
+--
+The DNS name of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LifecycleState`*::
++
+--
+The lifecycle state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.IPAddress`*::
++
+--
+The IP address of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.HostedMachineID`*::
++
+--
+The ID of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.HostingServerName`*::
++
+--
+The name of the hosting server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.HostedMachineName`*::
++
+--
+The name of the hosted machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.IsAssigned`*::
++
+--
+Indicates if the machine is assigned.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.IsInMaintenanceMode`*::
++
+--
+Indicates if the machine is in maintenance mode.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.IsPendingUpdate`*::
++
+--
+Indicates if the machine has a pending update.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.AgentVersion`*::
++
+--
+The version of the agent installed on the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.AssociatedUserFullNames`*::
++
+--
+The full names of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.AssociatedUserNames`*::
++
+--
+The usernames of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.AssociatedUserUPNs`*::
++
+--
+The UPNs of associated users.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CurrentRegistrationState`*::
++
+--
+The current registration state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.RegistrationStateChangeDate`*::
++
+--
+The date when the registration state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LastDeregisteredCode`*::
++
+--
+The code of the last deregistration event.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LastDeregisteredDate`*::
++
+--
+The date of the last deregistration event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CurrentPowerState`*::
++
+--
+The current power state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CurrentSessionCount`*::
++
+--
+The current session count on the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.ControllerDNSName`*::
++
+--
+The DNS name of the controller.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.PoweredOnDate`*::
++
+--
+The date when the machine was powered on.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.PowerStateChangeDate`*::
++
+--
+The date when the power state last changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.FunctionalLevel`*::
++
+--
+The functional level of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.FailureDate`*::
++
+--
+The date of the last failure event.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.WindowsConnectionSetting`*::
++
+--
+The Windows connection setting of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.IsPreparing`*::
++
+--
+Indicates if the machine is preparing.
+
+
+type: boolean
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.FaultState`*::
++
+--
+The fault state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.OSType`*::
++
+--
+The operating system type of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CurrentLoadIndexID`*::
++
+--
+The ID of the current load index.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CatalogID`*::
++
+--
+The ID of the catalog.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.DesktopGroupID`*::
++
+--
+The ID of the desktop group.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.HypervisorID`*::
++
+--
+The ID of the hypervisor.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LastPowerActionCompletedDate`*::
++
+--
+The date when the last power action was completed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LastUpgradeState`*::
++
+--
+The last upgrade state of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.LastUpgradeStateChangeDate`*::
++
+--
+The date when the last upgrade state changed.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.Hash`*::
++
+--
+The hash of the machine.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.MachineRole`*::
++
+--
+The role of the machine.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.CreatedDate`*::
++
+--
+The date when the machine was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.Machine.ModifiedDate`*::
++
+--
+The date when the machine was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== SessionMetrics
+
+Metrics related to the session.
+
+
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.ID`*::
++
+--
+The unique identifier of the session metric.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.CollectedDate`*::
++
+--
+The date when the metrics were collected.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.IcaRttMS`*::
++
+--
+The ICA round-trip time in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.IcaLatency`*::
++
+--
+The ICA latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.ClientL7Latency`*::
++
+--
+The client layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.ServerL7Latency`*::
++
+--
+The server layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.SessionID`*::
++
+--
+The unique identifier of the session.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.CreatedDate`*::
++
+--
+The date when the session metric was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetrics.ModifiedDate`*::
++
+--
+The date when the session metric was last modified.
+
+
+type: date
+
+--
+
+[float]
+=== SessionRecordingServer
+
+Details of the session recording server.
+
+
+
+*`citrix_cms.health.session.failure.details.SessionRecordingServer.SessionKey`*::
++
+--
+The session key associated with the recording server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionRecordingServer.SessionRecordingServerName`*::
++
+--
+The name of the session recording server.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionRecordingServer.CreatedDate`*::
++
+--
+The date when the session recording server was created.
+
+
+type: date
+
+--
+
+[float]
+=== PublishedDesktopName
+
+Details of the published desktop name.
+
+
+
+*`citrix_cms.health.session.failure.details.PublishedDesktopName.ID`*::
++
+--
+The unique identifier of the published desktop.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.PublishedDesktopName.PublishedName`*::
++
+--
+The name of the published desktop.
+
+
+type: keyword
+
+--
+
+[float]
+=== SessionMetricsLatest
+
+Latest metrics related to the session.
+
+
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.SessionKey`*::
++
+--
+The session key associated with the latest metrics.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.ClientL7Latency`*::
++
+--
+The client layer 7 latency in milliseconds.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.CloudConnectorName`*::
++
+--
+The name of the cloud connector.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.CreatedDate`*::
++
+--
+The date when the latest session metrics were created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.EdtMtu`*::
++
+--
+The EDT MTU value.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.GatewayPopName`*::
++
+--
+The name of the gateway point of presence.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.HdxConnectionType`*::
++
+--
+The type of HDX connection.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.HdxProtocolName`*::
++
+--
+The name of the HDX protocol.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.ModifiedDate`*::
++
+--
+The date when the latest session metrics were last modified.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.session.failure.details.SessionMetricsLatest.ServerL7Latency`*::
++
+--
+The server layer 7 latency in milliseconds.            
+
+
+type: long
+
+--
+
+
+
+
+
+*`citrix_cms.health.server.os.desktop.summary.ID`*::
++
+--
+The unique identifier of the desktop OS summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.SummaryDate`*::
++
+--
+The date of the desktop OS summary.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.DesktopGroupId`*::
++
+--
+The ID of the desktop group associated with the desktop OS summary.
+
+
+type: keyword
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.PeakConcurrentInstanceCount`*::
++
+--
+The peak count of concurrent instances.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.TotalUsageDuration`*::
++
+--
+The total usage duration in hours.
+
+
+type: float
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.TotalLaunchesCount`*::
++
+--
+The total count of launches.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.StartingInstanceCount`*::
++
+--
+The count of starting instances.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.Granularity`*::
++
+--
+The granularity level of the desktop OS summary.
+
+
+type: long
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.CreatedDate`*::
++
+--
+The date when the desktop OS summary was created.
+
+
+type: date
+
+--
+
+*`citrix_cms.health.server.os.desktop.summary.ModifiedDate`*::
++
+--
+The date when the desktop OS summary was last modified.
+
+
+type: date
 
 --
 
@@ -35137,12 +40827,49 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.indices.fielddata.evictions.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.indices.fielddata.memory.bytes`*::
 +
 --
 type: long
 
 format: bytes
+
+--
+
+
+*`elasticsearch.node.stats.indices.flush.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.flush.total.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.indices.get.time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.get.total.count`*::
++
+--
+type: long
 
 --
 
@@ -35169,12 +40896,42 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.indices.merges.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.merges.total.count`*::
++
+--
+type: long
+
+--
+
+
 *`elasticsearch.node.stats.indices.query_cache.memory.bytes`*::
 +
 --
 type: long
 
 format: bytes
+
+--
+
+
+*`elasticsearch.node.stats.indices.refresh.total_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.refresh.total.count`*::
++
+--
+type: long
 
 --
 
@@ -35197,6 +40954,20 @@ type: long
 --
 
 *`elasticsearch.node.stats.indices.search.query_total.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.search.fetch_time.ms`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.search.fetch_total.count`*::
 +
 --
 type: long
@@ -35294,6 +41065,21 @@ format: bytes
 --
 
 
+*`elasticsearch.node.stats.indices.translog.size.bytes`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.indices.translog.operations.count`*::
++
+--
+type: long
+
+--
+
+
 *`elasticsearch.node.stats.jvm.mem.heap.max.bytes`*::
 +
 --
@@ -35319,6 +41105,13 @@ format: bytes
 type: double
 
 format: percent
+
+--
+
+*`elasticsearch.node.stats.jvm.threads.count`*::
++
+--
+type: long
 
 --
 
@@ -35652,7 +41445,59 @@ format: percent
 
 --
 
+*`elasticsearch.node.stats.process.mem.total_virtual.bytes`*::
++
+--
+type: long
 
+--
+
+*`elasticsearch.node.stats.process.open_file_descriptors`*::
++
+--
+type: long
+
+--
+
+
+
+*`elasticsearch.node.stats.transport.rx.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.transport.rx.size.bytes`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.transport.tx.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.transport.tx.size.bytes`*::
++
+--
+type: long
+
+--
+
+
+
+*`elasticsearch.node.stats.thread_pool.bulk.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.bulk.queue.count`*::
 +
@@ -35669,6 +41514,35 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.esql_worker.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.esql_worker.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.esql_worker.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.force_merge.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.force_merge.queue.count`*::
 +
 --
@@ -35683,6 +41557,35 @@ type: long
 
 --
 
+
+*`elasticsearch.node.stats.thread_pool.flush.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.flush.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.flush.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.get.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.get.queue.count`*::
 +
@@ -35699,6 +41602,13 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.index.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.index.queue.count`*::
 +
 --
@@ -35714,6 +41624,13 @@ type: long
 --
 
 
+*`elasticsearch.node.stats.thread_pool.search.active.count`*::
++
+--
+type: long
+
+--
+
 *`elasticsearch.node.stats.thread_pool.search.queue.count`*::
 +
 --
@@ -35728,6 +41645,101 @@ type: long
 
 --
 
+
+*`elasticsearch.node.stats.thread_pool.search_worker.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.search_worker.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.search_worker.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.snapshot.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.snapshot.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.snapshot.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.system_read.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_read.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_read.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.system_write.active.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_write.queue.count`*::
++
+--
+type: long
+
+--
+
+*`elasticsearch.node.stats.thread_pool.system_write.rejected.count`*::
++
+--
+type: long
+
+--
+
+
+*`elasticsearch.node.stats.thread_pool.write.active.count`*::
++
+--
+type: long
+
+--
 
 *`elasticsearch.node.stats.thread_pool.write.queue.count`*::
 +
@@ -38636,1214 +44648,6 @@ descriptions of the health score ids
 
 
 type: keyword
-
---
-
-[[exported-fields-enterprisesearch]]
-== Enterprise Search fields
-
-Enterprise Search module
-
-
-
-[float]
-=== enterprisesearch
-
-`enterprisesearch` contains metrics and health information for Enterprise Search
-
-
-
-*`enterprisesearch.cluster_uuid`*::
-+
---
-Cluster UUID for the Elasticsearch cluster used as the data store for Enterprise Search.
-
-type: keyword
-
---
-
-[float]
-=== health
-
-Enterprise Search health
-
-
-*`enterprisesearch.health.name`*::
-+
---
-Host name for the Enterprise Search node
-
-type: keyword
-
---
-
-[float]
-=== version
-
-Enterprise Search version information
-
-
-*`enterprisesearch.health.version.number`*::
-+
---
-Enterprise Search version number using the semantic versioning format
-
-type: keyword
-
---
-
-*`enterprisesearch.health.version.build_hash`*::
-+
---
-A unique build hash for the Enterprise Search package
-
-type: keyword
-
---
-
-[float]
-=== process
-
-Enterprise Search process information
-
-
-*`enterprisesearch.health.process.pid`*::
-+
---
-Process ID for the Enterprise Search instance
-
-type: long
-
---
-
-*`enterprisesearch.health.process.uptime.sec`*::
-+
---
-Process uptime for the Enterprise Search instance
-
-type: long
-
---
-
-[float]
-=== filebeat
-
-Health information for the embedded Filebeat instance
-
-
-*`enterprisesearch.health.process.filebeat.pid`*::
-+
---
-Process ID for the embedded Filebeat instance
-
-type: long
-
---
-
-*`enterprisesearch.health.process.filebeat.restart_count`*::
-+
---
-Number of times embedded Filebeat instance had to be restarted due to some issues
-
-type: long
-
---
-
-*`enterprisesearch.health.process.filebeat.time_since_last_restart.sec`*::
-+
---
-Time since the last embedded Filebeat instance restart (-1 if never restarted)
-
-type: long
-
---
-
-[float]
-=== jvm
-
-JVM health
-
-
-*`enterprisesearch.health.jvm.version`*::
-+
---
-JVM version used to run Enterprise Search
-
-type: keyword
-
---
-
-[float]
-=== gc
-
-Java garbage collection metrics
-
-
-*`enterprisesearch.health.jvm.gc.collection_count`*::
-+
---
-Total number of Java garbage collector invocations since the start of the process
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.gc.collection_time.ms`*::
-+
---
-Total time spent running Java garbage collector since the start of the process
-
-type: long
-
---
-
-[float]
-=== memory_usage
-
-Memory usage
-
-
-*`enterprisesearch.health.jvm.memory_usage.heap_init.bytes`*::
-+
---
-Heap init used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_used.bytes`*::
-+
---
-Heap used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_committed.bytes`*::
-+
---
-Committed heap to the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.heap_max.bytes`*::
-+
---
-Max heap used by the JVM in bytes
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.non_heap_init.bytes`*::
-+
---
-Non-Heap initial memory used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.non_heap_committed.bytes`*::
-+
---
-Non-Heap committed memory used by the JVM in bytes.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.health.jvm.memory_usage.object_pending_finalization_count`*::
-+
---
-Displays the approximate number of objects for which finalization is pending.
-
-
-type: long
-
---
-
-[float]
-=== threads
-
-Threads information
-
-
-*`enterprisesearch.health.jvm.threads.current`*::
-+
---
-Current number of live threads.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.daemon`*::
-+
---
-Current number of live daemon threads.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.max`*::
-+
---
-Peak live thread count since the JVM started or the peak was reset.
-
-type: long
-
---
-
-*`enterprisesearch.health.jvm.threads.total_started`*::
-+
---
-Total number of threads created and/or started since the JVM started.
-
-type: long
-
---
-
-[float]
-=== crawler
-
-Crawler health
-
-
-[float]
-=== workers
-
-Crawler workers
-
-
-*`enterprisesearch.health.crawler.workers.pool_size`*::
-+
---
-Workers pool size.
-
-type: long
-
---
-
-*`enterprisesearch.health.crawler.workers.active`*::
-+
---
-Number of active workers.
-
-type: long
-
---
-
-*`enterprisesearch.health.crawler.workers.available`*::
-+
---
-Number of available workers.
-
-type: long
-
---
-
-[float]
-=== stats
-
-Enterprise Search stats.
-
-
-[float]
-=== connectors
-
-Workplace Search connectors subsystem stats.
-
-
-[float]
-=== job_store
-
-Workplace Search connectors job store stats.
-
-
-*`enterprisesearch.stats.connectors.job_store.waiting`*::
-+
---
-Number of connectors jobs waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.working`*::
-+
---
-Number of connectors jobs currently being processed.
-
-type: long
-
---
-
-[float]
-=== job_types
-
-Breakdown of connectors jobs by types.
-
-
-*`enterprisesearch.stats.connectors.job_store.job_types.delete`*::
-+
---
-Number of delete jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.full`*::
-+
---
-Number of full sync jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.incremental`*::
-+
---
-Number of incremental sync jobs in the jobs store.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.job_store.job_types.permissions`*::
-+
---
-Number of permissions sync jobs in the jobs store.
-
-type: long
-
---
-
-[float]
-=== pool
-
-Workplace Search worker pools stats.
-
-
-[float]
-=== extract_worker_pool
-
-Status information for the extractor workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.extract_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== subextract_worker_pool
-
-Status information for the sub-extractor workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.subextract_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== publish_worker_pool
-
-Status information for the publish workers pool.
-
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.size`*::
-+
---
-Worker pool size.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.busy`*::
-+
---
-Number of busy workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.queue_depth`*::
-+
---
-Number of items waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.idle`*::
-+
---
-Number of idle workers.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.total_completed`*::
-+
---
-Number of jobs completed since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.connectors.pool.publish_worker_pool.total_scheduled`*::
-+
---
-Number of jobs scheduled since the start.
-
-type: long
-
---
-
-[float]
-=== http
-
-Incoming HTTP request metrics.
-
-
-[float]
-=== connections
-
-Incoming HTTP connection statistics.
-
-
-*`enterprisesearch.stats.http.connections.current`*::
-+
---
-Current number of HTTP connections opened to the Enterprise Search instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.connections.max`*::
-+
---
-Maximum number of concurrent HTTP connections open to the Enterprise Search instance since the start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.connections.total`*::
-+
---
-Total number of HTTP connections opened to the Enterprise Search instance since the start.
-
-type: long
-
---
-
-[float]
-=== network
-
-Network traffic metrics.
-
-
-*`enterprisesearch.stats.http.network.received.bytes`*::
-+
---
-Total number of bytes received by the Enterprise Search instance since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.sent.bytes`*::
-+
---
-Total number of bytes sent by the Enterprise Search instance since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.received.bytes_per_sec`*::
-+
---
-Average number of bytes received by the Enterprise Search instance per second since the start.
-
-type: long
-
-format: bytes
-
---
-
-*`enterprisesearch.stats.http.network.sent.bytes_per_sec`*::
-+
---
-Average number of bytes sent by the Enterprise Search instance per second since the start.
-
-type: long
-
-format: bytes
-
---
-
-[float]
-=== request_duration
-
-Aggregate HTTP request duration statistics.
-
-
-*`enterprisesearch.stats.http.request_duration.max.ms`*::
-+
---
-Longest HTTP connection duration since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.request_duration.mean.ms`*::
-+
---
-Average HTTP connection duration since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.request_duration.std_dev.ms`*::
-+
---
-Standard deviation for HTTP connection duration values since the start of the instance.
-
-type: long
-
---
-
-[float]
-=== responses
-
-Aggregate HTTP response counts broken down by HTTP status type.
-
-
-*`enterprisesearch.stats.http.responses.1xx`*::
-+
---
-Total number of HTTP requests finished with a 1xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.2xx`*::
-+
---
-Total number of HTTP requests finished with a 2xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.3xx`*::
-+
---
-Total number of HTTP requests finished with a 3xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.4xx`*::
-+
---
-Total number of HTTP requests finished with a 4xx response code since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.http.responses.5xx`*::
-+
---
-Total number of HTTP requests finished with a 5xx response code since the start of the instance.
-
-type: long
-
---
-
-[float]
-=== queues
-
-Aggregate stats on the functioning of the background jobs processing pipeline within Enterprise Search.
-
-
-*`enterprisesearch.stats.queues.engine_destroyer.count`*::
-+
---
-Total number of jobs processed via the engine_destroyer queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.mailer.count`*::
-+
---
-Total number of jobs processed via the mailer queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.process_crawl.count`*::
-+
---
-Total number of jobs processed via the process_crawl queue since the start of the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.queues.failed.count`*::
-+
---
-Total number of jobs waiting in the failed queue.
-
-type: long
-
---
-
-[float]
-=== crawler
-
-Aggregate stats on the functioning of the crawler subsystem within Enterprise Search.
-
-
-[float]
-=== global
-
-Global deployment-wide metrics for the crawler.
-
-
-[float]
-=== crawl_requests
-
-Crawl request summary for the deployment.
-
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.pending`*::
-+
---
-Total number of crawl requests waiting to be processed.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.active`*::
-+
---
-Total number of crawl requests currently being processed (running crawls).
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.successful`*::
-+
---
-Total number of crawl requests that have succeeded.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.global.crawl_requests.failed`*::
-+
---
-Total number of failed crawl requests.
-
-type: long
-
---
-
-[float]
-=== node
-
-Node-level statistics for the crawler.
-
-
-*`enterprisesearch.stats.crawler.node.pages_visited`*::
-+
---
-Total number of pages visited by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_allowed`*::
-+
---
-Total number of URLs allowed by the crawler during discovery since the instance start.
-
-type: long
-
---
-
-[float]
-=== urls_denied
-
-Total number of URLs denied by the crawler during discovery since the instance start, broken down by deny reason.
-
-
-*`enterprisesearch.stats.crawler.node.urls_denied.already_seen`*::
-+
---
-Total number of URLs not followed because of URL de-duplication (each URL is visited only once).
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.domain_filter_denied`*::
-+
---
-Total number of URLs denied because of an unknown domain.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.incorrect_protocol`*::
-+
---
-Total number of URLs with incorrect/invalid/unsupported protocols.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.link_too_deep`*::
-+
---
-Total number of URLs not followed due to crawl depth limits.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.nofollow`*::
-+
---
-Total number of URLs denied due to a nofollow meta tag or an HTML link attribute.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.urls_denied.unsupported_content_type`*::
-+
---
-Total number of URLs denied due to an unsupported content type.
-
-type: long
-
---
-
-[float]
-=== status_codes
-
-HTTP request result counts, by status code.
-
-
-*`enterprisesearch.stats.crawler.node.status_codes.200`*::
-+
---
-Total number of HTTP 200 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.301`*::
-+
---
-Total number of HTTP 301 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.302`*::
-+
---
-Total number of HTTP 302 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.400`*::
-+
---
-Total number of HTTP 400 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.401`*::
-+
---
-Total number of HTTP 401 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.402`*::
-+
---
-Total number of HTTP 402 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.403`*::
-+
---
-Total number of HTTP 403 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.404`*::
-+
---
-Total number of HTTP 404 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.405`*::
-+
---
-Total number of HTTP 405 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.410`*::
-+
---
-Total number of HTTP 410 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.422`*::
-+
---
-Total number of HTTP 422 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.429`*::
-+
---
-Total number of HTTP 429 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.500`*::
-+
---
-Total number of HTTP 500 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.501`*::
-+
---
-Total number of HTTP 501 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.502`*::
-+
---
-Total number of HTTP 502 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.503`*::
-+
---
-Total number of HTTP 503 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.status_codes.504`*::
-+
---
-Total number of HTTP 504 responses seen by the crawler since the instance start.
-
-type: long
-
---
-
-[float]
-=== queue_size
-
-Total current URL queue size for the instance.
-
-
-*`enterprisesearch.stats.crawler.node.queue_size.primary`*::
-+
---
-Total number of URLs waiting to be crawled by the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.queue_size.purge`*::
-+
---
-Total number of URLs waiting to be checked by the purge crawl phase.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.active_threads`*::
-+
---
-Total number of crawler worker threads currently active on the instance.
-
-type: long
-
---
-
-[float]
-=== workers
-
-Crawler workers information for the instance.
-
-
-*`enterprisesearch.stats.crawler.node.workers.pool_size`*::
-+
---
-Total size of the crawl workers pool (number of concurrent crawls possible) for the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.workers.active`*::
-+
---
-Total number of currently active crawl workers (running crawls) for the instance.
-
-type: long
-
---
-
-*`enterprisesearch.stats.crawler.node.workers.available`*::
-+
---
-Total number of currently available (free) crawl workers for the instance.
-
-type: long
-
---
-
-[float]
-=== product_usage
-
-Aggregate product usage statistics for the Enterprise Search deployment.
-
-
-[float]
-=== app_search
-
-App Search product usage statistics.
-
-
-*`enterprisesearch.stats.product_usage.app_search.total_engines`*::
-+
---
-Current number of App Search engines within the deployment.
-
-type: long
-
---
-
-[float]
-=== workplace_search
-
-Workplace Search product usage statistics.
-
-
-*`enterprisesearch.stats.product_usage.workplace_search.total_org_sources`*::
-+
---
-Current number of Workplace Search org-wide content sources within the deployment.
-
-type: long
-
---
-
-*`enterprisesearch.stats.product_usage.workplace_search.total_private_sources`*::
-+
---
-Current number of Workplace Search private content sources within the deployment.
-
-type: long
 
 --
 
@@ -48324,99 +53128,6 @@ type: long
 --
 
 [float]
-=== settings
-
-Kibana stats and run-time metrics.
-
-
-
-*`kibana.settings.uuid`*::
-+
---
-Kibana instance UUID
-
-type: keyword
-
---
-
-*`kibana.settings.name`*::
-+
---
-Kibana instance name
-
-type: keyword
-
---
-
-*`kibana.settings.index`*::
-+
---
-Name of Kibana's internal index
-
-type: keyword
-
---
-
-*`kibana.settings.host`*::
-+
---
-Kibana instance hostname
-
-type: keyword
-
---
-
-*`kibana.settings.transport_address`*::
-+
---
-Kibana server's hostname and port
-
-type: keyword
-
---
-
-*`kibana.settings.version`*::
-+
---
-Kibana version
-
-type: keyword
-
---
-
-*`kibana.settings.snapshot`*::
-+
---
-Whether the Kibana build is a snapshot build
-
-type: boolean
-
---
-
-*`kibana.settings.status`*::
-+
---
-Kibana instance's health status
-
-type: keyword
-
---
-
-*`kibana.settings.locale`*::
-+
---
-type: keyword
-
---
-
-*`kibana.settings.port`*::
-+
---
-type: integer
-
---
-
-[float]
 === stats
 
 Kibana stats and run-time metrics.
@@ -51882,6 +56593,87 @@ Deployment updated replicas
 
 
 type: integer
+
+--
+
+[float]
+=== horizontalpodautoscaler
+
+kubernetes horizontalpodautoscaler metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.name`*::
++
+--
+The Kubernetes Horizontal Pod Autoscaler name
+
+
+type: keyword
+
+--
+
+[float]
+=== replicas
+
+Kubernetes HPA replicas metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.replicas.max`*::
++
+--
+Kubernetes HPA maximum replicas from spec
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.min`*::
++
+--
+Kubernetes HPA minimum replicas from spec
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.current`*::
++
+--
+Kubernetes HPA current replicas from status
+
+
+type: integer
+
+--
+
+*`kubernetes.horizontalpodautoscaler.replicas.desired`*::
++
+--
+Kubernetes HPA desired replicas from status
+
+
+type: integer
+
+--
+
+[float]
+=== status
+
+Kubernetes HPA status metrics
+
+
+
+*`kubernetes.horizontalpodautoscaler.status.condition`*::
++
+--
+Kubernetes HPA scaling condition
+
+
+type: keyword
 
 --
 
@@ -60401,6 +65193,16 @@ Contains nats connection related metrics
 
 
 
+*`nats.connection.id`*::
++
+--
+The ID of the connection
+
+
+type: keyword
+
+--
+
 *`nats.connection.name`*::
 +
 --
@@ -60408,6 +65210,86 @@ The name of the connection
 
 
 type: keyword
+
+--
+
+*`nats.connection.kind`*::
++
+--
+The kind of connection
+
+
+type: keyword
+
+--
+
+*`nats.connection.type`*::
++
+--
+The type of connection
+
+
+type: keyword
+
+--
+
+*`nats.connection.ip`*::
++
+--
+The IP address of the connection
+
+
+type: ip
+
+--
+
+*`nats.connection.port`*::
++
+--
+The port of the connection
+
+
+type: integer
+
+--
+
+*`nats.connection.lang`*::
++
+--
+The language of the client connection
+
+
+type: keyword
+
+--
+
+*`nats.connection.version`*::
++
+--
+The version of the client connection
+
+
+type: keyword
+
+--
+
+*`nats.connection.start`*::
++
+--
+The time the connection was started
+
+
+type: date
+
+--
+
+*`nats.connection.last_activity`*::
++
+--
+The last activity time of the connection
+
+
+type: date
 
 --
 
@@ -60533,6 +65415,923 @@ type: integer
 --
 
 [float]
+=== jetstream
+
+Information pertaining to a NATS JetStream server
+
+
+
+*`nats.jetstream.category`*::
++
+--
+The category of metrics represented in this event (stats, account, stream, or consumer).
+
+
+type: keyword
+
+--
+
+[float]
+=== stats
+
+General stats about the NATS JetStream server.
+
+
+
+*`nats.jetstream.stats.streams`*::
++
+--
+The total number of streams on the JetStream server.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stats.consumers`*::
++
+--
+The total number of consumers on the JetStream server.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stats.messages`*::
++
+--
+The total number of messages on the JetStream server.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stats.bytes`*::
++
+--
+The total number of message bytes on the JetStream server.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.memory`*::
++
+--
+The total amount of memory (bytes) used by the JetStream server.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.reserved_memory`*::
++
+--
+The of memory (bytes) reserved by the JetStream server.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.storage`*::
++
+--
+The total amount of storage (bytes) used by the JetStream server.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.reserved_storage`*::
++
+--
+The total amount of storage (bytes) reserved by the JetStream server.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.accounts`*::
++
+--
+The total number of accounts on the JetStream server.
+
+
+type: long
+
+--
+
+[float]
+=== config
+
+Configuration of the JetStream server.
+
+
+
+*`nats.jetstream.stats.config.max_memory`*::
++
+--
+The maximum amount of memory (bytes) the JetStream server can use.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.config.max_storage`*::
++
+--
+The maximum amount of storage (bytes) the JetStream server can use.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stats.config.store_dir`*::
++
+--
+The path on disk where the JetStream storage lives.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.stats.config.sync_interval`*::
++
+--
+The fsync/sync interval for page cache in the filestore.
+
+
+type: long
+
+--
+
+[float]
+=== account
+
+Information about a NATS JetStream account.
+
+
+
+*`nats.jetstream.account.id`*::
++
+--
+The ID of the JetStream account.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.account.name`*::
++
+--
+The name of the JetStream account.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.account.accounts`*::
++
+--
+The number of accounts using JetStream on the server.
+
+
+type: integer
+
+--
+
+*`nats.jetstream.account.high_availability_assets`*::
++
+--
+Indicates the number of JetStream high-availability (HA) assets allocated for an account.
+
+
+type: integer
+
+--
+
+*`nats.jetstream.account.memory`*::
++
+--
+The amount of memory in bytes currently used by JetStream for this account.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.account.storage`*::
++
+--
+The amount of storage in bytes currently used by JetStream for this account.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.account.reserved_memory`*::
++
+--
+The maximum memory quota reserved for this account (in bytes).
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.account.reserved_storage`*::
++
+--
+The maximum disk storage quota reserved for this account (in bytes).
+
+
+type: long
+
+format: bytes
+
+--
+
+[float]
+=== api
+
+API stats pertaining to this account.
+
+
+
+*`nats.jetstream.account.api.total`*::
++
+--
+The total number of JetStream API calls made by this account.
+
+
+type: long
+
+--
+
+*`nats.jetstream.account.api.errors`*::
++
+--
+The total number of JetStream API errors encountered by this account.
+
+
+type: long
+
+--
+
+[float]
+=== stream
+
+Information about a NATS JetStream stream.
+
+
+
+*`nats.jetstream.stream.name`*::
++
+--
+The name of the JetStream stream.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.stream.created`*::
++
+--
+The date/time the stream was created.
+
+
+type: date
+
+--
+
+[float]
+=== cluster
+
+Cluster information for the stream.
+
+
+
+*`nats.jetstream.stream.cluster.leader`*::
++
+--
+The ID of the leader in the cluster.
+
+
+type: keyword
+
+--
+
+[float]
+=== state
+
+The state of the stream.
+
+
+
+*`nats.jetstream.stream.state.messages`*::
++
+--
+The number of messages on the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.bytes`*::
++
+--
+The number of bytes of messages on the stream.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stream.state.consumer_count`*::
++
+--
+The number of consumers on the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.num_subjects`*::
++
+--
+The number of subjects on the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.num_deleted`*::
++
+--
+The number of messages deleted from the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.first_seq`*::
++
+--
+The first sequence number on the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.first_ts`*::
++
+--
+The date/time corresponding to first_seq.
+
+
+type: date
+
+--
+
+*`nats.jetstream.stream.state.last_seq`*::
++
+--
+The last sequence number on the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.state.last_ts`*::
++
+--
+The date/time corresponding to last_seq.
+
+
+type: date
+
+--
+
+[float]
+=== account
+
+Information about the account for this stream.
+
+
+
+*`nats.jetstream.stream.account.id`*::
++
+--
+The ID of the account.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.stream.account.name`*::
++
+--
+The name of the account.
+
+
+type: keyword
+
+--
+
+[float]
+=== config
+
+Information regarding how the stream is configured.
+
+
+
+*`nats.jetstream.stream.config.description`*::
++
+--
+The description of the stream.
+
+
+type: text
+
+--
+
+*`nats.jetstream.stream.config.retention`*::
++
+--
+The retention policy for the stream.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.stream.config.num_replicas`*::
++
+--
+How many replicas to keep for each message in a clustered JetStream.
+
+
+type: integer
+
+--
+
+*`nats.jetstream.stream.config.storage`*::
++
+--
+The storage type for stream data.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.stream.config.max_consumers`*::
++
+--
+The maximum number of consumers allowed for this stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.config.max_msgs`*::
++
+--
+Maximum number of messages stored in the stream. Adheres to Discard Policy, removing oldest or refusing new messages if the Stream exceeds this number of messages.
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.config.max_bytes`*::
++
+--
+Maximum number of bytes stored in the stream. Adheres to Discard Policy, removing oldest or refusing new messages if the Stream exceeds this size.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stream.config.max_age`*::
++
+--
+Maximum age of any message in the stream, expressed in nanoseconds.	
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.config.max_msgs_per_subject`*::
++
+--
+Limits maximum number of messages in the stream to retain per subject.	
+
+
+type: long
+
+--
+
+*`nats.jetstream.stream.config.max_msg_size`*::
++
+--
+The largest message (bytes) that will be accepted by the stream. The size of a message is a sum of payload and headers.
+
+
+type: long
+
+format: bytes
+
+--
+
+*`nats.jetstream.stream.config.subjects`*::
++
+--
+The list of subjects bound to the stream.
+
+
+type: keyword
+
+--
+
+[float]
+=== consumer
+
+Information about a NATS JetStream consumer.
+
+
+
+*`nats.jetstream.consumer.name`*::
++
+--
+The name of the consumer.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.created`*::
++
+--
+The date/time the consumer was created.
+
+
+type: date
+
+--
+
+[float]
+=== stream
+
+Information about the stream for this consumer.
+
+
+
+*`nats.jetstream.consumer.stream.name`*::
++
+--
+The name of the stream.
+
+
+type: keyword
+
+--
+
+[float]
+=== cluster
+
+Cluster information for the consumer.
+
+
+
+*`nats.jetstream.consumer.cluster.leader`*::
++
+--
+The ID of the leader in the cluster.
+
+
+type: keyword
+
+--
+
+[float]
+=== ack_floor
+
+Information about message acknowledgements pertaining to AckFloor, which indicates the highest contiguous sequence number that has been fully acknowledged.
+
+
+
+*`nats.jetstream.consumer.ack_floor.consumer_seq`*::
++
+--
+The lowest contiguous consumer sequence number that has been acknowledged.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.ack_floor.stream_seq`*::
++
+--
+The lowest contiguous stream sequence number that has been acknowledged by the consumer.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.ack_floor.last_active`*::
++
+--
+The timestamp of the last acknowledged message.
+
+
+type: date
+
+--
+
+[float]
+=== delivered
+
+Information about delivered messages.
+
+
+
+*`nats.jetstream.consumer.delivered.consumer_seq`*::
++
+--
+The number of messages delivered to this consumer, starting from 1 when the consumer was created.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.delivered.stream_seq`*::
++
+--
+The last stream sequence number of a message delivered to the consumer. Corresponds to the global sequence of messages in the stream.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.delivered.last_active`*::
++
+--
+The timestamp of the last message delivered to the consumer.
+
+
+type: date
+
+--
+
+*`nats.jetstream.consumer.num_ack_pending`*::
++
+--
+The number of messages that have been delivered to the consumer but not yet acknowledged.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.num_redelivered`*::
++
+--
+The number of messages that had to be resent because they were previously delivered but not acknowledged within the Ack Wait time.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.num_waiting`*::
++
+--
+The number of pull requests currently waiting for messages to be delivered.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.num_pending`*::
++
+--
+The number of messages remaining in the stream that the consumer has not yet delivered to any client.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.last_active_time`*::
++
+--
+Represents the last activity time of the consumer.
+
+
+type: date
+
+--
+
+[float]
+=== account
+
+Information about the account for this consumer.
+
+
+
+*`nats.jetstream.consumer.account.id`*::
++
+--
+The ID of the account.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.account.name`*::
++
+--
+The name of the account.
+
+
+type: keyword
+
+--
+
+[float]
+=== config
+
+Information about the configuration for this consumer.
+
+
+
+*`nats.jetstream.consumer.config.name`*::
++
+--
+The name of the consumer.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.durable_name`*::
++
+--
+The durable name of the consumer. If set, clients can have subscriptions bind to the consumer and resume until the consumer is explicitly deleted.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.deliver_policy`*::
++
+--
+The point in the stream from which to receive messages.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.filter_subject`*::
++
+--
+A subject that overlaps with the subjects bound to the stream to filter delivery to subscribers.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.replay_policy`*::
++
+--
+The configured replay policy for the consumer.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.ack_policy`*::
++
+--
+The configured ack policy for the consumer.
+
+
+type: keyword
+
+--
+
+*`nats.jetstream.consumer.config.ack_wait`*::
++
+--
+The duration (in nanoseconds) that the server will wait for an acknowledgment for any individual message once it has been delivered to a consumer. If an acknowledgment is not received in time, the message will be redelivered.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.config.max_deliver`*::
++
+--
+The maximum number of times a message will be redelivered if not acknowledged.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.config.max_waiting`*::
++
+--
+The maximum number of pull requests a consumer can have waiting for messages.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.config.max_ack_pending`*::
++
+--
+The maximum number of messages the consumer can have in-flight (delivered but unacknowledged) at any time.
+
+
+type: long
+
+--
+
+*`nats.jetstream.consumer.config.num_replicas`*::
++
+--
+The number of replicas for the consumer's state in a JetStream cluster.
+
+
+type: long
+
+--
+
+[float]
 === route
 
 Contains nats route related metrics
@@ -60552,7 +66351,7 @@ type: integer
 *`nats.route.remote_id`*::
 +
 --
-The remote id on which the route is connected to
+The remote ID on which the route is connected
 
 
 type: keyword
@@ -60670,6 +66469,26 @@ type: integer
 Contains nats var related metrics
 
 
+
+*`nats.stats.server_name`*::
++
+--
+The name of the NATS server
+
+
+type: keyword
+
+--
+
+*`nats.stats.version`*::
++
+--
+The version of the NATS server
+
+
+type: keyword
+
+--
 
 *`nats.stats.uptime`*::
 +
@@ -60870,6 +66689,66 @@ type: long
 +
 --
 The number of hits on root monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.jsz`*::
++
+--
+The number of hits on jsz monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.accountz`*::
++
+--
+The number of hits on accountz monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.accstatz`*::
++
+--
+The number of hits on accstatz monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.gatewayz`*::
++
+--
+The number of hits on gatewayz monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.healthz`*::
++
+--
+The number of hits on healthz monitoring uri
+
+
+type: long
+
+--
+
+*`nats.stats.http.req_stats.uri.leafz`*::
++
+--
+The number of hits on leafz monitoring uri
 
 
 type: long
@@ -74212,6 +80091,12 @@ format: duration
 
 --
 
+[float]
+=== wmi
+
+wmi
+
+
 [[exported-fields-zookeeper]]
 == ZooKeeper fields
 
@@ -74279,16 +80164,6 @@ type: long
 `mntr` contains the metrics reported by the four-letter `mntr` command.
 
 
-
-*`zookeeper.mntr.hostname`*::
-+
---
-ZooKeeper hostname.
-
-
-type: keyword
-
---
 
 *`zookeeper.mntr.approximate_data_size`*::
 +

@@ -1,10 +1,13 @@
+# Module: dellecs
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-dellecs.html
+
 - module: dellecs
   metricsets: 
     - health
   enabled: false
-  period: 10s
+  period: 30s
   host: localhost
-  username: username
+  username: ${ECS_USERNAME}
   password:  ${ECS_PWD}
 
 

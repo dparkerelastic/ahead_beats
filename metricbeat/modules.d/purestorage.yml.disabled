@@ -1,13 +1,16 @@
+# Module: purestorage
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-purestorage.html
+
 - module: purestorage
   metricsets:
    - health 
    - arrays
-  enabled: false 
-  period: 60s
+  enabled: true 
+  period: 30s
   host: localhost
   api_version: 1.19
   api_key: ${PURE_API_KEY}
-  snmp_base_oid: .1.3.6.1.4.1.40482
+  snmp_base_oid: ${PURE_BASE_OID}  
   snmp_community: ${PURE_COMMUNITY}
   snmp_port: 161
 

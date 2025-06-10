@@ -2,11 +2,10 @@
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-emc_unity_storage.html
 
 - module: emcunity
-  metricsets: ["storage_health"]
+  metricsets: ["health"]
   enabled: true
   period: 30s
-  #hosts: ["https://emc_unity_hostA","https://emc_unity_hostb"]
-  hosts: ["https://emc_unity_hostA"]
+  hosts: ["https://emc_unity_hostA","https://emc_unity_hostb"]
   username: "${EMC_UNITY_USER}"
   password: "${EMC_UNITY_PWD}"
   debug: true

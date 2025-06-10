@@ -67,6 +67,8 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-ceph-osd_df,osd_df>>   
 |<<metricbeat-metricset-ceph-osd_tree,osd_tree>>   
 |<<metricbeat-metricset-ceph-pool_disk,pool_disk>>   
+|<<metricbeat-module-citrix_cms,citrix_cms>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
+.1+| .1+|  |<<metricbeat-metricset-citrix_cms-health,health>> beta[]  
 |<<metricbeat-module-cloudfoundry,Cloudfoundry>>  beta[]   |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .3+| .3+|  |<<metricbeat-metricset-cloudfoundry-container,container>> beta[]  
 |<<metricbeat-metricset-cloudfoundry-counter,counter>> beta[]  
@@ -117,9 +119,6 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-elasticsearch-shard,shard>>   
 |<<metricbeat-module-emcunity,emcunity>>  beta[]   |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .1+| .1+|  |<<metricbeat-metricset-emcunity-health,health>> beta[]  
-|<<metricbeat-module-enterprisesearch,Enterprise Search>>  beta[]   |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
-.2+| .2+|  |<<metricbeat-metricset-enterprisesearch-health,health>> beta[]  
-|<<metricbeat-metricset-enterprisesearch-stats,stats>> beta[]  
 |<<metricbeat-module-envoyproxy,Envoyproxy>>     |image:./images/icon-no.png[No prebuilt dashboards]    |  
 .1+| .1+|  |<<metricbeat-metricset-envoyproxy-server,server>>   
 |<<metricbeat-module-etcd,Etcd>>     |image:./images/icon-no.png[No prebuilt dashboards]    |  
@@ -172,15 +171,14 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-kafka-partition,partition>>   
 |<<metricbeat-metricset-kafka-producer,producer>> beta[]  
 |<<metricbeat-module-kibana,Kibana>>     |image:./images/icon-no.png[No prebuilt dashboards]    |  
-.7+| .7+|  |<<metricbeat-metricset-kibana-cluster_actions,cluster_actions>> beta[]  
+.6+| .6+|  |<<metricbeat-metricset-kibana-cluster_actions,cluster_actions>> beta[]  
 |<<metricbeat-metricset-kibana-cluster_rules,cluster_rules>> beta[]  
 |<<metricbeat-metricset-kibana-node_actions,node_actions>> beta[]  
 |<<metricbeat-metricset-kibana-node_rules,node_rules>> beta[]  
-|<<metricbeat-metricset-kibana-settings,settings>>   
 |<<metricbeat-metricset-kibana-stats,stats>>   
 |<<metricbeat-metricset-kibana-status,status>>   
 |<<metricbeat-module-kubernetes,Kubernetes>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
-.23+| .23+|  |<<metricbeat-metricset-kubernetes-apiserver,apiserver>>   
+.24+| .24+|  |<<metricbeat-metricset-kubernetes-apiserver,apiserver>>   
 |<<metricbeat-metricset-kubernetes-container,container>>   
 |<<metricbeat-metricset-kubernetes-controllermanager,controllermanager>>   
 |<<metricbeat-metricset-kubernetes-event,event>>   
@@ -192,6 +190,7 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-kubernetes-state_cronjob,state_cronjob>>   
 |<<metricbeat-metricset-kubernetes-state_daemonset,state_daemonset>>   
 |<<metricbeat-metricset-kubernetes-state_deployment,state_deployment>>   
+|<<metricbeat-metricset-kubernetes-state_horizontalpodautoscaler,state_horizontalpodautoscaler>> beta[]  
 |<<metricbeat-metricset-kubernetes-state_job,state_job>>   
 |<<metricbeat-metricset-kubernetes-state_node,state_node>>   
 |<<metricbeat-metricset-kubernetes-state_persistentvolumeclaim,state_persistentvolumeclaim>>   
@@ -238,8 +237,9 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-mysql-query,query>> beta[]  
 |<<metricbeat-metricset-mysql-status,status>>   
 |<<metricbeat-module-nats,NATS>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
-.6+| .6+|  |<<metricbeat-metricset-nats-connection,connection>>   
+.7+| .7+|  |<<metricbeat-metricset-nats-connection,connection>>   
 |<<metricbeat-metricset-nats-connections,connections>>   
+|<<metricbeat-metricset-nats-jetstream,jetstream>> beta[]  
 |<<metricbeat-metricset-nats-route,route>>   
 |<<metricbeat-metricset-nats-routes,routes>>   
 |<<metricbeat-metricset-nats-stats,stats>>   
@@ -337,8 +337,9 @@ This file is generated! See scripts/mage/docs_collector.go
 |<<metricbeat-metricset-vsphere-resourcepool,resourcepool>> beta[]  
 |<<metricbeat-metricset-vsphere-virtualmachine,virtualmachine>>   
 |<<metricbeat-module-windows,Windows>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
-.2+| .2+|  |<<metricbeat-metricset-windows-perfmon,perfmon>>   
+.3+| .3+|  |<<metricbeat-metricset-windows-perfmon,perfmon>>   
 |<<metricbeat-metricset-windows-service,service>>   
+|<<metricbeat-metricset-windows-wmi,wmi>> beta[]  
 |<<metricbeat-module-zookeeper,ZooKeeper>>     |image:./images/icon-yes.png[Prebuilt dashboards are available]    |  
 .3+| .3+|  |<<metricbeat-metricset-zookeeper-connection,connection>>   
 |<<metricbeat-metricset-zookeeper-mntr,mntr>>   
@@ -357,6 +358,7 @@ include::modules/azure.asciidoc[]
 include::modules/beat.asciidoc[]
 include::modules/benchmark.asciidoc[]
 include::modules/ceph.asciidoc[]
+include::modules/citrix_cms.asciidoc[]
 include::modules/cloudfoundry.asciidoc[]
 include::modules/cockroachdb.asciidoc[]
 include::modules/consul.asciidoc[]
@@ -369,7 +371,6 @@ include::modules/docker.asciidoc[]
 include::modules/dropwizard.asciidoc[]
 include::modules/elasticsearch.asciidoc[]
 include::modules/emcunity.asciidoc[]
-include::modules/enterprisesearch.asciidoc[]
 include::modules/envoyproxy.asciidoc[]
 include::modules/etcd.asciidoc[]
 include::modules/gcp.asciidoc[]
