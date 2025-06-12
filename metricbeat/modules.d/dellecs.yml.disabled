@@ -5,7 +5,7 @@
   metricsets: 
     - health
   enabled: false
-  period: 30s
+  period: 120s
   host: localhost
   username: ${ECS_USERNAME}
   password:  ${ECS_PWD}

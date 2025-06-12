@@ -4,7 +4,7 @@
 - module: nsxt
   metricsets: ["health"]
   enabled: false
-  period: 60s
+  period: 120s
   host: localhost	 
   username: ${NSXT_USERNAME}
   password: ${NSXT_PASSWORD} 

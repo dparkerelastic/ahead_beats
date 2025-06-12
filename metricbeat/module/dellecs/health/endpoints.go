@@ -92,7 +92,12 @@ func getNoteDetailsEvents(m *MetricSet) ([]mb.Event, error) {
 		return nil, err
 	}
 	var events []mb.Event
-	for _, node := range m.nodes {
+	nodes, err := getLocalNodes(m.ecsClient)
+	if err != nil {
+		return nil, fmt.Errorf("unable to retrieve node list: %v", err)
+	}
+
+	for _, node := range nodes {
 
 		nodeEndpoint := strings.Replace(endpoint.Endpoint, "{nodeid}", node.ID, -1)
 		result, err := client.Get(nodeEndpoint)
@@ -166,7 +171,12 @@ func getDiskEvents(m *MetricSet) ([]mb.Event, error) {
 		return nil, err
 	}
 	var events []mb.Event
-	for _, node := range m.nodes {
+	nodes, err := getLocalNodes(m.ecsClient)
+	if err != nil {
+		return nil, fmt.Errorf("unable to retrieve node list: %v", err)
+	}
+
+	for _, node := range nodes {
 
 		diskEndpoint := strings.Replace(endpoint.Endpoint, "{nodeid}", node.ID, -1)
 		result, err := client.Get(diskEndpoint)

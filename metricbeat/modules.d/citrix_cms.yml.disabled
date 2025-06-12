@@ -3,12 +3,12 @@
 
 - module: citrix_cms
   metricsets: ["health"]
-  enabled: false
+  enabled: false 
   period: 120s
   # CMS API info and overview: https://developer-docs.citrix.com/en-us/monitor-service-odata-api/overview
   hosts: ["https://api-us.cloud.com"]
   # CMS API authentication:  https://developer-docs.citrix.com/en-us/monitor-service-odata-api/overview#authentication
-  customer_id: "<my_citrix_cms_customer_id>"
+  customer_id: ${CITRIX_CMS_CUSTOMER_ID}
   client_id: ${CITRIX_CMS_CLIENT_ID}
   client_secret: ${CITRIX_CMS_CLIENT_SECRET}
   limit_results: 1000

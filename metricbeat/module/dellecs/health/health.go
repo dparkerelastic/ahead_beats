@@ -78,7 +78,6 @@ type MetricSet struct {
 	config    *dellecs.Config
 	logger    *logp.Logger
 	ecsClient *ECSRestClient
-	nodes     []NodeData
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -100,25 +99,11 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-	loadOnce.Do(func() {
-		var loadErr error
-		nodes, loadErr = getLocalNodes(ecsClient)
-		if loadErr != nil {
-			err = loadErr
-		}
-	})
-
-	if err != nil {
-		logger.Errorf("unable to retrieve node list: %v", err)
-		return nil, err
-	}
-
 	return &MetricSet{
 		BaseMetricSet: base,
 		config:        config,
 		logger:        logger,
 		ecsClient:     ecsClient,
-		nodes:         nodes,
 	}, nil
 }
 
@@ -129,6 +114,12 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	// accumulate errs and report them all at the end so that we don't
 	// stop processing events if one of the fetches fails
 	var errs []error
+
+	err := m.ecsClient.login()
+	if err != nil {
+		m.logger.Errorf("failed to login: %v", err)
+		return err
+	}
 
 	for _, endpoint := range endpoints {
 		m.logger.Debugf("Calling endpoint %s ....", endpoint.Name)

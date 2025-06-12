@@ -3,8 +3,8 @@
 
 - module: emcunity
   metricsets: ["health"]
-  enabled: true
-  period: 30s
+  enabled: false 
+  period: 120s
   hosts: ["https://emc_unity_hostA","https://emc_unity_hostb"]
   username: "${EMC_UNITY_USER}"
   password: "${EMC_UNITY_PWD}"

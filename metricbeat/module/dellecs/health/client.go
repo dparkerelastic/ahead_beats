@@ -43,43 +43,39 @@ func disableSSLVerification() *http.Transport {
 func GetClient(config *dellecs.Config, base mb.BaseMetricSet) (*ECSRestClient, error) {
 	tr := disableSSLVerification()
 
-	apiToken, err := login(config)
-	if err != nil {
-		return nil, err
-	}
-
 	ecsClient := ECSRestClient{
 		config:  config,
 		baseUrl: fmt.Sprintf("https://%s:%d/", config.Host, config.Port),
 		client:  &http.Client{Transport: tr},
 		headers: map[string]string{
-			"X-SDS-AUTH-TOKEN": apiToken,
-			"Content-Type":     "application/json",
+			"Content-Type": "application/json",
 		},
 	}
 
 	return &ecsClient, nil
 }
 
-func login(config *dellecs.Config) (string, error) {
-	url := fmt.Sprintf("https://%s:%d/login.json", config.Host, config.Port)
+func (c *ECSRestClient) login() error {
+
+	url := fmt.Sprintf("https://%s:%d/login.json", c.config.Host, c.config.Port)
 	client := &http.Client{Transport: disableSSLVerification()}
 
 	req, _ := http.NewRequest("GET", url, nil)
-	req.SetBasicAuth(config.Username, config.Password)
+	req.SetBasicAuth(c.config.Username, c.config.Password)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("failed to login: %v", err)
+		return fmt.Errorf("failed to login: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		return resp.Header.Get("X-SDS-AUTH-TOKEN"), nil
+		token := resp.Header.Get("X-SDS-AUTH-TOKEN")
+		c.headers["X-SDS-AUTH-TOKEN"] = token
+		return nil
 	} else {
-		return "", fmt.Errorf("failed to login: %d", resp.StatusCode)
+		return fmt.Errorf("failed to login: %d", resp.StatusCode)
 	}
-
 }
 
 func (c *ECSRestClient) Get(endpoint string) (string, error) {

@@ -104,6 +104,12 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	// stop processing events if one of the fetches fails
 	var errs []error
 
+	err := m.psClient.login()
+	if err != nil {
+		m.logger.Errorf("failed to login: %v", err)
+		return err
+	}
+
 	for _, endpoint := range endpoints {
 		m.logger.Debugf("Calling endpoint %s ....", endpoint.Name)
 		events, err := endpoint.Fn(m)

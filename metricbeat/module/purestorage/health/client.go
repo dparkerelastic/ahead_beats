@@ -47,19 +47,31 @@ func GetClient(config *purestorage.Config, base mb.BaseMetricSet) (*PureRestClie
 		config:  config,
 		baseUrl: fmt.Sprintf("https://%s/api/%s/", config.Host, config.ApiVersion),
 		client:  &http.Client{Transport: tr},
+		headers: map[string]string{
+			"Content-Type": "application/json",
+		},
 	}
 
-	// Get the session cookie
-	cookie, err := getSessionCookie(config.Host, config.ApiVersion, config.ApiKey)
-	if err != nil {
-		return nil, fmt.Errorf("error initializing PureStorage client: %w", err)
-	}
-	psClient.headers = map[string]string{
-		"Cookie":       cookie,
-		"Content-Type": "application/json",
-	}
+	// // Get the session cookie
+	// cookie, err := getSessionCookie(config.Host, config.ApiVersion, config.ApiKey)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("error initializing PureStorage client: %w", err)
+	// }
+	// psClient.headers = map[string]string{
+	// 	"Cookie":       cookie,
+	// 	"Content-Type": "application/json",
+	// }
 
 	return &psClient, nil
+}
+
+func (c *PureRestClient) login() error {
+	cookie, err := getSessionCookie(c.config.Host, c.config.ApiVersion, c.config.ApiKey)
+	if err != nil {
+		return fmt.Errorf("error initializing PureStorage client: %w", err)
+	}
+	c.headers["Cookie"] = cookie
+	return nil
 }
 
 func getSessionCookie(hostName, apiVersion, apiToken string) (string, error) {

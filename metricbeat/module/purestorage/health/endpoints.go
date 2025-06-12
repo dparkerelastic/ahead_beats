@@ -448,16 +448,7 @@ func getVolumeEvents(m *MetricSet) ([]mb.Event, error) {
 	return events, nil
 }
 func CreateECSFields(ms *MetricSet) mapstr.M {
-	// dataset := fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name())
-
 	return mapstr.M{
-		// "event": mapstr.M{
-		// 	"dataset": dataset,
-		// },
-		// "data_stream": mapstr.M{
-		// 	"type":    "metrics",
-		// 	"dataset": fmt.Sprintf("%s.%s", ms.Module().Name(), ms.Name()),
-		// },
 		"observer": mapstr.M{
 			"hostname": ms.config.HostInfo.Hostname,
 			"ip":       ms.config.HostInfo.IP,

@@ -75,7 +75,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	}
 
 	// Get the session cookie
-	ecsClient, err := GetClient(config, base)
+	horizonClient, err := GetClient(config, base)
 	if err != nil {
 		logger.Errorf("failed to get a session client: %v", err)
 		return nil, err
@@ -85,7 +85,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		BaseMetricSet: base,
 		config:        config,
 		logger:        logger,
-		horizonClient: ecsClient,
+		horizonClient: horizonClient,
 	}, nil
 }
 

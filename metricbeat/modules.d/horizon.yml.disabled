@@ -3,8 +3,8 @@
 
 - module: horizon
   metricsets: ["health"]
-  enabled: true 
-  period: 60s
+  enabled: false 
+  period: 120s
   host: "localhost"
   protocol: "https"
   port: 443

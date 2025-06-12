@@ -5,8 +5,8 @@
   metricsets:
    - health 
    - arrays
-  enabled: true 
-  period: 30s
+  enabled: false 
+  period: 120s
   host: localhost
   api_version: 1.19
   api_key: ${PURE_API_KEY}
