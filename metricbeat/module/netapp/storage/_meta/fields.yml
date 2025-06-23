@@ -1,0 +1,10 @@
+- name: storage
+  type: group
+  release: beta
+  description: >
+    storage
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

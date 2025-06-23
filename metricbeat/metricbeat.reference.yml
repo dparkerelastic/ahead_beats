@@ -864,6 +864,14 @@ metricbeat.modules:
   #      - my-stream-1-consumer-2
   #      - another-stream-consumer-1
 
+#-------------------------------- Netapp Module --------------------------------
+- module: netapp
+  metricsets: ["storage"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
+
 #-------------------------------- Nginx Module --------------------------------
 - module: nginx
   metricsets: ["stubstatus"]

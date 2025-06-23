@@ -1,0 +1,10 @@
+- name: cluster
+  type: group
+  release: beta
+  description: >
+    cluster
+  fields:
+    - name: example
+      type: keyword
+      description: >
+        Example field

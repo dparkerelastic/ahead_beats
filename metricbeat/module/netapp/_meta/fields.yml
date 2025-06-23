@@ -1,0 +1,10 @@
+- key: netapp
+  title: "netapp"
+  release: beta
+  description: >
+    netapp module
+  fields:
+    - name: netapp
+      type: group
+      description: >
+      fields:

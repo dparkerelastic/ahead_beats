@@ -1,0 +1,9 @@
+# Module: netapp
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-netapp.html
+
+- module: netapp
+  metricsets: ["storage"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost"]
+
