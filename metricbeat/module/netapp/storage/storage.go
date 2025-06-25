@@ -13,7 +13,7 @@ import (
 type Endpoint struct {
 	Name     string
 	Endpoint string
-	Fn       func() ([]mb.Event, error)
+	Fn       func(*MetricSet) ([]mb.Event, error)
 }
 
 var (
