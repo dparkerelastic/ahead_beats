@@ -10,6 +10,8 @@
   enabled: false
   period: 10s
   host: localhost
+  protocol: https
+  port: 443
   username: ${NETAPP_USERNAME}
   password: ${NETAPP_PASSWORD}
 
