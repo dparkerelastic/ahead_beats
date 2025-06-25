@@ -1,9 +1,23 @@
 package storage
 
 import (
-    "github.com/elastic/elastic-agent-libs/mapstr"
+	"errors"
+	"fmt"
+
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/beats/v7/metricbeat/module/netapp"
+	"github.com/elastic/elastic-agent-libs/logp"
+)
+
+type Endpoint struct {
+	Name     string
+	Endpoint string
+	Fn       func() ([]mb.Event, error)
+}
+
+var (
+	endpoints map[string]Endpoint
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -12,6 +26,30 @@ import (
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
 	mb.Registry.MustAddMetricSet("netapp", "storage", New)
+
+	endpoints = map[string]Endpoint{
+		"SnapmirrorRelationships": {Name: "SnapmirrorRelationships", Endpoint: "/api/snapmirror/relationships", Fn: getSnapmirrorRelationships},
+		"Aggregates":              {Name: "Aggregates", Endpoint: "/api/storage/aggregates", Fn: getAggregates},
+		"Disks":                   {Name: "Disks", Endpoint: "/api/storage/disks", Fn: getDisks},
+		"LUNs":                    {Name: "LUNs", Endpoint: "/api/storage/luns", Fn: getLUNs},
+		"QosPolicies":             {Name: "QosPolicies", Endpoint: "/api/storage/qos/policies", Fn: getQosPolicies},
+		"Qtrees":                  {Name: "Qtrees", Endpoint: "/api/storage/qtrees", Fn: getQtrees},
+		"QuotaReports":            {Name: "QuotaReports", Endpoint: "/api/storage/quota/reports", Fn: getQuotaReports},
+		"QuotaRules":              {Name: "QuotaRules", Endpoint: "/api/storage/quota/rules", Fn: getQuotaRules},
+		"Shelves":                 {Name: "Shelves", Endpoint: "/api/storage/shelves", Fn: getShelves},
+		"Volumes":                 {Name: "Volumes", Endpoint: "/api/storage/volumes", Fn: getVolumes},
+		"SvmPeers":                {Name: "SvmPeers", Endpoint: "/api/svm/peers", Fn: getSvmPeers},
+		"Svms":                    {Name: "Svms", Endpoint: "/api/svm/svms", Fn: getSvms},
+	}
+
+}
+
+func getEndpoint(name string) (Endpoint, error) {
+	endpoint, ok := endpoints[name]
+	if !ok {
+		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
+	}
+	return endpoint, nil
 }
 
 // MetricSet holds any configuration or state information. It must implement
@@ -20,7 +58,9 @@ func init() {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	counter int
+	config        *netapp.Config
+	logger        *logp.Logger
+	horizonClient *netapp.NetAppRestClient
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -28,14 +68,26 @@ type MetricSet struct {
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Beta("The netapp storage metricset is beta.")
 
-	config := struct{}{}
-	if err := base.Module().UnpackConfig(&config); err != nil {
+	logger := logp.NewLogger(base.FullyQualifiedName())
+
+	config, err := netapp.NewConfig(base, logger)
+	if err != nil {
+		logger.Errorf("failed to get load config: %v", err)
+		return nil, err
+	}
+
+	// Get the session cookie
+	horizonClient, err := netapp.GetClient(config, base)
+	if err != nil {
+		logger.Errorf("failed to get a session client: %v", err)
 		return nil, err
 	}
 
 	return &MetricSet{
 		BaseMetricSet: base,
-		counter:       1,
+		config:        config,
+		logger:        logger,
+		horizonClient: horizonClient,
 	}, nil
 }
 
@@ -43,12 +95,28 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // format. It publishes the event which is then forwarded to the output. In case
 // of an error set the Error field of mb.Event or simply call report.Error().
 func (m *MetricSet) Fetch(report mb.ReporterV2) error {
-	report.Event(mb.Event{
-		MetricSetFields: mapstr.M{
-			"counter": m.counter,
-		},
-	})
-	m.counter++
+	// accumulate errs and report them all at the end so that we don't
+	// stop processing events if one of the fetches fails
+	var errs []error
+
+	for _, endpoint := range endpoints {
+		m.logger.Infof("Calling endpoint %s ....", endpoint.Name)
+		events, err := endpoint.Fn(m)
+		m.logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
+
+		if err != nil {
+			m.logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
+			errs = append(errs, err)
+		} else {
+			for _, event := range events {
+				report.Event(event)
+			}
+		}
+	}
+
+	if len(errs) > 0 {
+		return fmt.Errorf("error while fetching system metrics: %w", errors.Join(errs...))
+	}
 
 	return nil
 }

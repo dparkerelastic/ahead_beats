@@ -601,7 +601,7 @@ type SnapMirrorRelationship struct {
 	Links                    Links                    `json:"_links"`
 	BackoffLevel             string                   `json:"backoff_level"`
 	ConsistencyGroupFailover ConsistencyGroupFailover `json:"consistency_group_failover"`
-	Destination              Endpoint                 `json:"destination"`
+	Destination              SnapmirrorEndpoint       `json:"destination"`
 	ExportedSnapshot         string                   `json:"exported_snapshot"`
 	GroupType                string                   `json:"group_type"`
 	Healthy                  bool                     `json:"healthy"`
@@ -614,7 +614,7 @@ type SnapMirrorRelationship struct {
 	Policy                   Policy                   `json:"policy"`
 	PreferredSite            string                   `json:"preferred_site"`
 	Restore                  bool                     `json:"restore"`
-	Source                   Endpoint                 `json:"source"`
+	Source                   SnapmirrorEndpoint       `json:"source"`
 	State                    string                   `json:"state"`
 	SvmdrVolumes             []NamedVolume            `json:"svmdr_volumes"`
 	Throttle                 int                      `json:"throttle"`
@@ -642,14 +642,6 @@ type SnapMirrorError struct {
 type Status struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
-}
-
-type Endpoint struct {
-	Cluster                 NamedObject   `json:"cluster"`
-	ConsistencyGroupVolumes []NamedVolume `json:"consistency_group_volumes"`
-	LUNs                    NamedObject   `json:"luns"`
-	Path                    string        `json:"path"`
-	SVM                     NamedObject   `json:"svm"`
 }
 
 type NamedObject struct {
