@@ -2,8 +2,14 @@
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/main/metricbeat-module-netapp.html
 
 - module: netapp
-  metricsets: ["storage"]
+  metricsets: 
+    - storage
+    - protocols
+    - cluster
+    - interfaces
   enabled: false
   period: 10s
-  hosts: ["localhost"]
+  host: localhost
+  username: ${NETAPP_USERNAME}
+  password: ${NETAPP_PASSWORD}
 
