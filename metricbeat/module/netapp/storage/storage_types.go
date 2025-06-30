@@ -1,10 +1,33 @@
 // Code generated from storage_endpoints.json. DO NOT EDIT.
 package storage
 
+import "time"
+
+// General API response objects
 type Records[T any] struct {
-	NumRecords int `json:"num_records"`
-	Records    []T `json:"records"`
+	NumRecords int           `json:"num_records"`
+	Records    []T           `json:"records"`
+	Links      Links         `json:"_links"`
+	Error      StorageStatus `json:"error"`
 }
+
+type StorageStatus struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+type Status struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+// General types
+type NamedObject struct {
+	Name string `json:"name"`
+	UUID string `json:"uuid"`
+}
+
+// Specific storage objects
 
 type Disk struct {
 	Name                 string      `json:"name"`
@@ -21,8 +44,8 @@ type Disk struct {
 	ContainerType        string      `json:"container_type"`
 	Pool                 string      `json:"pool"`
 	State                string      `json:"state"`
-	Node                 DiskNode    `json:"node"`
-	HomeNode             DiskNode    `json:"home_node"`
+	Node                 NamedObject `json:"node"`
+	HomeNode             NamedObject `json:"home_node"`
 	Aggregates           []Aggregate `json:"aggregates"`
 	Shelf                Shelf       `json:"shelf"`
 	Local                bool        `json:"local"`
@@ -37,19 +60,14 @@ type Disk struct {
 	Stats                DiskStats   `json:"stats"`
 }
 
-type DiskNode struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
-}
-
 type DiskPath struct {
-	DiskPathName string   `json:"disk_path_name"`
-	Initiator    string   `json:"initiator"`
-	PortName     string   `json:"port_name"`
-	PortType     string   `json:"port_type"`
-	WWNN         string   `json:"wwnn"`
-	WWPN         string   `json:"wwpn"`
-	Node         DiskNode `json:"node"`
+	DiskPathName string      `json:"disk_path_name"`
+	Initiator    string      `json:"initiator"`
+	PortName     string      `json:"port_name"`
+	PortType     string      `json:"port_type"`
+	WWNN         string      `json:"wwnn"`
+	WWPN         string      `json:"wwpn"`
+	Node         NamedObject `json:"node"`
 }
 
 type DiskStats struct {
@@ -68,9 +86,9 @@ type SVM struct {
 	Aggregates                          []Aggregate    `json:"aggregates"`
 	State                               string         `json:"state"`
 	Comment                             string         `json:"comment"`
-	IPSpace                             IPSpace        `json:"ipspace"`
+	IPSpace                             NamedObject    `json:"ipspace"`
 	IPInterfaces                        []IPInterface  `json:"ip_interfaces"`
-	SnapshotPolicy                      SnapshotPolicy `json:"snapshot_policy"`
+	SnapshotPolicy                      NamedObject    `json:"snapshot_policy"`
 	NSSwitch                            NSSwitch       `json:"nsswitch"`
 	NIS                                 NIS            `json:"nis"`
 	LDAP                                LDAP           `json:"ldap"`
@@ -98,11 +116,6 @@ type SVM struct {
 	AntiRansomwareAutoSwitchMinExts     int            `json:"anti_ransomware_auto_switch_minimum_file_extension"`
 }
 
-type IPSpace struct {
-	Name string `json:"name"`
-	UUID string `json:"uuid"`
-}
-
 type IPInterface struct {
 	UUID     string   `json:"uuid"`
 	Name     string   `json:"name"`
@@ -112,11 +125,6 @@ type IPInterface struct {
 
 type IP struct {
 	Address string `json:"address"`
-}
-
-type SnapshotPolicy struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
 }
 
 type NSSwitch struct {
@@ -167,8 +175,8 @@ type Volume struct {
 	Clone                         CloneInfo        `json:"clone"`
 	NAS                           NASInfo          `json:"nas"`
 	SnapshotLockingEnabled        bool             `json:"snapshot_locking_enabled"`
-	SnapshotPolicy                SnapshotPolicy   `json:"snapshot_policy"`
-	SVM                           SVMRef           `json:"svm"`
+	NamedObject                   NamedObject      `json:"snapshot_policy"`
+	SVM                           NamedObject      `json:"svm"`
 	Space                         VolumeSpace      `json:"space"`
 	Snapmirror                    SnapmirrorInfo   `json:"snapmirror"`
 	Analytics                     AnalyticsState   `json:"analytics"`
@@ -192,11 +200,6 @@ type NASInfo struct {
 
 type ExportPolicy struct {
 	Name string `json:"name"`
-}
-
-type SVMRef struct {
-	Name string `json:"name"`
-	UUID string `json:"uuid"`
 }
 
 type VolumeSpace struct {
@@ -225,30 +228,25 @@ type ActivityTracking struct {
 }
 
 type Snapshot struct {
-	Volume           VolumeRef `json:"volume"`
-	UUID             string    `json:"uuid"`
-	SVM              SVMRef    `json:"svm"`
-	Name             string    `json:"name"`
-	CreateTime       string    `json:"create_time"`
-	SnapmirrorLabel  string    `json:"snapmirror_label"`
-	Size             int64     `json:"size"`
-	VersionUUID      string    `json:"version_uuid"`
-	ProvenanceVolume VolumeRef `json:"provenance_volume"`
-	LogicalSize      int64     `json:"logical_size"`
-	CompressSavings  int64     `json:"compress_savings"`
-	DedupSavings     int64     `json:"dedup_savings"`
-	VBN0Savings      int64     `json:"vbn0_savings"`
-}
-
-type VolumeRef struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
+	Volume           NamedObject `json:"volume"`
+	UUID             string      `json:"uuid"`
+	SVM              NamedObject `json:"svm"`
+	Name             string      `json:"name"`
+	CreateTime       string      `json:"create_time"`
+	SnapmirrorLabel  string      `json:"snapmirror_label"`
+	Size             int64       `json:"size"`
+	VersionUUID      string      `json:"version_uuid"`
+	ProvenanceVolume NamedObject `json:"provenance_volume"`
+	LogicalSize      int64       `json:"logical_size"`
+	CompressSavings  int64       `json:"compress_savings"`
+	DedupSavings     int64       `json:"dedup_savings"`
+	VBN0Savings      int64       `json:"vbn0_savings"`
 }
 
 type Qtree struct {
-	Volume          VolumeRef      `json:"volume"`
+	Volume          NamedObject    `json:"volume"`
 	ID              int            `json:"id"`
-	SVM             SVMRef         `json:"svm"`
+	SVM             NamedObject    `json:"svm"`
 	Name            string         `json:"name"`
 	SecurityStyle   string         `json:"security_style"`
 	UnixPermissions int            `json:"unix_permissions"`
@@ -273,16 +271,16 @@ type UnixID struct {
 }
 
 type QtreeMetrics struct {
-	Links      Links      `json:"_links"`
-	Duration   string     `json:"duration"`
-	IOPS       IOLatency  `json:"iops"`
-	Latency    IOLatency  `json:"latency"`
-	Throughput IOLatency  `json:"throughput"`
-	Qtree      QtreeBrief `json:"qtree"`
-	Status     string     `json:"status"`
-	SVM        SVMRef     `json:"svm"`
-	Timestamp  string     `json:"timestamp"`
-	Volume     VolumeRef  `json:"volume"`
+	Links      Links       `json:"_links"`
+	Duration   string      `json:"duration"`
+	IOPS       IOLatency   `json:"iops"`
+	Latency    IOLatency   `json:"latency"`
+	Throughput IOLatency   `json:"throughput"`
+	Qtree      QtreeBrief  `json:"qtree"`
+	Status     string      `json:"status"`
+	SVM        NamedObject `json:"svm"`
+	Timestamp  string      `json:"timestamp"`
+	Volume     NamedObject `json:"volume"`
 }
 
 type Links struct {
@@ -302,27 +300,20 @@ type IOLatency struct {
 }
 
 type QtreeBrief struct {
-	Links Links  `json:"_links"`
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 type QuotaReport struct {
-	Links  Links         `json:"_links"`
 	Files  QuotaUsage    `json:"files"`
-	Group  QuotaEntity   `json:"group"`
+	Group  NamedObject   `json:"group"`
 	Index  int           `json:"index"`
 	Qtree  QtreeBrief    `json:"qtree"`
 	Space  QuotaUsage    `json:"space"`
-	SVM    SVMRef        `json:"svm"`
+	SVM    NamedObject   `json:"svm"`
 	Type   string        `json:"type"`
-	Users  []QuotaEntity `json:"users"`
-	Volume VolumeRef     `json:"volume"`
-}
-
-type QuotaEntity struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	Users  []NamedObject `json:"users"`
+	Volume NamedObject   `json:"volume"`
 }
 
 type QuotaUsage struct {
@@ -341,12 +332,12 @@ type QuotaRule struct {
 	Files       QuotaLimit     `json:"files"`
 	Qtree       QtreeBrief     `json:"qtree"`
 	Space       QuotaLimit     `json:"space"`
-	SVM         SVMNameOnly    `json:"svm"`
+	SVM         SVMNameOnly    `json:"svm"` // FIXME: needed?
 	Type        string         `json:"type"`
 	UserMapping bool           `json:"user_mapping"`
-	Users       []UserOnly     `json:"users"`
+	Users       []UserOnly     `json:"users"` // FIXME: needed?
 	UUID        string         `json:"uuid"`
-	Volume      VolumeNameOnly `json:"volume"`
+	Volume      VolumeNameOnly `json:"volume"` // FIXME: needed?
 }
 
 type QuotaLimit struct {
@@ -366,51 +357,11 @@ type VolumeNameOnly struct {
 	Name string `json:"name"`
 }
 
-type SnapmirrorRelationship struct {
-	Links                    Links              `json:"_links"`
-	BackoffLevel             string             `json:"backoff_level"`
-	ConsistencyGroupFailover FailoverInfo       `json:"consistency_group_failover"`
-	Destination              SnapmirrorEndpoint `json:"destination"`
-	ExportedSnapshot         string             `json:"exported_snapshot"`
-	GroupType                string             `json:"group_type"`
-	Healthy                  bool               `json:"healthy"`
-	IdentityPreservation     string             `json:"identity_preservation"`
-	IOServingCopy            string             `json:"io_serving_copy"`
-	LagTime                  string             `json:"lag_time"`
-	LastTransferCompression  int                `json:"last_transfer_network_compression_ratio"`
-	LastTransferType         string             `json:"last_transfer_type"`
-	MasterBiasSite           string             `json:"master_bias_activated_site"`
-	Policy                   SnapmirrorPolicy   `json:"policy"`
-	PreferredSite            string             `json:"preferred_site"`
-	Restore                  bool               `json:"restore"`
-	Source                   SnapmirrorEndpoint `json:"source"`
-	State                    string             `json:"state"`
-	SVMDRVolumes             []VolumeNameOnly   `json:"svmdr_volumes"`
-	Throttle                 int                `json:"throttle"`
-	TotalTransferBytes       int64              `json:"total_transfer_bytes"`
-	TotalTransferDuration    string             `json:"total_transfer_duration"`
-	Transfer                 SnapmirrorTransfer `json:"transfer"`
-	TransferSchedule         TransferSchedule   `json:"transfer_schedule"`
-	UnhealthyReason          []UnhealthyReason  `json:"unhealthy_reason"`
-	UUID                     string             `json:"uuid"`
-}
-
 type FailoverInfo struct {
-	Error  SnapmirrorError  `json:"error"`
+	Error  StorageStatus    `json:"error"`
 	State  string           `json:"state"`
 	Status SnapmirrorStatus `json:"status"`
 	Type   string           `json:"type"`
-}
-
-type SnapmirrorError struct {
-	Arguments []ErrorArgument `json:"arguments"`
-	Code      string          `json:"code"`
-	Message   string          `json:"message"`
-}
-
-type ErrorArgument struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
 }
 
 type SnapmirrorStatus struct {
@@ -418,35 +369,21 @@ type SnapmirrorStatus struct {
 	Message string `json:"message"`
 }
 
-type SnapmirrorEndpoint struct {
-	Cluster                 ClusterRef       `json:"cluster"`
+type SnapMirrorEndpoint struct {
+	Cluster                 NamedObject      `json:"cluster"`
 	ConsistencyGroupVolumes []VolumeNameOnly `json:"consistency_group_volumes"`
-	LUNs                    LUNInfo          `json:"luns"`
+	LUNs                    NamedObject      `json:"luns"`
 	Path                    string           `json:"path"`
-	SVM                     SVMRef           `json:"svm"`
-}
-
-type ClusterRef struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
-type LUNInfo struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+	SVM                     NamedObject      `json:"svm"`
 }
 
 type SnapmirrorPolicy struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	Type  string `json:"type"`
-	UUID  string `json:"uuid"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+	UUID string `json:"uuid"`
 }
 
 type SnapmirrorTransfer struct {
-	Links            Links  `json:"_links"`
 	BytesTransferred int64  `json:"bytes_transferred"`
 	EndTime          string `json:"end_time"`
 	LastUpdatedTime  string `json:"last_updated_time"`
@@ -454,18 +391,6 @@ type SnapmirrorTransfer struct {
 	TotalDuration    string `json:"total_duration"`
 	Type             string `json:"type"`
 	UUID             string `json:"uuid"`
-}
-
-type TransferSchedule struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
-type UnhealthyReason struct {
-	Arguments []interface{} `json:"arguments"`
-	Code      string        `json:"code"`
-	Message   string        `json:"message"`
 }
 
 type Shelf struct {
@@ -498,8 +423,8 @@ type Manufacturer struct {
 }
 
 type ShelfPath struct {
-	Name string   `json:"name"`
-	Node DiskNode `json:"node"`
+	Name string      `json:"name"`
+	Node NamedObject `json:"node"`
 }
 
 type Bay struct {
@@ -591,30 +516,29 @@ type CurrentSensor struct {
 }
 
 type ACP struct {
-	Enabled         bool     `json:"enabled"`
-	Channel         string   `json:"channel"`
-	ConnectionState string   `json:"connection_state"`
-	Node            DiskNode `json:"node"`
+	Enabled         bool        `json:"enabled"`
+	Channel         string      `json:"channel"`
+	ConnectionState string      `json:"connection_state"`
+	Node            NamedObject `json:"node"`
 }
 
 type SnapMirrorRelationship struct {
-	Links                    Links                    `json:"_links"`
 	BackoffLevel             string                   `json:"backoff_level"`
 	ConsistencyGroupFailover ConsistencyGroupFailover `json:"consistency_group_failover"`
-	Destination              SnapmirrorEndpoint       `json:"destination"`
+	Destination              SnapMirrorEndpoint       `json:"destination"`
 	ExportedSnapshot         string                   `json:"exported_snapshot"`
 	GroupType                string                   `json:"group_type"`
 	Healthy                  bool                     `json:"healthy"`
 	IdentityPreservation     string                   `json:"identity_preservation"`
 	IOServingCopy            string                   `json:"io_serving_copy"`
-	LagTime                  string                   `json:"lag_time"`
+	LagTime                  string                   `json:"lag_time"` //ISO 8601 duration format
 	LastTransferNetworkRatio int                      `json:"last_transfer_network_compression_ratio"`
 	LastTransferType         string                   `json:"last_transfer_type"`
 	MasterBiasActivatedSite  string                   `json:"master_bias_activated_site"`
 	Policy                   Policy                   `json:"policy"`
 	PreferredSite            string                   `json:"preferred_site"`
 	Restore                  bool                     `json:"restore"`
-	Source                   SnapmirrorEndpoint       `json:"source"`
+	Source                   SnapMirrorEndpoint       `json:"source"`
 	State                    string                   `json:"state"`
 	SvmdrVolumes             []NamedVolume            `json:"svmdr_volumes"`
 	Throttle                 int                      `json:"throttle"`
@@ -622,32 +546,15 @@ type SnapMirrorRelationship struct {
 	TotalTransferDuration    string                   `json:"total_transfer_duration"`
 	Transfer                 Transfer                 `json:"transfer"`
 	TransferSchedule         NamedObject              `json:"transfer_schedule"`
-	UnhealthyReason          []SnapMirrorError        `json:"unhealthy_reason"`
+	UnhealthyReason          []StorageStatus          `json:"unhealthy_reason"`
 	UUID                     string                   `json:"uuid"`
 }
 
 type ConsistencyGroupFailover struct {
-	Error  SnapMirrorError `json:"error"`
-	State  string          `json:"state"`
-	Status Status          `json:"status"`
-	Type   string          `json:"type"`
-}
-
-type SnapMirrorError struct {
-	Arguments []ErrorArgument `json:"arguments"`
-	Code      string          `json:"code"`
-	Message   string          `json:"message"`
-}
-
-type Status struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-type NamedObject struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+	Error  StorageStatus `json:"error"`
+	State  string        `json:"state"`
+	Status StorageStatus `json:"status"`
+	Type   string        `json:"type"`
 }
 
 type NamedVolume struct {
@@ -675,8 +582,8 @@ type Transfer struct {
 type Aggregate struct {
 	UUID               string                `json:"uuid"`
 	Name               string                `json:"name"`
-	Node               DiskNode              `json:"node"`
-	HomeNode           DiskNode              `json:"home_node"`
+	Node               NamedObject           `json:"node"`
+	HomeNode           NamedObject           `json:"home_node"`
 	Snapshot           AggregateSnapshot     `json:"snapshot"`
 	Space              AggregateSpace        `json:"space"`
 	State              string                `json:"state"`
@@ -808,8 +715,8 @@ type InodeAttributes struct {
 type AggregateMetrics struct {
 	UUID               string                `json:"uuid"`
 	Name               string                `json:"name"`
-	Node               DiskNode              `json:"node"`
-	HomeNode           DiskNode              `json:"home_node"`
+	Node               NamedObject           `json:"node"`
+	HomeNode           NamedObject           `json:"home_node"`
 	Snapshot           AggregateSnapshot     `json:"snapshot"`
 	Space              AggregateSpace        `json:"space"`
 	State              string                `json:"state"`
@@ -845,19 +752,6 @@ type LunMetricSet struct {
 	Write int `json:"write"`
 }
 
-type QosPolicyRecords struct {
-	Links      Links          `json:"_links"`
-	Error      QosPolicyError `json:"error"`
-	NumRecords int            `json:"num_records"`
-	Records    []QosPolicy    `json:"records"`
-}
-
-type QosPolicyError struct {
-	Arguments []ErrorArgument `json:"arguments"`
-	Code      string          `json:"code"`
-	Message   string          `json:"message"`
-}
-
 type QosPolicy struct {
 	Links       SingleLink   `json:"_links"`
 	Adaptive    *QosAdaptive `json:"adaptive,omitempty"`
@@ -867,7 +761,7 @@ type QosPolicy struct {
 	Pgid        int          `json:"pgid"`
 	PolicyClass string       `json:"policy_class"`
 	Scope       string       `json:"scope"`
-	SVM         QosSVMRef    `json:"svm"`
+	SVM         NamedObject  `json:"svm"`
 	UUID        string       `json:"uuid"`
 }
 
@@ -888,8 +782,61 @@ type QosFixed struct {
 	MinThroughputMbps int  `json:"min_throughput_mbps"`
 }
 
-type QosSVMRef struct {
-	Links SingleLink `json:"_links"`
-	Name  string     `json:"name"`
-	UUID  string     `json:"uuid"`
+type LUN struct {
+	UUID         string      `json:"uuid"`
+	SVM          SVM         `json:"svm"`
+	Name         string      `json:"name"`
+	Location     LunLocation `json:"location"`
+	Class        string      `json:"class"`
+	CreateTime   time.Time   `json:"create_time"`
+	Enabled      bool        `json:"enabled"`
+	OsType       string      `json:"os_type"`
+	SerialNumber string      `json:"serial_number"`
+	Space        LunSpace    `json:"space"`
+	Status       LunStatus   `json:"status"`
+	VVol         LunVVol     `json:"vvol"`
+}
+
+type LunLocation struct {
+	LogicalUnit string      `json:"logical_unit"`
+	Node        NamedObject `json:"node"`
+	Volume      Volume      `json:"volume"`
+}
+
+type LunSpace struct {
+	SCSIThinProvisioningSupportEnabled bool         `json:"scsi_thin_provisioning_support_enabled"`
+	Size                               int64        `json:"size"`
+	Used                               int64        `json:"used"`
+	Guarantee                          LunGuarantee `json:"guarantee"`
+}
+
+type LunGuarantee struct {
+	Requested bool `json:"requested"`
+	Reserved  bool `json:"reserved"`
+}
+
+type LunStatus struct {
+	ContainerState string `json:"container_state"`
+	Mapped         bool   `json:"mapped"`
+	ReadOnly       bool   `json:"read_only"`
+	State          string `json:"state"`
+}
+
+type LunVVol struct {
+	IsBound bool `json:"is_bound"`
+}
+
+type PeerInfo struct {
+	Cluster NamedObject `json:"cluster"`
+	SVM     NamedObject `json:"svm"`
+}
+
+type SVMPeer struct {
+	Links        Links       `json:"_links"`
+	Applications []string    `json:"applications"`
+	Name         string      `json:"name"`
+	Peer         PeerInfo    `json:"peer"`
+	State        string      `json:"state"`
+	SVM          NamedObject `json:"svm"`
+	UUID         string      `json:"uuid"`
 }

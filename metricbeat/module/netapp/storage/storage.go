@@ -58,9 +58,9 @@ func getEndpoint(name string) (Endpoint, error) {
 // interface methods except for Fetch.
 type MetricSet struct {
 	mb.BaseMetricSet
-	config        *netapp.Config
-	logger        *logp.Logger
-	horizonClient *netapp.NetAppRestClient
+	config       *netapp.Config
+	logger       *logp.Logger
+	netappClient *netapp.NetAppRestClient
 }
 
 // New creates a new instance of the MetricSet. New is responsible for unpacking
@@ -77,7 +77,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	}
 
 	// Get the session cookie
-	horizonClient, err := netapp.GetClient(config, base)
+	netappClient, err := netapp.GetClient(config, base)
 	if err != nil {
 		logger.Errorf("failed to get a session client: %v", err)
 		return nil, err
@@ -87,7 +87,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		BaseMetricSet: base,
 		config:        config,
 		logger:        logger,
-		horizonClient: horizonClient,
+		netappClient:  netappClient,
 	}, nil
 }
 
