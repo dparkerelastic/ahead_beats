@@ -1,4 +1,3 @@
-// Code generated from storage_endpoints.json. DO NOT EDIT.
 package storage
 
 import "time"
@@ -7,16 +6,10 @@ import "time"
 type Records[T any] struct {
 	NumRecords int           `json:"num_records"`
 	Records    []T           `json:"records"`
-	Links      Links         `json:"_links"`
 	Error      StorageStatus `json:"error"`
 }
 
 type StorageStatus struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-type Status struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
@@ -30,34 +23,34 @@ type NamedObject struct {
 // Specific storage objects
 
 type Disk struct {
-	Name                 string      `json:"name"`
-	UID                  string      `json:"uid"`
-	SerialNumber         string      `json:"serial_number"`
-	Model                string      `json:"model"`
-	Vendor               string      `json:"vendor"`
-	FirmwareVersion      string      `json:"firmware_version"`
-	UsableSize           int64       `json:"usable_size"`
-	RatedLifeUsedPercent int         `json:"rated_life_used_percent"`
-	Type                 string      `json:"type"`
-	EffectiveType        string      `json:"effective_type"`
-	Class                string      `json:"class"`
-	ContainerType        string      `json:"container_type"`
-	Pool                 string      `json:"pool"`
-	State                string      `json:"state"`
-	Node                 NamedObject `json:"node"`
-	HomeNode             NamedObject `json:"home_node"`
-	Aggregates           []Aggregate `json:"aggregates"`
-	Shelf                Shelf       `json:"shelf"`
-	Local                bool        `json:"local"`
-	Paths                []DiskPath  `json:"paths"`
-	Bay                  int         `json:"bay"`
-	SelfEncrypting       bool        `json:"self_encrypting"`
-	FipsCertified        bool        `json:"fips_certified"`
-	BytesPerSector       int64       `json:"bytes_per_sector"`
-	SectorCount          int64       `json:"sector_count"`
-	RightSizeSectorCount int64       `json:"right_size_sector_count"`
-	PhysicalSize         int64       `json:"physical_size"`
-	Stats                DiskStats   `json:"stats"`
+	Name                 string        `json:"name"`
+	UID                  string        `json:"uid"`
+	SerialNumber         string        `json:"serial_number"`
+	Model                string        `json:"model"`
+	Vendor               string        `json:"vendor"`
+	FirmwareVersion      string        `json:"firmware_version"`
+	UsableSize           int64         `json:"usable_size"`
+	RatedLifeUsedPercent int           `json:"rated_life_used_percent"`
+	Type                 string        `json:"type"`
+	EffectiveType        string        `json:"effective_type"`
+	Class                string        `json:"class"`
+	ContainerType        string        `json:"container_type"`
+	Pool                 string        `json:"pool"`
+	State                string        `json:"state"`
+	Node                 NamedObject   `json:"node"`
+	HomeNode             NamedObject   `json:"home_node"`
+	Aggregates           []NamedObject `json:"aggregates"`
+	Shelf                Shelf         `json:"shelf"`
+	Local                bool          `json:"local"`
+	Paths                []DiskPath    `json:"paths"`
+	Bay                  int           `json:"bay"`
+	SelfEncrypting       bool          `json:"self_encrypting"`
+	FipsCertified        bool          `json:"fips_certified"`
+	BytesPerSector       int64         `json:"bytes_per_sector"`
+	SectorCount          int64         `json:"sector_count"`
+	RightSizeSectorCount int64         `json:"right_size_sector_count"`
+	PhysicalSize         int64         `json:"physical_size"`
+	Stats                DiskStats     `json:"stats"`
 }
 
 type DiskPath struct {
@@ -159,7 +152,7 @@ type Certificate struct {
 type Volume struct {
 	UUID                          string           `json:"uuid"`
 	Comment                       string           `json:"comment"`
-	CreateTime                    string           `json:"create_time"`
+	CreateTime                    time.Time        `json:"create_time"`
 	Language                      string           `json:"language"`
 	Name                          string           `json:"name"`
 	Size                          int64            `json:"size"`
@@ -168,7 +161,7 @@ type Volume struct {
 	Tiering                       Tiering          `json:"tiering"`
 	CloudRetrievalPolicy          string           `json:"cloud_retrieval_policy"`
 	Type                          string           `json:"type"`
-	Aggregates                    []Aggregate      `json:"aggregates"`
+	Aggregates                    []NamedObject    `json:"aggregates"`
 	SnapshotCount                 int              `json:"snapshot_count"`
 	MSID                          int64            `json:"msid"`
 	ScheduledSnapshotNamingScheme string           `json:"scheduled_snapshot_naming_scheme"`
@@ -178,11 +171,21 @@ type Volume struct {
 	NamedObject                   NamedObject      `json:"snapshot_policy"`
 	SVM                           NamedObject      `json:"svm"`
 	Space                         VolumeSpace      `json:"space"`
+	Metrics                       VolumeMetric     `json:"metric"`
 	Snapmirror                    SnapmirrorInfo   `json:"snapmirror"`
-	Analytics                     AnalyticsState   `json:"analytics"`
 	ActivityTracking              ActivityTracking `json:"activity_tracking"`
 	GranularData                  bool             `json:"granular_data"`
 	GranularDataMode              string           `json:"granular_data_mode"`
+	// Analytics                     AnalyticsState   `json:"analytics"`
+}
+
+type VolumeMetric struct {
+	Timestamp  string    `json:"timestamp"`
+	Duration   string    `json:"duration"`
+	Status     string    `json:"status"`
+	Latency    IOLatency `json:"latency"`
+	IOPS       IOLatency `json:"iops"`
+	Throughput IOLatency `json:"throughput"`
 }
 
 type Tiering struct {
@@ -203,9 +206,50 @@ type ExportPolicy struct {
 }
 
 type VolumeSpace struct {
-	Size      int64 `json:"size"`
-	Available int64 `json:"available"`
-	Used      int64 `json:"used"`
+	Size                            int64        `json:"size"`
+	Available                       int64        `json:"available"`
+	Used                            int64        `json:"used"`
+	IsUsedStale                     bool         `json:"is_used_stale"`
+	BlockStorageInactiveUserData    int64        `json:"block_storage_inactive_user_data"`
+	LocalTierFootprint              int64        `json:"local_tier_footprint"`
+	Footprint                       int64        `json:"footprint"`
+	OverProvisioned                 int64        `json:"over_provisioned"`
+	Metadata                        int64        `json:"metadata"`
+	TotalFootprint                  int64        `json:"total_footprint"`
+	DelayedFreeFootprint            int64        `json:"delayed_free_footprint"`
+	FileOperationMetadata           int64        `json:"file_operation_metadata"`
+	VolumeGuaranteeFootprint        int64        `json:"volume_guarantee_footprint"`
+	EffectiveTotalFootprint         int64        `json:"effective_total_footprint"`
+	UserData                        int64        `json:"user_data"`
+	UsedByAFS                       int64        `json:"used_by_afs"`
+	AvailablePercent                int          `json:"available_percent"`
+	AFSTotal                        int64        `json:"afs_total"`
+	FullThresholdPercent            int          `json:"full_threshold_percent"`
+	NearlyFullThresholdPercent      int          `json:"nearly_full_threshold_percent"`
+	OverwriteReserve                int64        `json:"overwrite_reserve"`
+	OverwriteReserveUsed            int64        `json:"overwrite_reserve_used"`
+	SizeAvailableForSnapshots       int64        `json:"size_available_for_snapshots"`
+	PercentUsed                     int          `json:"percent_used"`
+	FractionalReserve               int64        `json:"fractional_reserve"`
+	BlockStorageInactiveUserDataPct int          `json:"block_storage_inactive_user_data_percent"`
+	PhysicalUsedPercent             int          `json:"physical_used_percent"`
+	PhysicalUsed                    int64        `json:"physical_used"`
+	ExpectedAvailable               int64        `json:"expected_available"`
+	FilesystemSize                  int64        `json:"filesystem_size"`
+	FilesystemSizeFixed             bool         `json:"filesystem_size_fixed"`
+	LargeSizeEnabled                bool         `json:"large_size_enabled"`
+	TotalMetadata                   int64        `json:"total_metadata"`
+	TotalMetadataFootprint          int64        `json:"total_metadata_footprint"`
+	LogicalSpace                    LogicalSpace `json:"logical_space"`
+}
+
+type LogicalSpace struct {
+	Reporting       bool  `json:"reporting"`
+	Enforcement     bool  `json:"enforcement"`
+	UsedByAFS       int64 `json:"used_by_afs"`
+	UsedPercent     int   `json:"used_percent"`
+	Used            int64 `json:"used"`
+	UsedBySnapshots int64 `json:"used_by_snapshots"`
 }
 
 type SnapmirrorInfo struct {
@@ -232,7 +276,7 @@ type Snapshot struct {
 	UUID             string      `json:"uuid"`
 	SVM              NamedObject `json:"svm"`
 	Name             string      `json:"name"`
-	CreateTime       string      `json:"create_time"`
+	CreateTime       time.Time   `json:"create_time"`
 	SnapmirrorLabel  string      `json:"snapmirror_label"`
 	Size             int64       `json:"size"`
 	VersionUUID      string      `json:"version_uuid"`
@@ -244,17 +288,19 @@ type Snapshot struct {
 }
 
 type Qtree struct {
-	Volume          NamedObject    `json:"volume"`
-	ID              int            `json:"id"`
-	SVM             NamedObject    `json:"svm"`
-	Name            string         `json:"name"`
-	SecurityStyle   string         `json:"security_style"`
-	UnixPermissions int            `json:"unix_permissions"`
-	ExportPolicy    ExportPolicyID `json:"export_policy"`
-	Path            string         `json:"path"`
-	NAS             NASPath        `json:"nas"`
-	User            UnixID         `json:"user"`
-	Group           UnixID         `json:"group"`
+	Volume          NamedObject     `json:"volume"`
+	ID              int             `json:"id"`
+	SVM             NamedObject     `json:"svm"`
+	Name            string          `json:"name"`
+	SecurityStyle   string          `json:"security_style"`
+	UnixPermissions int             `json:"unix_permissions"`
+	ExportPolicy    ExportPolicyID  `json:"export_policy"`
+	Path            string          `json:"path"`
+	NAS             NASPath         `json:"nas"`
+	User            UnixID          `json:"user"`
+	Group           UnixID          `json:"group"`
+	Metric          QtreeMetrics    `json:"metric"`
+	Statistics      QtreeStatistics `json:"statistics"`
 }
 
 type ExportPolicyID struct {
@@ -271,25 +317,23 @@ type UnixID struct {
 }
 
 type QtreeMetrics struct {
-	Links      Links       `json:"_links"`
-	Duration   string      `json:"duration"`
-	IOPS       IOLatency   `json:"iops"`
-	Latency    IOLatency   `json:"latency"`
-	Throughput IOLatency   `json:"throughput"`
-	Qtree      QtreeBrief  `json:"qtree"`
-	Status     string      `json:"status"`
-	SVM        NamedObject `json:"svm"`
-	Timestamp  string      `json:"timestamp"`
-	Volume     NamedObject `json:"volume"`
+	Duration        string      `json:"duration"`
+	IOPS            IOLatency   `json:"iops"`
+	Latency         IOLatency   `json:"latency"`
+	Throughput      IOLatency   `json:"throughput"`
+	Qtree           QtreeBrief  `json:"qtree"`
+	Status          string      `json:"status"`
+	SVM             NamedObject `json:"svm"`
+	MetricTimestamp string      `json:"timestamp"`
+	Volume          NamedObject `json:"volume"`
 }
 
-type Links struct {
-	Next *Href `json:"next,omitempty"`
-	Self Href  `json:"self"`
-}
-
-type Href struct {
-	Href string `json:"href"`
+type QtreeStatistics struct {
+	IOPSRaw             IOLatency `json:"iops_raw"`
+	LatencyRaw          IOLatency `json:"latency_raw"`
+	Status              string    `json:"status"`
+	ThroughputRaw       IOLatency `json:"throughput_raw"`
+	StatisticsTimestamp string    `json:"timestamp"`
 }
 
 type IOLatency struct {
@@ -562,14 +606,12 @@ type NamedVolume struct {
 }
 
 type Policy struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	Type  string `json:"type"`
-	UUID  string `json:"uuid"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+	UUID string `json:"uuid"`
 }
 
 type Transfer struct {
-	Links            Links  `json:"_links"`
 	BytesTransferred int64  `json:"bytes_transferred"`
 	EndTime          string `json:"end_time"`
 	LastUpdatedTime  string `json:"last_updated_time"`
@@ -588,7 +630,7 @@ type Aggregate struct {
 	Space              AggregateSpace        `json:"space"`
 	State              string                `json:"state"`
 	SnaplockType       string                `json:"snaplock_type"`
-	CreateTime         string                `json:"create_time"`
+	CreateTime         time.Time             `json:"create_time"`
 	DataEncryption     AggregateEncryption   `json:"data_encryption"`
 	BlockStorage       AggregateBlockStorage `json:"block_storage"`
 	CloudStorage       AggregateCloudStorage `json:"cloud_storage"`
@@ -696,11 +738,18 @@ type AggregatePlex struct {
 }
 
 type AggregateCloudStorage struct {
-	AttachEligible bool `json:"attach_eligible"`
+	AttachEligible bool                `json:"attach_eligible"`
+	Stores         []AggregateStoreRef `json:"stores"`
+}
+
+type AggregateStoreRef struct {
+	CloudStore NamedObject `json:"cloud_store"`
+	Used       int64       `json:"used"`
 }
 
 type InactiveDataReport struct {
-	Enabled bool `json:"enabled"`
+	Enabled   bool   `json:"enabled"`
+	StartTime string `json:"start_time"`
 }
 
 type InodeAttributes struct {
@@ -721,7 +770,7 @@ type AggregateMetrics struct {
 	Space              AggregateSpace        `json:"space"`
 	State              string                `json:"state"`
 	SnaplockType       string                `json:"snaplock_type"`
-	CreateTime         string                `json:"create_time"`
+	CreateTime         time.Time             `json:"create_time"`
 	DataEncryption     AggregateEncryption   `json:"data_encryption"`
 	BlockStorage       AggregateBlockStorage `json:"block_storage"`
 	CloudStorage       AggregateCloudStorage `json:"cloud_storage"`
@@ -731,7 +780,6 @@ type AggregateMetrics struct {
 }
 
 type LunMetrics struct {
-	Links      SingleLink   `json:"_links"`
 	Duration   string       `json:"duration"`
 	IOPS       LunMetricSet `json:"iops"`
 	Latency    LunMetricSet `json:"latency"`
@@ -739,10 +787,6 @@ type LunMetrics struct {
 	Status     string       `json:"status"`
 	Timestamp  string       `json:"timestamp"`
 	UUID       string       `json:"uuid"`
-}
-
-type SingleLink struct {
-	Self Href `json:"self"`
 }
 
 type LunMetricSet struct {
@@ -753,7 +797,6 @@ type LunMetricSet struct {
 }
 
 type QosPolicy struct {
-	Links       SingleLink   `json:"_links"`
 	Adaptive    *QosAdaptive `json:"adaptive,omitempty"`
 	Fixed       *QosFixed    `json:"fixed,omitempty"`
 	Name        string       `json:"name"`
@@ -784,7 +827,7 @@ type QosFixed struct {
 
 type LUN struct {
 	UUID         string      `json:"uuid"`
-	SVM          SVM         `json:"svm"`
+	SVM          NamedObject `json:"svm"`
 	Name         string      `json:"name"`
 	Location     LunLocation `json:"location"`
 	Class        string      `json:"class"`
@@ -800,7 +843,7 @@ type LUN struct {
 type LunLocation struct {
 	LogicalUnit string      `json:"logical_unit"`
 	Node        NamedObject `json:"node"`
-	Volume      Volume      `json:"volume"`
+	Volume      NamedObject `json:"volume"`
 }
 
 type LunSpace struct {
@@ -832,7 +875,6 @@ type PeerInfo struct {
 }
 
 type SVMPeer struct {
-	Links        Links       `json:"_links"`
 	Applications []string    `json:"applications"`
 	Name         string      `json:"name"`
 	Peer         PeerInfo    `json:"peer"`

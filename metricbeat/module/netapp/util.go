@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"net"
 	"strings"
+	"time"
 )
 
 func StringToBool(s string) (bool, error) {
@@ -105,4 +106,18 @@ func FromJSONString(s string, v interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func ConvertStringTime(value string) (*time.Time, error) {
+	if value == "" {
+		return nil, fmt.Errorf("start_time is empty")
+	}
+
+	const layout = "2006-01-02 15:04:05"
+	t, err := time.Parse(layout, value)
+	if err != nil {
+		return nil, fmt.Errorf("invalid start_time format: %w", err)
+	}
+
+	return &t, nil
 }

@@ -31,14 +31,15 @@ const (
 )
 
 type Config struct {
-	Host      string `config:"host" validate:"required"`
-	Username  string `config:"username" validate:"required"`
-	Domain    string `config:"domain" validate:"required"`
-	Password  string `config:"password" validate:"required"`
-	Port      uint   `config:"port" default:"443"`
-	Protocol  string `config:"protocol" default:"https"`
-	DebugMode string `config:"api_debug_mode"`
-	HostInfo  HostInfo
+	Host          string `config:"host" validate:"required"`
+	Username      string `config:"username" validate:"required"`
+	Domain        string `config:"domain" validate:"required"`
+	Password      string `config:"password" validate:"required"`
+	Port          uint   `config:"port" default:"443"`
+	Protocol      string `config:"protocol" default:"https"`
+	ReturnTimeout int    `config:"return_timeout" default:"30"`
+	DebugMode     string `config:"api_debug_mode"`
+	HostInfo      HostInfo
 }
 
 func NewConfig(base mb.BaseMetricSet, logger *logp.Logger) (*Config, error) {
