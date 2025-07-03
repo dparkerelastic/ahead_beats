@@ -1,5 +1,81 @@
 package storage
 
+import (
+	"fmt"
+
+	"github.com/elastic/beats/v7/metricbeat/mb"
+)
+
+type Endpoint struct {
+	Name        string
+	Endpoint    string
+	Fn          func(*MetricSet) ([]mb.Event, error)
+	QueryFields []string
+}
+
+var endpoints map[string]Endpoint
+
+func init() {
+	endpoints = map[string]Endpoint{
+		"SnapmirrorRelationships": {Name: "SnapmirrorRelationships",
+			Endpoint:    "/api/snapmirror/relationships",
+			Fn:          getSnapmirrorRelationships,
+			QueryFields: SnapMirrorFields},
+		"Aggregates": {Name: "Aggregates",
+			Endpoint:    "/api/storage/aggregates",
+			Fn:          getAggregates,
+			QueryFields: AggregateFields},
+		"Disks": {Name: "Disks",
+			Endpoint:    "/api/storage/disks",
+			Fn:          getDisks,
+			QueryFields: DiskFields},
+		"LUNs": {Name: "LUNs",
+			Endpoint:    "/api/storage/luns",
+			Fn:          getLUNs,
+			QueryFields: LunFields},
+		"QosPolicies": {Name: "QosPolicies",
+			Endpoint:    "/api/storage/qos/policies",
+			Fn:          getQosPolicies,
+			QueryFields: QosPolicyFields},
+		"Qtrees": {Name: "Qtrees",
+			Endpoint:    "/api/storage/qtrees",
+			Fn:          getQtrees,
+			QueryFields: QTreeFields},
+		"QuotaReports": {Name: "QuotaReports",
+			Endpoint:    "/api/storage/quota/reports",
+			Fn:          getQuotaReports,
+			QueryFields: QuotaReportFields},
+		"QuotaRules": {Name: "QuotaRules",
+			Endpoint:    "/api/storage/quota/rules",
+			Fn:          getQuotaRules,
+			QueryFields: QuotaRulesFields},
+		"Shelves": {Name: "Shelves",
+			Endpoint:    "/api/storage/shelves",
+			Fn:          getShelves,
+			QueryFields: ShelfFields},
+		"Volumes": {Name: "Volumes",
+			Endpoint:    "/api/storage/volumes",
+			Fn:          getVolumes,
+			QueryFields: VolumeFields},
+		"SvmPeers": {Name: "SvmPeers",
+			Endpoint:    "/api/svm/peers",
+			Fn:          getSvmPeers,
+			QueryFields: SvmPeerFields},
+		"Svms": {Name: "Svms",
+			Endpoint:    "/api/svm/svms",
+			Fn:          getSvms,
+			QueryFields: SvmFields},
+	}
+}
+
+func getEndpoint(name string) (Endpoint, error) {
+	endpoint, ok := endpoints[name]
+	if !ok {
+		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
+	}
+	return endpoint, nil
+}
+
 var QTreeFields = []string{
 	"volume",
 	"id",
@@ -209,6 +285,8 @@ var AggregateFields = []string{
 	"inactive_data_reporting",
 	"inode_attributes",
 	"volume_count",
+	"metric",
+	"statistics",
 }
 
 var LunFields = []string{
@@ -231,6 +309,18 @@ var SvmPeerFields = []string{
 	"name",
 	"peer",
 	"state",
+	"svm",
+	"uuid",
+}
+
+var QosPolicyFields = []string{
+	"adaptive",
+	"fixed",
+	"name",
+	"object_count",
+	"pgid",
+	"policy_class",
+	"scope",
 	"svm",
 	"uuid",
 }

@@ -10,46 +10,12 @@ import (
 	"github.com/elastic/elastic-agent-libs/logp"
 )
 
-type Endpoint struct {
-	Name     string
-	Endpoint string
-	Fn       func(*MetricSet) ([]mb.Event, error)
-}
-
-var (
-	endpoints map[string]Endpoint
-)
-
 // init registers the MetricSet with the central registry as soon as the program
 // starts. The New function will be called later to instantiate an instance of
 // the MetricSet for each host is defined in the module's configuration. After the
 // MetricSet has been created then Fetch will begin to be called periodically.
 func init() {
 	mb.Registry.MustAddMetricSet("netapp", "storage", New)
-
-	endpoints = map[string]Endpoint{
-		"SnapmirrorRelationships": {Name: "SnapmirrorRelationships", Endpoint: "/api/snapmirror/relationships", Fn: getSnapmirrorRelationships},
-		"Aggregates":              {Name: "Aggregates", Endpoint: "/api/storage/aggregates", Fn: getAggregates},
-		"Disks":                   {Name: "Disks", Endpoint: "/api/storage/disks", Fn: getDisks},
-		"LUNs":                    {Name: "LUNs", Endpoint: "/api/storage/luns", Fn: getLUNs},
-		"QosPolicies":             {Name: "QosPolicies", Endpoint: "/api/storage/qos/policies", Fn: getQosPolicies},
-		"Qtrees":                  {Name: "Qtrees", Endpoint: "/api/storage/qtrees", Fn: getQtrees},
-		"QuotaReports":            {Name: "QuotaReports", Endpoint: "/api/storage/quota/reports", Fn: getQuotaReports},
-		"QuotaRules":              {Name: "QuotaRules", Endpoint: "/api/storage/quota/rules", Fn: getQuotaRules},
-		"Shelves":                 {Name: "Shelves", Endpoint: "/api/storage/shelves", Fn: getShelves},
-		"Volumes":                 {Name: "Volumes", Endpoint: "/api/storage/volumes", Fn: getVolumes},
-		"SvmPeers":                {Name: "SvmPeers", Endpoint: "/api/svm/peers", Fn: getSvmPeers},
-		"Svms":                    {Name: "Svms", Endpoint: "/api/svm/svms", Fn: getSvms},
-	}
-
-}
-
-func getEndpoint(name string) (Endpoint, error) {
-	endpoint, ok := endpoints[name]
-	if !ok {
-		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
-	}
-	return endpoint, nil
 }
 
 // MetricSet holds any configuration or state information. It must implement

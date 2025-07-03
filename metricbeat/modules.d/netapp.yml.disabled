@@ -12,6 +12,8 @@
   host: localhost
   protocol: https
   port: 443
+  # timeout on requests in seconds
+  return_timeout: 30
   username: ${NETAPP_USERNAME}
   password: ${NETAPP_PASSWORD}
 

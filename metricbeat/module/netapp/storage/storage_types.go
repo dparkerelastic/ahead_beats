@@ -20,6 +20,23 @@ type NamedObject struct {
 	UUID string `json:"uuid"`
 }
 
+type StorageMetrics struct {
+	Timestamp  time.Time `json:"timestamp"`
+	Duration   string    `json:"duration"`
+	Status     string    `json:"status"`
+	Throughput IOLatency `json:"throughput"`
+	IOPS       IOLatency `json:"iops"`
+	Latency    IOLatency `json:"latency"`
+}
+
+type StorageStatistics struct {
+	Timestamp     time.Time `json:"timestamp"`
+	Status        string    `json:"status"`
+	ThroughputRaw IOLatency `json:"throughput_raw"`
+	IOPSRaw       IOLatency `json:"iops_raw"`
+	LatencyRaw    IOLatency `json:"latency_raw"`
+}
+
 // Specific storage objects
 
 type Disk struct {
@@ -637,6 +654,8 @@ type Aggregate struct {
 	InactiveDataReport InactiveDataReport    `json:"inactive_data_reporting"`
 	InodeAttributes    InodeAttributes       `json:"inode_attributes"`
 	VolumeCount        int                   `json:"volume_count"`
+	Metrics            StorageMetrics        `json:"metrics"`
+	Statistics         StorageStatistics     `json:"statistics"`
 }
 
 type AggregateSnapshot struct {
@@ -761,41 +780,6 @@ type InodeAttributes struct {
 	UsedPercent       int `json:"used_percent"`
 }
 
-type AggregateMetrics struct {
-	UUID               string                `json:"uuid"`
-	Name               string                `json:"name"`
-	Node               NamedObject           `json:"node"`
-	HomeNode           NamedObject           `json:"home_node"`
-	Snapshot           AggregateSnapshot     `json:"snapshot"`
-	Space              AggregateSpace        `json:"space"`
-	State              string                `json:"state"`
-	SnaplockType       string                `json:"snaplock_type"`
-	CreateTime         time.Time             `json:"create_time"`
-	DataEncryption     AggregateEncryption   `json:"data_encryption"`
-	BlockStorage       AggregateBlockStorage `json:"block_storage"`
-	CloudStorage       AggregateCloudStorage `json:"cloud_storage"`
-	InactiveDataReport InactiveDataReport    `json:"inactive_data_reporting"`
-	InodeAttributes    InodeAttributes       `json:"inode_attributes"`
-	VolumeCount        int                   `json:"volume_count"`
-}
-
-type LunMetrics struct {
-	Duration   string       `json:"duration"`
-	IOPS       LunMetricSet `json:"iops"`
-	Latency    LunMetricSet `json:"latency"`
-	Throughput LunMetricSet `json:"throughput"`
-	Status     string       `json:"status"`
-	Timestamp  string       `json:"timestamp"`
-	UUID       string       `json:"uuid"`
-}
-
-type LunMetricSet struct {
-	Other int `json:"other"`
-	Read  int `json:"read"`
-	Total int `json:"total"`
-	Write int `json:"write"`
-}
-
 type QosPolicy struct {
 	Adaptive    *QosAdaptive `json:"adaptive,omitempty"`
 	Fixed       *QosFixed    `json:"fixed,omitempty"`
@@ -826,18 +810,20 @@ type QosFixed struct {
 }
 
 type LUN struct {
-	UUID         string      `json:"uuid"`
-	SVM          NamedObject `json:"svm"`
-	Name         string      `json:"name"`
-	Location     LunLocation `json:"location"`
-	Class        string      `json:"class"`
-	CreateTime   time.Time   `json:"create_time"`
-	Enabled      bool        `json:"enabled"`
-	OsType       string      `json:"os_type"`
-	SerialNumber string      `json:"serial_number"`
-	Space        LunSpace    `json:"space"`
-	Status       LunStatus   `json:"status"`
-	VVol         LunVVol     `json:"vvol"`
+	UUID         string            `json:"uuid"`
+	SVM          NamedObject       `json:"svm"`
+	Name         string            `json:"name"`
+	Location     LunLocation       `json:"location"`
+	Class        string            `json:"class"`
+	CreateTime   time.Time         `json:"create_time"`
+	Enabled      bool              `json:"enabled"`
+	OsType       string            `json:"os_type"`
+	SerialNumber string            `json:"serial_number"`
+	Space        LunSpace          `json:"space"`
+	Status       LunStatus         `json:"status"`
+	VVol         LunVVol           `json:"vvol"`
+	Metrics      StorageMetrics    `json:"metric"`
+	Statistics   StorageStatistics `json:"statistics"`
 }
 
 type LunLocation struct {
