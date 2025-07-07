@@ -53,31 +53,33 @@ func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M 
 	}
 
 	return mapstr.M{
-		"backoff_level":              record.BackoffLevel,
-		"consistency_group_failover": createGroupFailoverFields(record.ConsistencyGroupFailover),
-		"destination":                createSnapMirrorEndpointFields(record.Destination),
-		"exported_snapshot":          record.ExportedSnapshot,
-		"group_type":                 record.GroupType,
-		"healthy":                    record.Healthy,
-		"identity_preservation":      record.IdentityPreservation,
-		"io_serving_copy":            record.IOServingCopy,
-		"lag_time":                   record.LagTime,
-		"last_transfer_network_compression_ratio": record.LastTransferNetworkRatio,
-		"last_transfer_type":                      record.LastTransferType,
-		"master_bias_activated_site":              record.MasterBiasActivatedSite,
-		"policy":                                  record.Policy,
-		"preferred_site":                          record.PreferredSite,
-		"restore":                                 record.Restore,
-		"source":                                  createSnapMirrorEndpointFields(record.Source),
-		"state":                                   record.State,
-		"svmdr_volumes":                           smdr,
-		"throttle":                                record.Throttle,
-		"total_transfer_bytes":                    record.TotalTransferBytes,
-		"total_transfer_duration":                 record.TotalTransferDuration,
-		"transfer":                                record.Transfer,
-		"transfer_schedule":                       record.TransferSchedule,
-		"unhealthy_reason":                        unhealthy_reason,
-		"uuid":                                    record.UUID,
+		"snapmirror": mapstr.M{
+			"backoff_level":              record.BackoffLevel,
+			"consistency_group_failover": createGroupFailoverFields(record.ConsistencyGroupFailover),
+			"destination":                createSnapMirrorEndpointFields(record.Destination),
+			"exported_snapshot":          record.ExportedSnapshot,
+			"group_type":                 record.GroupType,
+			"healthy":                    record.Healthy,
+			"identity_preservation":      record.IdentityPreservation,
+			"io_serving_copy":            record.IOServingCopy,
+			"lag_time":                   record.LagTime,
+			"last_transfer_network_compression_ratio": record.LastTransferNetworkRatio,
+			"last_transfer_type":                      record.LastTransferType,
+			"master_bias_activated_site":              record.MasterBiasActivatedSite,
+			"policy":                                  record.Policy,
+			"preferred_site":                          record.PreferredSite,
+			"restore":                                 record.Restore,
+			"source":                                  createSnapMirrorEndpointFields(record.Source),
+			"state":                                   record.State,
+			"svmdr_volumes":                           smdr,
+			"throttle":                                record.Throttle,
+			"total_transfer_bytes":                    record.TotalTransferBytes,
+			"total_transfer_duration":                 record.TotalTransferDuration,
+			"transfer":                                record.Transfer,
+			"transfer_schedule":                       record.TransferSchedule,
+			"unhealthy_reason":                        unhealthy_reason,
+			"uuid":                                    record.UUID,
+		},
 	}
 }
 
@@ -116,23 +118,25 @@ func createSnapMirrorEndpointFields(snapEndpoint SnapMirrorEndpoint) mapstr.M {
 func createAggregateFields(record Aggregate) mapstr.M {
 
 	fields := mapstr.M{
-		"uuid":                    record.UUID,
-		"name":                    record.Name,
-		"node":                    createNamedObjectFields(record.Node),
-		"home_node":               createNamedObjectFields(record.HomeNode),
-		"snapshot":                createAggregateSnapshotFields(record.Snapshot),
-		"space":                   createAggregateSpaceFields(record.Space),
-		"state":                   record.State,
-		"snaplock_type":           record.SnaplockType,
-		"create_time":             record.CreateTime,
-		"data_encryption":         createAggregateEncryptionFields(record.DataEncryption),
-		"block_storage":           createAggregateBlockStorageFields(record.BlockStorage),
-		"cloud_storage":           createAggregateCloudStorageFields(record.CloudStorage),
-		"inactive_data_reporting": createInactiveDataReportFields(record.InactiveDataReport),
-		"inode_attributes":        createInodeAttributesFields(record.InodeAttributes),
-		"volume_count":            record.VolumeCount,
-		"metrics":                 createStorageMetricsFields(record.Metrics),
-		"statistics":              createStorageStatisticsFields(record.Statistics),
+		"aggregate": mapstr.M{
+			"uuid":                    record.UUID,
+			"name":                    record.Name,
+			"node":                    createNamedObjectFields(record.Node),
+			"home_node":               createNamedObjectFields(record.HomeNode),
+			"snapshot":                createAggregateSnapshotFields(record.Snapshot),
+			"space":                   createAggregateSpaceFields(record.Space),
+			"state":                   record.State,
+			"snaplock_type":           record.SnaplockType,
+			"create_time":             record.CreateTime,
+			"data_encryption":         createAggregateEncryptionFields(record.DataEncryption),
+			"block_storage":           createAggregateBlockStorageFields(record.BlockStorage),
+			"cloud_storage":           createAggregateCloudStorageFields(record.CloudStorage),
+			"inactive_data_reporting": createInactiveDataReportFields(record.InactiveDataReport),
+			"inode_attributes":        createInodeAttributesFields(record.InodeAttributes),
+			"volume_count":            record.VolumeCount,
+			"metrics":                 createStorageMetricsFields(record.Metrics),
+			"statistics":              createStorageStatisticsFields(record.Statistics),
+		},
 	}
 
 	return fields
@@ -332,18 +336,20 @@ func createDiskStatsFields(stats DiskStats) mapstr.M {
 
 func createLUNFields(record LUN) mapstr.M {
 	return mapstr.M{
-		"uuid":          record.UUID,
-		"svm":           createNamedObjectFields(record.SVM),
-		"name":          record.Name,
-		"location":      createLunLocationFields(record.Location),
-		"class":         record.Class,
-		"create_time":   record.CreateTime,
-		"enabled":       record.Enabled,
-		"os_type":       record.OsType,
-		"serial_number": record.SerialNumber,
-		"space":         createLunSpaceFields(record.Space),
-		"status":        createLunStatusFields(record.Status),
-		"vvol":          createLunVVolFields(record.VVol),
+		"lun": mapstr.M{
+			"uuid":          record.UUID,
+			"svm":           createNamedObjectFields(record.SVM),
+			"name":          record.Name,
+			"location":      createLunLocationFields(record.Location),
+			"class":         record.Class,
+			"create_time":   record.CreateTime,
+			"enabled":       record.Enabled,
+			"os_type":       record.OsType,
+			"serial_number": record.SerialNumber,
+			"space":         createLunSpaceFields(record.Space),
+			"status":        createLunStatusFields(record.Status),
+			"vvol":          createLunVVolFields(record.VVol),
+		},
 	}
 }
 
@@ -388,18 +394,20 @@ func createLunVVolFields(vvol LunVVol) mapstr.M {
 
 func createQTreeFields(q Qtree) mapstr.M {
 	return mapstr.M{
-		"volume":           createNamedObjectFields(q.Volume),
-		"id":               q.ID,
-		"svm":              createNamedObjectFields(q.SVM),
-		"name":             q.Name,
-		"security_style":   q.SecurityStyle,
-		"unix_permissions": q.UnixPermissions,
-		"export_policy":    createExportPolicyIDFields(q.ExportPolicy),
-		"path":             q.Path,
-		"nas_path":         q.NAS.Path,
-		"user_id":          q.User.ID,
-		"group_id":         q.Group.ID,
-		"metric":           createQtreeMetricsFields(q.Metrics),
+		"qtree": mapstr.M{
+			"volume":           createNamedObjectFields(q.Volume),
+			"id":               q.ID,
+			"svm":              createNamedObjectFields(q.SVM),
+			"name":             q.Name,
+			"security_style":   q.SecurityStyle,
+			"unix_permissions": q.UnixPermissions,
+			"export_policy":    createExportPolicyIDFields(q.ExportPolicy),
+			"path":             q.Path,
+			"nas_path":         q.NAS.Path,
+			"user_id":          q.User.ID,
+			"group_id":         q.Group.ID,
+			"metric":           createQtreeMetricsFields(q.Metrics),
+		},
 	}
 }
 
@@ -447,22 +455,24 @@ func createQuotaReportFields(qr QuotaReport) mapstr.M {
 	}
 
 	return mapstr.M{
-		"svm":    createNamedObjectFields(qr.SVM),
-		"volume": createNamedObjectFields(qr.Volume),
-		"qtree":  createQtreeBriefFields(qr.Qtree),
-		"type":   qr.Type,
-		"index":  qr.Index,
-		"group":  createNamedObjectFields(qr.Group),
-		"users":  users,
-		"files": mapstr.M{
-			"hard_limit": qr.Files.HardLimit,
-			"soft_limit": qr.Files.SoftLimit,
-			"used":       qr.Files.Used,
-		},
-		"space": mapstr.M{
-			"hard_limit": qr.Space.HardLimit,
-			"soft_limit": qr.Space.SoftLimit,
-			"used":       qr.Space.Used,
+		"quota_report": mapstr.M{
+			"svm":    createNamedObjectFields(qr.SVM),
+			"volume": createNamedObjectFields(qr.Volume),
+			"qtree":  createQtreeBriefFields(qr.Qtree),
+			"type":   qr.Type,
+			"index":  qr.Index,
+			"group":  createNamedObjectFields(qr.Group),
+			"users":  users,
+			"files": mapstr.M{
+				"hard_limit": qr.Files.HardLimit,
+				"soft_limit": qr.Files.SoftLimit,
+				"used":       qr.Files.Used,
+			},
+			"space": mapstr.M{
+				"hard_limit": qr.Space.HardLimit,
+				"soft_limit": qr.Space.SoftLimit,
+				"used":       qr.Space.Used,
+			},
 		},
 	}
 }
@@ -473,21 +483,23 @@ func createQuotaRuleFields(qr QuotaRule) mapstr.M {
 		users = ""
 	}
 	return mapstr.M{
-		"files": mapstr.M{
-			"hard_limit": qr.Files.HardLimit,
-			"soft_limit": qr.Files.SoftLimit,
+		"quota_rule": mapstr.M{
+			"files": mapstr.M{
+				"hard_limit": qr.Files.HardLimit,
+				"soft_limit": qr.Files.SoftLimit,
+			},
+			"space": mapstr.M{
+				"hard_limit": qr.Space.HardLimit,
+				"soft_limit": qr.Space.SoftLimit,
+			},
+			"qtree":        createQtreeBriefFields(qr.Qtree),
+			"svm_name":     qr.SVM.Name,
+			"type":         qr.Type,
+			"user_mapping": qr.UserMapping,
+			"users":        users,
+			"uuid":         qr.UUID,
+			"volume":       qr.Volume.Name,
 		},
-		"space": mapstr.M{
-			"hard_limit": qr.Space.HardLimit,
-			"soft_limit": qr.Space.SoftLimit,
-		},
-		"qtree":        createQtreeBriefFields(qr.Qtree),
-		"svm_name":     qr.SVM.Name,
-		"type":         qr.Type,
-		"user_mapping": qr.UserMapping,
-		"users":        users,
-		"uuid":         qr.UUID,
-		"volume":       qr.Volume.Name,
 	}
 }
 
@@ -773,33 +785,35 @@ func createVolumeFields(record Volume) mapstr.M {
 	}
 
 	fields := mapstr.M{
-		"uuid":                             record.UUID,
-		"comment":                          record.Comment,
-		"create_time":                      record.CreateTime,
-		"language":                         record.Language,
-		"name":                             record.Name,
-		"size":                             record.Size,
-		"state":                            record.State,
-		"style":                            record.Style,
-		"tiering_policy":                   record.Tiering.Policy,
-		"cloud_retrieval_policy":           record.CloudRetrievalPolicy,
-		"type":                             record.Type,
-		"aggregates":                       aggregates,
-		"snapshot_count":                   record.SnapshotCount,
-		"msid":                             record.MSID,
-		"scheduled_snapshot_naming_scheme": record.ScheduledSnapshotNamingScheme,
-		"clone":                            record.Clone,
-		"nas":                              record.NAS,
-		"snapshot_locking_enabled":         record.SnapshotLockingEnabled,
-		"snapshot_policy":                  createNamedObjectFields(record.NamedObject),
-		"svm":                              createNamedObjectFields(record.SVM),
-		"space":                            createVolumeSpaceFields(record.Space),
-		"metrics":                          createStorageMetricsFields(record.Metrics),
-		"snapmirror":                       record.Snapmirror,
-		"activity_tracking":                record.ActivityTracking,
-		"granular_data":                    record.GranularData,
-		"granular_data_mode":               record.GranularDataMode,
-		// "analytics":                        record.Analytics,
+		"volume": mapstr.M{
+			"uuid":                             record.UUID,
+			"comment":                          record.Comment,
+			"create_time":                      record.CreateTime,
+			"language":                         record.Language,
+			"name":                             record.Name,
+			"size":                             record.Size,
+			"state":                            record.State,
+			"style":                            record.Style,
+			"tiering_policy":                   record.Tiering.Policy,
+			"cloud_retrieval_policy":           record.CloudRetrievalPolicy,
+			"type":                             record.Type,
+			"aggregates":                       aggregates,
+			"snapshot_count":                   record.SnapshotCount,
+			"msid":                             record.MSID,
+			"scheduled_snapshot_naming_scheme": record.ScheduledSnapshotNamingScheme,
+			"clone":                            record.Clone,
+			"nas":                              record.NAS,
+			"snapshot_locking_enabled":         record.SnapshotLockingEnabled,
+			"snapshot_policy":                  createNamedObjectFields(record.NamedObject),
+			"svm":                              createNamedObjectFields(record.SVM),
+			"space":                            createVolumeSpaceFields(record.Space),
+			"metrics":                          createStorageMetricsFields(record.Metrics),
+			"snapmirror":                       record.Snapmirror,
+			"activity_tracking":                record.ActivityTracking,
+			"granular_data":                    record.GranularData,
+			"granular_data_mode":               record.GranularDataMode,
+			// "analytics":                        record.Analytics,
+		},
 	}
 
 	return fields
@@ -859,15 +873,17 @@ func createSVMPeerFields(record SVMPeer) mapstr.M {
 		applications = ""
 	}
 	return mapstr.M{
-		"applications": applications,
-		"name":         record.Name,
-		"peer": mapstr.M{
-			"cluster": createNamedObjectFields(record.Peer.Cluster),
-			"svm":     createNamedObjectFields(record.Peer.SVM),
+		"svm_peer": mapstr.M{
+			"applications": applications,
+			"name":         record.Name,
+			"peer": mapstr.M{
+				"cluster": createNamedObjectFields(record.Peer.Cluster),
+				"svm":     createNamedObjectFields(record.Peer.SVM),
+			},
+			"state": record.State,
+			"svm":   createNamedObjectFields(record.SVM),
+			"uuid":  record.UUID,
 		},
-		"state": record.State,
-		"svm":   createNamedObjectFields(record.SVM),
-		"uuid":  record.UUID,
 	}
 }
 
@@ -882,42 +898,44 @@ func createSVMFields(record SVM) mapstr.M {
 	}
 
 	return mapstr.M{
-		"uuid":                                 record.UUID,
-		"name":                                 record.Name,
-		"subtype":                              record.Subtype,
-		"language":                             record.Language,
-		"aggregates":                           aggregates,
-		"state":                                record.State,
-		"comment":                              record.Comment,
-		"ipspace":                              createNamedObjectFields(record.IPSpace),
-		"ip_interfaces":                        ipInterfaces,
-		"snapshot_policy":                      createNamedObjectFields(record.SnapshotPolicy),
-		"nis_enabled":                          record.NIS.Enabled,
-		"ldap_enabled":                         record.LDAP.Enabled,
-		"nfs":                                  createProtocolStatusFields(record.NFS),
-		"cifs":                                 createProtocolStatusFields(record.CIFS),
-		"iscsi":                                createProtocolStatusFields(record.ISCSI),
-		"fcp":                                  createProtocolStatusFields(record.FCP),
-		"nvme":                                 createProtocolStatusFields(record.NVMe),
-		"ndmp_allowed":                         record.NDMP.Allowed,
-		"s3":                                   createProtocolStatusFields(record.S3),
-		"certificate":                          record.Certificate.UUID,
-		"aggregates_delegated":                 record.AggregatesDelegated,
-		"retention_period":                     record.RetentionPeriod,
-		"max_volumes":                          record.MaxVolumes,
-		"anti_ransomware_default_volume_state": record.AntiRansomwareDefaultVolumeState,
-		"is_space_reporting_logical":           record.IsSpaceReportingLogical,
-		"is_space_enforcement_logical":         record.IsSpaceEnforcementLogical,
-		"auto_enable_analytics":                record.AutoEnableAnalytics,
-		"auto_enable_activity_tracking":        record.AutoEnableActivityTracking,
-		"anti_ransomware_auto_switch_enabled":  record.AntiRansomwareAutoSwitchEnabled,
-		"anti_ransomware_auto_switch_data_percent": record.AntiRansomwareAutoSwitchDataPercent,
-		"anti_ransomware_auto_switch_no_ext_days":  record.AntiRansomwareAutoSwitchNoExtDays,
-		"anti_ransomware_auto_switch_min_period":   record.AntiRansomwareAutoSwitchMinPeriod,
-		"anti_ransomware_auto_switch_min_files":    record.AntiRansomwareAutoSwitchMinFiles,
-		"anti_ransomware_auto_switch_min_exts":     record.AntiRansomwareAutoSwitchMinExts,
-		// "nsswitch":                             record.NSSwitch,
+		"svm": mapstr.M{
+			"uuid":                                 record.UUID,
+			"name":                                 record.Name,
+			"subtype":                              record.Subtype,
+			"language":                             record.Language,
+			"aggregates":                           aggregates,
+			"state":                                record.State,
+			"comment":                              record.Comment,
+			"ipspace":                              createNamedObjectFields(record.IPSpace),
+			"ip_interfaces":                        ipInterfaces,
+			"snapshot_policy":                      createNamedObjectFields(record.SnapshotPolicy),
+			"nis_enabled":                          record.NIS.Enabled,
+			"ldap_enabled":                         record.LDAP.Enabled,
+			"nfs":                                  createProtocolStatusFields(record.NFS),
+			"cifs":                                 createProtocolStatusFields(record.CIFS),
+			"iscsi":                                createProtocolStatusFields(record.ISCSI),
+			"fcp":                                  createProtocolStatusFields(record.FCP),
+			"nvme":                                 createProtocolStatusFields(record.NVMe),
+			"ndmp_allowed":                         record.NDMP.Allowed,
+			"s3":                                   createProtocolStatusFields(record.S3),
+			"certificate":                          record.Certificate.UUID,
+			"aggregates_delegated":                 record.AggregatesDelegated,
+			"retention_period":                     record.RetentionPeriod,
+			"max_volumes":                          record.MaxVolumes,
+			"anti_ransomware_default_volume_state": record.AntiRansomwareDefaultVolumeState,
+			"is_space_reporting_logical":           record.IsSpaceReportingLogical,
+			"is_space_enforcement_logical":         record.IsSpaceEnforcementLogical,
+			"auto_enable_analytics":                record.AutoEnableAnalytics,
+			"auto_enable_activity_tracking":        record.AutoEnableActivityTracking,
+			"anti_ransomware_auto_switch_enabled":  record.AntiRansomwareAutoSwitchEnabled,
+			"anti_ransomware_auto_switch_data_percent": record.AntiRansomwareAutoSwitchDataPercent,
+			"anti_ransomware_auto_switch_no_ext_days":  record.AntiRansomwareAutoSwitchNoExtDays,
+			"anti_ransomware_auto_switch_min_period":   record.AntiRansomwareAutoSwitchMinPeriod,
+			"anti_ransomware_auto_switch_min_files":    record.AntiRansomwareAutoSwitchMinFiles,
+			"anti_ransomware_auto_switch_min_exts":     record.AntiRansomwareAutoSwitchMinExts,
+			// "nsswitch":                             record.NSSwitch,
 
+		},
 	}
 }
 
@@ -930,13 +948,15 @@ func createProtocolStatusFields(status ProtocolStatus) mapstr.M {
 
 func createQosPolicyFields(policy QosPolicy) mapstr.M {
 	fields := mapstr.M{
-		"name":         policy.Name,
-		"object_count": policy.ObjectCount,
-		"pgid":         policy.Pgid,
-		"policy_class": policy.PolicyClass,
-		"scope":        policy.Scope,
-		"svm":          createNamedObjectFields(policy.SVM),
-		"uuid":         policy.UUID,
+		"qos_policy": mapstr.M{
+			"name":         policy.Name,
+			"object_count": policy.ObjectCount,
+			"pgid":         policy.Pgid,
+			"policy_class": policy.PolicyClass,
+			"scope":        policy.Scope,
+			"svm":          createNamedObjectFields(policy.SVM),
+			"uuid":         policy.UUID,
+		},
 	}
 	if policy.Adaptive != nil {
 		fields["adaptive"] = policy.Adaptive

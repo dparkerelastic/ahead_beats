@@ -15,9 +15,7 @@ type Endpoint struct {
 	QueryFields []string
 }
 
-var endpoints map[string]Endpoint
 var basicEndpoints map[string]Endpoint
-
 var customEndpoints map[string]Endpoint
 
 const (
@@ -120,14 +118,9 @@ func makeDispatchFunc[T any](createFunc CreateFieldsFunc[T]) DispatchFunc {
 	}
 }
 
-// func getEndpoint(name string) (Endpoint, error) {
-// 	endpoint, ok := endpoints[name]
-// 	if !ok {
-// 		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
-// 	}
-// 	return endpoint, nil
-// }
-
+// Fields to be used in endpoint calls - ONTAP API only returns name and uuid unless fields are specified.
+// Further, the NetApp doc discourages using fields=* for various reasons, but also metrics and statistics don't
+// get retuned unless explicitly requested.
 var QTreeFields = []string{
 	"volume",
 	"id",

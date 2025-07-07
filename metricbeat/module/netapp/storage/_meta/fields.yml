@@ -4,7 +4,106 @@
   description: >
     storage
   fields:
-    - name: example
-      type: keyword
+    - name: snapmirror
+      type: group
       description: >
-        Example field
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: aggregate
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: lun
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: qos_policy
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: qtree
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: quota_report
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: quota_rule
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: volume
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: svm_peer
+      type: group
+      description: >
+        Example group
+    - name: svm
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: disk
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
+    - name: shelf
+      type: group
+      description: >
+        Example group
+      fields:
+        - name: example
+          type: keyword
+          description: >
+            Example field
