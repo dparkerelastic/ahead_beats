@@ -1,80 +1,132 @@
 package storage
 
 import (
-	"fmt"
-
 	"github.com/elastic/beats/v7/metricbeat/mb"
+	"github.com/elastic/elastic-agent-libs/mapstr"
 )
+
+type CreateFieldsFunc[T any] func(T) mapstr.M
+type EndpointFunc func(*MetricSet, Endpoint) ([]mb.Event, error)
 
 type Endpoint struct {
 	Name        string
 	Endpoint    string
-	Fn          func(*MetricSet) ([]mb.Event, error)
+	GetFunc     EndpointFunc // nil for basic endpoints
 	QueryFields []string
 }
 
 var endpoints map[string]Endpoint
+var basicEndpoints map[string]Endpoint
+
+var customEndpoints map[string]Endpoint
+
+const (
+	SnapmirrorRelationshipsName = "SnapmirrorRelationships"
+	AggregatesName              = "Aggregates"
+	DisksName                   = "Disks"
+	LUNsName                    = "LUNs"
+	QosPoliciesName             = "QosPolicies"
+	QtreesName                  = "Qtrees"
+	QuotaReportsName            = "QuotaReports"
+	QuotaRulesName              = "QuotaRules"
+	ShelvesName                 = "Shelves"
+	VolumesName                 = "Volumes"
+	SvmPeersName                = "SvmPeers"
+	SvmsName                    = "Svms"
+)
 
 func init() {
-	endpoints = map[string]Endpoint{
-		"SnapmirrorRelationships": {Name: "SnapmirrorRelationships",
+
+	basicEndpoints = map[string]Endpoint{
+		SnapmirrorRelationshipsName: {Name: SnapmirrorRelationshipsName,
 			Endpoint:    "/api/snapmirror/relationships",
-			Fn:          getSnapmirrorRelationships,
-			QueryFields: SnapMirrorFields},
-		"Aggregates": {Name: "Aggregates",
+			QueryFields: SnapMirrorFields,
+		},
+		AggregatesName: {Name: AggregatesName,
 			Endpoint:    "/api/storage/aggregates",
-			Fn:          getAggregates,
-			QueryFields: AggregateFields},
-		"Disks": {Name: "Disks",
-			Endpoint:    "/api/storage/disks",
-			Fn:          getDisks,
-			QueryFields: DiskFields},
-		"LUNs": {Name: "LUNs",
+			QueryFields: AggregateFields,
+		},
+		LUNsName: {Name: LUNsName,
 			Endpoint:    "/api/storage/luns",
-			Fn:          getLUNs,
-			QueryFields: LunFields},
-		"QosPolicies": {Name: "QosPolicies",
+			QueryFields: LunFields,
+		},
+		QosPoliciesName: {Name: QosPoliciesName,
 			Endpoint:    "/api/storage/qos/policies",
-			Fn:          getQosPolicies,
-			QueryFields: QosPolicyFields},
-		"Qtrees": {Name: "Qtrees",
+			QueryFields: QosPolicyFields,
+		},
+		QtreesName: {Name: QtreesName,
 			Endpoint:    "/api/storage/qtrees",
-			Fn:          getQtrees,
-			QueryFields: QTreeFields},
-		"QuotaReports": {Name: "QuotaReports",
+			QueryFields: QTreeFields,
+		},
+		QuotaReportsName: {Name: QuotaReportsName,
 			Endpoint:    "/api/storage/quota/reports",
-			Fn:          getQuotaReports,
-			QueryFields: QuotaReportFields},
-		"QuotaRules": {Name: "QuotaRules",
+			QueryFields: QuotaReportFields,
+		},
+		QuotaRulesName: {Name: QuotaRulesName,
 			Endpoint:    "/api/storage/quota/rules",
-			Fn:          getQuotaRules,
-			QueryFields: QuotaRulesFields},
-		"Shelves": {Name: "Shelves",
-			Endpoint:    "/api/storage/shelves",
-			Fn:          getShelves,
-			QueryFields: ShelfFields},
-		"Volumes": {Name: "Volumes",
+			QueryFields: QuotaRulesFields,
+		},
+		VolumesName: {Name: VolumesName,
 			Endpoint:    "/api/storage/volumes",
-			Fn:          getVolumes,
-			QueryFields: VolumeFields},
-		"SvmPeers": {Name: "SvmPeers",
+			QueryFields: VolumeFields,
+		},
+		SvmPeersName: {Name: SvmPeersName,
 			Endpoint:    "/api/svm/peers",
-			Fn:          getSvmPeers,
-			QueryFields: SvmPeerFields},
-		"Svms": {Name: "Svms",
+			QueryFields: SvmPeerFields,
+		},
+		SvmsName: {Name: SvmsName,
 			Endpoint:    "/api/svm/svms",
-			Fn:          getSvms,
-			QueryFields: SvmFields},
+			QueryFields: SvmFields,
+		},
+	}
+
+	customEndpoints = map[string]Endpoint{
+		DisksName: {Name: DisksName,
+			Endpoint:    "/api/storage/disks",
+			GetFunc:     getDisks,
+			QueryFields: DiskFields},
+		ShelvesName: {Name: ShelvesName,
+			Endpoint:    "/api/storage/shelves",
+			GetFunc:     getShelves,
+			QueryFields: ShelfFields},
+	}
+
+}
+
+// For processing basic endpoints we need a type-specific function to create the fields.
+// ProcessEndpoint is a generic function that can be used for all basic endpoints,
+// but it needs to know how to create the fields for the specific type.
+type DispatchFunc func(*MetricSet, Endpoint) ([]mb.Event, error)
+
+var endpointDispatchers = map[string]DispatchFunc{
+	SnapmirrorRelationshipsName: makeDispatchFunc(createSnapMirrorRelationshipFields),
+	AggregatesName:              makeDispatchFunc(createAggregateFields),
+	LUNsName:                    makeDispatchFunc(createLUNFields),
+	QosPoliciesName:             makeDispatchFunc(createQosPolicyFields),
+	QtreesName:                  makeDispatchFunc(createQTreeFields),
+	QuotaReportsName:            makeDispatchFunc(createQuotaReportFields),
+	QuotaRulesName:              makeDispatchFunc(createQuotaRuleFields),
+	VolumesName:                 makeDispatchFunc(createVolumeFields),
+	SvmPeersName:                makeDispatchFunc(createSVMPeerFields),
+	SvmsName:                    makeDispatchFunc(createSVMFields),
+}
+
+// makeDispatchFunc creates a DispatchFunc for a specific type T. The create[type name]Fields functions
+// passed to this function are defined with concrete types, so that's where we get our T type from.
+// This allows us to use the same ProcessEndpoint function for all basic endpoints, while still being type-safe.
+func makeDispatchFunc[T any](createFunc CreateFieldsFunc[T]) DispatchFunc {
+	return func(m *MetricSet, e Endpoint) ([]mb.Event, error) {
+		return ProcessEndpoint(m, e, createFunc)
 	}
 }
 
-func getEndpoint(name string) (Endpoint, error) {
-	endpoint, ok := endpoints[name]
-	if !ok {
-		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
-	}
-	return endpoint, nil
-}
+// func getEndpoint(name string) (Endpoint, error) {
+// 	endpoint, ok := endpoints[name]
+// 	if !ok {
+// 		return Endpoint{}, fmt.Errorf("%s not found in the map", name)
+// 	}
+// 	return endpoint, nil
+// }
 
 var QTreeFields = []string{
 	"volume",
@@ -88,8 +140,8 @@ var QTreeFields = []string{
 	"nas",
 	"user",
 	"group",
-	"metric.*",
-	"statistics.*",
+	"metric",
+	"statistics",
 }
 
 var DiskFields = []string{
@@ -120,7 +172,7 @@ var DiskFields = []string{
 	"sector_count",
 	"right_size_sector_count",
 	"physical_size",
-	"stats.*",
+	"stats",
 }
 
 var SvmFields = []string{

@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/elastic/beats/v7/metricbeat/mb"
@@ -22,7 +20,38 @@ func createECSFields(ms *MetricSet) mapstr.M {
 	}
 }
 
+func createStorageStatisticsFields(stats StorageStatistics) mapstr.M {
+	return mapstr.M{
+		"timestamp":      stats.Timestamp,
+		"status":         stats.Status,
+		"throughput_raw": createIOLatencyFields(stats.ThroughputRaw),
+		"iops_raw":       createIOLatencyFields(stats.IOPSRaw),
+		"latency_raw":    createIOLatencyFields(stats.LatencyRaw),
+	}
+}
+
+func createStorageMetricsFields(metric StorageMetrics) mapstr.M {
+	return mapstr.M{
+		"timestamp":  metric.Timestamp,
+		"duration":   metric.Duration,
+		"status":     metric.Status,
+		"latency":    createIOLatencyFields(metric.Latency),
+		"iops":       createIOLatencyFields(metric.IOPS),
+		"throughput": createIOLatencyFields(metric.Throughput),
+	}
+}
+
 func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M {
+	smdr, err := netapp.ToJSONString(record.SvmdrVolumes)
+	if err != nil {
+		smdr = ""
+	}
+
+	unhealthy_reason, err := netapp.ToJSONString(record.UnhealthyReason)
+	if err != nil {
+		unhealthy_reason = ""
+	}
+
 	return mapstr.M{
 		"backoff_level":              record.BackoffLevel,
 		"consistency_group_failover": createGroupFailoverFields(record.ConsistencyGroupFailover),
@@ -41,13 +70,13 @@ func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M 
 		"restore":                                 record.Restore,
 		"source":                                  createSnapMirrorEndpointFields(record.Source),
 		"state":                                   record.State,
-		"svmdr_volumes":                           record.SvmdrVolumes,
+		"svmdr_volumes":                           smdr,
 		"throttle":                                record.Throttle,
 		"total_transfer_bytes":                    record.TotalTransferBytes,
 		"total_transfer_duration":                 record.TotalTransferDuration,
 		"transfer":                                record.Transfer,
 		"transfer_schedule":                       record.TransferSchedule,
-		"unhealthy_reason":                        record.UnhealthyReason,
+		"unhealthy_reason":                        unhealthy_reason,
 		"uuid":                                    record.UUID,
 	}
 }
@@ -68,18 +97,18 @@ func createStatusFields(status StorageStatus) mapstr.M {
 	}
 }
 
-func createSnapMirrorEndpointFields(endpoint SnapMirrorEndpoint) mapstr.M {
-	// Convert consistency group volumes
-	volumes, err := netapp.ToJSONString(endpoint.ConsistencyGroupVolumes)
+func createSnapMirrorEndpointFields(snapEndpoint SnapMirrorEndpoint) mapstr.M {
+
+	volumes, err := netapp.ToJSONString(snapEndpoint.ConsistencyGroupVolumes)
 	if err != nil {
 		volumes = ""
 	}
 
 	return mapstr.M{
-		"cluster":                   createNamedObjectFields(endpoint.Cluster),
-		"svm":                       createNamedObjectFields(endpoint.SVM),
-		"luns":                      createNamedObjectFields(endpoint.LUNs),
-		"path":                      endpoint.Path,
+		"cluster":                   createNamedObjectFields(snapEndpoint.Cluster),
+		"svm":                       createNamedObjectFields(snapEndpoint.SVM),
+		"luns":                      createNamedObjectFields(snapEndpoint.LUNs),
+		"path":                      snapEndpoint.Path,
 		"consistency_group_volumes": volumes,
 	}
 }
@@ -102,6 +131,8 @@ func createAggregateFields(record Aggregate) mapstr.M {
 		"inactive_data_reporting": createInactiveDataReportFields(record.InactiveDataReport),
 		"inode_attributes":        createInodeAttributesFields(record.InodeAttributes),
 		"volume_count":            record.VolumeCount,
+		"metrics":                 createStorageMetricsFields(record.Metrics),
+		"statistics":              createStorageStatisticsFields(record.Statistics),
 	}
 
 	return fields
@@ -122,8 +153,8 @@ func createInactiveDataReportFields(inactiveDataReport InactiveDataReport) mapst
 	m := mapstr.M{
 		"enabled": inactiveDataReport.Enabled,
 	}
-	if t, err := netapp.ConvertStringTime(inactiveDataReport.StartTime); err == nil {
-		m["start_time"] = t
+	if inactiveDataReport.Enabled {
+		m["start_time"] = inactiveDataReport.StartTime
 	}
 	return m
 }
@@ -245,10 +276,7 @@ func createDiskFields(record Disk) mapstr.M {
 	for i, agg := range record.Aggregates {
 		aggregates[i] = createNamedObjectFields(agg)
 	}
-	paths := make([]mapstr.M, len(record.Paths))
-	for i, path := range record.Paths {
-		paths[i] = createDiskPathFields(path)
-	}
+
 	return mapstr.M{
 		"name":                    record.Name,
 		"uid":                     record.UID,
@@ -269,7 +297,6 @@ func createDiskFields(record Disk) mapstr.M {
 		"aggregates":              aggregates,
 		"shelf":                   record.Shelf.UID,
 		"local":                   record.Local,
-		"paths":                   paths,
 		"bay":                     record.Bay,
 		"self_encrypting":         record.SelfEncrypting,
 		"fips_certified":          record.FipsCertified,
@@ -372,6 +399,7 @@ func createQTreeFields(q Qtree) mapstr.M {
 		"nas_path":         q.NAS.Path,
 		"user_id":          q.User.ID,
 		"group_id":         q.Group.ID,
+		"metric":           createQtreeMetricsFields(q.Metrics),
 	}
 }
 
@@ -405,7 +433,7 @@ func createIOLatencyFields(io IOLatency) mapstr.M {
 	}
 }
 
-func createQtreeBriefFields(q QtreeBrief) mapstr.M {
+func createQtreeBriefFields(q QtreeRef) mapstr.M {
 	return mapstr.M{
 		"id":   q.ID,
 		"name": q.Name,
@@ -437,40 +465,6 @@ func createQuotaReportFields(qr QuotaReport) mapstr.M {
 			"used":       qr.Space.Used,
 		},
 	}
-}
-
-// {Name: "QuotaRules", Endpoint: "/api/storage/quota/rules", Fn: getQuotaRules},
-func getQuotaRules(m *MetricSet) ([]mb.Event, error) {
-	timestamp = time.Now().UTC()
-	client := m.netappClient
-	endpoint, err := getEndpoint("QuotaRules")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get endpoint: %w", err)
-	}
-
-	response, err := client.Get(endpoint.Endpoint)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
-	}
-
-	var records Records[QuotaRule]
-	err = json.Unmarshal([]byte(response), &records)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
-	}
-
-	var events []mb.Event
-	for _, record := range records.Records {
-
-		event := mb.Event{
-			Timestamp:       timestamp,
-			MetricSetFields: createQuotaRuleFields(record),
-			RootFields:      createECSFields(m),
-		}
-		events = append(events, event)
-	}
-
-	return events, nil
 }
 
 func createQuotaRuleFields(qr QuotaRule) mapstr.M {
@@ -543,16 +537,21 @@ func createPortEvents(m *MetricSet, record Shelf) []mb.Event {
 }
 
 func createPortFields(port ShelfPort) interface{} {
-	return mapstr.M{
+	m := mapstr.M{
 		"id":         port.ID,
 		"module_id":  port.ModuleID,
 		"designator": port.Designator,
 		"state":      port.State,
 		"internal":   port.Internal,
 		"wwn":        port.WWN,
-		"cable_id":   port.Cable.Identifier,
-		"remote_wwn": port.Remote.WWN,
 	}
+	if port.Cable != nil {
+		m["cable_id"] = port.Cable.Identifier
+	}
+	if port.Remote != nil {
+		m["remote_wwn"] = port.Remote.WWN
+	}
+	return m
 }
 
 func createCurrentEvents(m *MetricSet, record Shelf) []mb.Event {
@@ -699,6 +698,24 @@ func createPSUEvents(m *MetricSet, record Shelf) []mb.Event {
 	return events
 }
 
+func createDiskPathEvents(m *MetricSet, record Disk) []mb.Event {
+	timestamp := time.Now().UTC()
+	var events []mb.Event
+	for _, path := range record.Paths {
+		diskFields := createDiskFields(record)
+		diskFields["path"] = createDiskPathFields(path)
+		event := mb.Event{
+			Timestamp: timestamp,
+			MetricSetFields: mapstr.M{
+				"disk": diskFields,
+			},
+			RootFields: createECSFields(m),
+		}
+		events = append(events, event)
+	}
+	return events
+}
+
 func createPSUFields(fru FRU) interface{} {
 
 	return mapstr.M{
@@ -729,6 +746,7 @@ func createShelfFields(record Shelf) mapstr.M {
 	if err != nil {
 		bays = ""
 	}
+
 	return mapstr.M{
 		"uid":             record.UID,
 		"name":            record.Name,
@@ -776,7 +794,7 @@ func createVolumeFields(record Volume) mapstr.M {
 		"snapshot_policy":                  createNamedObjectFields(record.NamedObject),
 		"svm":                              createNamedObjectFields(record.SVM),
 		"space":                            createVolumeSpaceFields(record.Space),
-		"metrics":                          createVolumeMetricsFields(record.Metrics),
+		"metrics":                          createStorageMetricsFields(record.Metrics),
 		"snapmirror":                       record.Snapmirror,
 		"activity_tracking":                record.ActivityTracking,
 		"granular_data":                    record.GranularData,
@@ -785,17 +803,6 @@ func createVolumeFields(record Volume) mapstr.M {
 	}
 
 	return fields
-}
-
-func createVolumeMetricsFields(volumeMetric VolumeMetric) mapstr.M {
-	return mapstr.M{
-		"timestamp":  volumeMetric.Timestamp,
-		"duration":   volumeMetric.Duration,
-		"status":     volumeMetric.Status,
-		"latency":    createIOLatencyFields(volumeMetric.Latency),
-		"iops":       createIOLatencyFields(volumeMetric.IOPS),
-		"throughput": createIOLatencyFields(volumeMetric.Throughput),
-	}
 }
 
 func createVolumeSpaceFields(volumeSpace VolumeSpace) mapstr.M {
@@ -919,4 +926,23 @@ func createProtocolStatusFields(status ProtocolStatus) mapstr.M {
 		"allowed": status.Allowed,
 		"enabled": status.Enabled,
 	}
+}
+
+func createQosPolicyFields(policy QosPolicy) mapstr.M {
+	fields := mapstr.M{
+		"name":         policy.Name,
+		"object_count": policy.ObjectCount,
+		"pgid":         policy.Pgid,
+		"policy_class": policy.PolicyClass,
+		"scope":        policy.Scope,
+		"svm":          createNamedObjectFields(policy.SVM),
+		"uuid":         policy.UUID,
+	}
+	if policy.Adaptive != nil {
+		fields["adaptive"] = policy.Adaptive
+	}
+	if policy.Fixed != nil {
+		fields["fixed"] = policy.Fixed
+	}
+	return fields
 }

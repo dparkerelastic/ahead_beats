@@ -48,44 +48,6 @@ func GetClient(config *Config, base mb.BaseMetricSet) (*NetAppRestClient, error)
 	return &client, nil
 }
 
-func (c *NetAppRestClient) Get(endpoint string) (string, error) {
-	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
-	if err != nil {
-		return "", err
-	}
-
-	// specify that we want all fields and records
-	q := req.URL.Query()
-	q.Add("fields", "*")
-	q.Add("return_records", "true")
-	q.Add("return_timeout", "30") // FIXME: make configurabls?
-	req.URL.RawQuery = q.Encode()
-
-	// Set headers
-	for key, value := range c.headers {
-		req.Header.Set(key, value)
-	}
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	// Check if the HTTP status code indicates an error
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		body, _ := io.ReadAll(resp.Body) // Read the body for additional error details
-		return "", fmt.Errorf("server error: %s (status code: %d)", string(body), resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
-
-}
-
 func (c *NetAppRestClient) CreateNetAppRequest(endpoint string, fields []string) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
 	if err != nil {

@@ -188,21 +188,12 @@ type Volume struct {
 	NamedObject                   NamedObject      `json:"snapshot_policy"`
 	SVM                           NamedObject      `json:"svm"`
 	Space                         VolumeSpace      `json:"space"`
-	Metrics                       VolumeMetric     `json:"metric"`
+	Metrics                       StorageMetrics   `json:"metric"`
 	Snapmirror                    SnapmirrorInfo   `json:"snapmirror"`
 	ActivityTracking              ActivityTracking `json:"activity_tracking"`
 	GranularData                  bool             `json:"granular_data"`
 	GranularDataMode              string           `json:"granular_data_mode"`
 	// Analytics                     AnalyticsState   `json:"analytics"`
-}
-
-type VolumeMetric struct {
-	Timestamp  string    `json:"timestamp"`
-	Duration   string    `json:"duration"`
-	Status     string    `json:"status"`
-	Latency    IOLatency `json:"latency"`
-	IOPS       IOLatency `json:"iops"`
-	Throughput IOLatency `json:"throughput"`
 }
 
 type Tiering struct {
@@ -316,7 +307,7 @@ type Qtree struct {
 	NAS             NASPath         `json:"nas"`
 	User            UnixID          `json:"user"`
 	Group           UnixID          `json:"group"`
-	Metric          QtreeMetrics    `json:"metric"`
+	Metrics         QtreeMetrics    `json:"metricss"`
 	Statistics      QtreeStatistics `json:"statistics"`
 }
 
@@ -338,7 +329,7 @@ type QtreeMetrics struct {
 	IOPS            IOLatency   `json:"iops"`
 	Latency         IOLatency   `json:"latency"`
 	Throughput      IOLatency   `json:"throughput"`
-	Qtree           QtreeBrief  `json:"qtree"`
+	Qtree           QtreeRef    `json:"qtree"`
 	Status          string      `json:"status"`
 	SVM             NamedObject `json:"svm"`
 	MetricTimestamp string      `json:"timestamp"`
@@ -360,7 +351,7 @@ type IOLatency struct {
 	Total int `json:"total"`
 }
 
-type QtreeBrief struct {
+type QtreeRef struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
@@ -369,7 +360,7 @@ type QuotaReport struct {
 	Files  QuotaUsage    `json:"files"`
 	Group  NamedObject   `json:"group"`
 	Index  int           `json:"index"`
-	Qtree  QtreeBrief    `json:"qtree"`
+	Qtree  QtreeRef      `json:"qtree"`
 	Space  QuotaUsage    `json:"space"`
 	SVM    NamedObject   `json:"svm"`
 	Type   string        `json:"type"`
@@ -391,7 +382,7 @@ type QuotaUsedInfo struct {
 
 type QuotaRule struct {
 	Files       QuotaLimit     `json:"files"`
-	Qtree       QtreeBrief     `json:"qtree"`
+	Qtree       QtreeRef       `json:"qtree"`
 	Space       QuotaLimit     `json:"space"`
 	SVM         SVMNameOnly    `json:"svm"` // FIXME: needed?
 	Type        string         `json:"type"`
@@ -593,7 +584,7 @@ type SnapMirrorRelationship struct {
 	IdentityPreservation     string                   `json:"identity_preservation"`
 	IOServingCopy            string                   `json:"io_serving_copy"`
 	LagTime                  string                   `json:"lag_time"` //ISO 8601 duration format
-	LastTransferNetworkRatio int                      `json:"last_transfer_network_compression_ratio"`
+	LastTransferNetworkRatio string                   `json:"last_transfer_network_compression_ratio"`
 	LastTransferType         string                   `json:"last_transfer_type"`
 	MasterBiasActivatedSite  string                   `json:"master_bias_activated_site"`
 	Policy                   Policy                   `json:"policy"`
@@ -767,8 +758,8 @@ type AggregateStoreRef struct {
 }
 
 type InactiveDataReport struct {
-	Enabled   bool   `json:"enabled"`
-	StartTime string `json:"start_time"`
+	Enabled   bool      `json:"enabled"`
+	StartTime time.Time `json:"start_time"`
 }
 
 type InodeAttributes struct {
@@ -781,6 +772,12 @@ type InodeAttributes struct {
 }
 
 type QosPolicy struct {
+	/*
+		From NetApp documentation:
+		"A QoS policy defines measurable service level objectives (SLOs) that apply to the storage objects with which the policy is associated. There are two types of policies that can be configured: fixed, which defines a fixed SLO, or adaptive which defines a variable SLO for a storage object. Adaptive policies vary the SLO depending on the space usage of the storage object.
+		 A policy can be either a fixed policy or an adaptive one, not both."
+		Hence pointers for Adaptive and Fixed - only one will be set at a time.
+	*/
 	Adaptive    *QosAdaptive `json:"adaptive,omitempty"`
 	Fixed       *QosFixed    `json:"fixed,omitempty"`
 	Name        string       `json:"name"`
