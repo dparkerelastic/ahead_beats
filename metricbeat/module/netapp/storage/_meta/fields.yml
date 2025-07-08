@@ -9,85 +9,1832 @@
       description: >
         Example group
       fields:
-        - name: example
+        - name: backoff_level
           type: keyword
           description: >
-            Example field
+            The backoff level of the SnapMirror relationship.
+        - name: consistency_group_failover
+          type: group
+          description: >
+            Consistency group failover details.
+          fields:
+            - name: error
+              type: group
+              description: >
+                Error details for consistency group failover.
+              fields:
+                - name: code
+                  type: keyword
+                  description: >
+                    Error code for the failover.
+                - name: message
+                  type: keyword
+                  description: >
+                    Error message for the failover.
+                - name: state
+                  type: keyword
+                  description: >
+                    Error state for the failover.
+            - name: state
+              type: keyword
+              description: >
+                State of the consistency group failover.
+            - name: status
+              type: group
+              description: >
+                Status details for consistency group failover.
+              fields:
+                - name: code
+                  type: keyword
+                  description: >
+                    Status code for the failover.
+                - name: message
+                  type: keyword
+                  description: >
+                    Status message for the failover.
+                - name: state
+                  type: keyword
+                  description: >
+                    Status state for the failover.
+            - name: type
+              type: keyword
+              description: >
+                Type of the consistency group failover.
+        - name: destination
+          type: group
+          description: >
+            Destination endpoint details.
+          fields:
+            - name: cluster
+              type: group
+              description: >
+                Cluster information for the destination.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the cluster.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the cluster.
+            - name: svm
+              type: group
+              description: >
+                SVM (Storage Virtual Machine) information for the destination.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the SVM.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the SVM.
+            - name: luns
+              type: group
+              description: >
+                LUNs information for the destination.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the LUN.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the LUN.
+            - name: path
+              type: keyword
+              description: >
+                Path for the destination endpoint.
+            - name: consistency_group_volumes
+              type: keyword
+              description: >
+                Consistency group volumes for the destination.
+        - name: exported_snapshot
+          type: keyword
+          description: >
+            The exported snapshot of the SnapMirror relationship.
+        - name: group_type
+          type: keyword
+          description: >
+            The group type of the SnapMirror relationship.
+        - name: healthy
+          type: boolean
+          description: >
+            Indicates if the SnapMirror relationship is healthy.
+        - name: identity_preservation
+          type: boolean
+          description: >
+            Indicates if identity preservation is enabled.
+        - name: io_serving_copy
+          type: boolean
+          description: >
+            Indicates if this is the IO serving copy.
+        - name: lag_time
+          type: long
+          description: >
+            The lag time in seconds.
+        - name: last_transfer_network_compression_ratio
+          type: float
+          description: >
+            The network compression ratio of the last transfer.
+        - name: last_transfer_type
+          type: keyword
+          description: >
+            The type of the last transfer.
+        - name: master_bias_activated_site
+          type: keyword
+          description: >
+            The master bias activated site.
+        - name: policy
+          type: keyword
+          description: >
+            The SnapMirror policy.
+        - name: preferred_site
+          type: keyword
+          description: >
+            The preferred site.
+        - name: restore
+          type: boolean
+          description: >
+            Indicates if restore is in progress.
+        - name: source
+          type: group
+          description: >
+            Source endpoint details.
+          fields:
+            - name: cluster
+              type: group
+              description: >
+                Cluster information for the source.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the cluster.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the cluster.
+            - name: svm
+              type: group
+              description: >
+                SVM (Storage Virtual Machine) information for the source.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the SVM.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the SVM.
+            - name: luns
+              type: group
+              description: >
+                LUNs information for the source.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    Name of the LUN.
+                - name: uuid
+                  type: keyword
+                  description: >
+                    UUID of the LUN.
+            - name: path
+              type: keyword
+              description: >
+                Path for the source endpoint.
+            - name: consistency_group_volumes
+              type: keyword
+              description: >
+                Consistency group volumes for the source.
+        - name: state
+          type: keyword
+          description: >
+            The state of the SnapMirror relationship.
+        - name: svmdr_volumes
+          type: keyword
+          description: >
+            SVMDR volumes.
+        - name: throttle
+          type: keyword
+          description: >
+            Throttle information.
+        - name: total_transfer_bytes
+          type: long
+          description: >
+            Total bytes transferred.
+        - name: total_transfer_duration
+          type: long
+          description: >
+            Total duration of transfers in seconds.
+        - name: transfer
+          type: keyword
+          description: >
+            Transfer information.
+        - name: transfer_schedule
+          type: keyword
+          description: >
+            Transfer schedule.
+        - name: unhealthy_reason
+          type: keyword
+          description: >
+            Reason for unhealthy state.
+        - name: uuid
+          type: keyword
+          description: >
+            UUID of the SnapMirror relationship.
     - name: aggregate
       type: group
       description: >
         Example group
       fields:
-        - name: example
+        - name: uuid
           type: keyword
           description: >
-            Example field
+            UUID of the aggregate.
+        - name: name
+          type: keyword
+          description: >
+            Name of the aggregate.
+        - name: node
+          type: group
+          description: >
+            Node information for the aggregate.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                Name of the node.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the node.
+        - name: home_node
+          type: group
+          description: >
+            Home node information for the aggregate.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                Name of the home node.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the home node.
+        - name: snapshot
+          type: group
+          description: >
+            Snapshot information for the aggregate.
+          fields:
+            - name: files_total
+              type: long
+              description: >
+                Total number of files in the snapshot.
+            - name: files_used
+              type: long
+              description: >
+                Number of files used in the snapshot.
+            - name: max_files_available
+              type: long
+              description: >
+                Maximum number of files available in the snapshot.
+            - name: max_files_used
+              type: long
+              description: >
+                Maximum number of files used in the snapshot.
+        - name: space
+          type: group
+          description: >
+            Space information for the aggregate.
+          fields:
+            - name: block_storage
+              type: group
+              description: >
+                Block storage space information for the aggregate.
+              fields:
+                - name: size
+                  type: long
+                  description: >
+                    Total size of block storage in bytes.
+                - name: available
+                  type: long
+                  description: >
+                    Available block storage space in bytes.
+                - name: used
+                  type: long
+                  description: >
+                    Used block storage space in bytes.
+                - name: used_percent
+                  type: float
+                  description: >
+                    Percentage of used block storage space.
+                - name: full_threshold_percent
+                  type: float
+                  description: >
+                    Full threshold percentage for block storage.
+                - name: physical_used
+                  type: long
+                  description: >
+                    Physical used space in block storage in bytes.
+                - name: physical_used_percent
+                  type: float
+                  description: >
+                    Percentage of physical used space in block storage.
+                - name: data_compacted_count
+                  type: long
+                  description: >
+                    Number of data compaction operations performed.
+                - name: data_compaction_space_saved
+                  type: long
+                  description: >
+                    Space saved by data compaction in bytes.
+                - name: data_compaction_space_saved_percent
+                  type: float
+                  description: >
+                    Percentage of space saved by data compaction.
+                - name: volume_deduplication_shared_count
+                  type: long
+                  description: >
+                    Number of deduplication shared blocks in volumes.
+                - name: volume_deduplication_space_saved
+                  type: long
+                  description: >
+                    Space saved by volume deduplication in bytes.
+                - name: volume_deduplication_space_saved_percent
+                  type: float
+                  description: >
+                    Percentage of space saved by volume deduplication.
+            - name: snapshot
+              type: group
+              description: >
+                Snapshot space information for the aggregate.
+              fields:
+                - name: size
+                  type: long
+                  description: >
+                    Total size of snapshots in bytes.
+                - name: used
+                  type: long
+                  description: >
+                    Used snapshot space in bytes.
+                - name: available
+                  type: long
+                  description: >
+                    Available snapshot space in bytes.
+                - name: used_percent
+                  type: float
+                  description: >
+                    Percentage of used snapshot space.
+                - name: reserve_percent
+                  type: float
+                  description: >
+                    Percentage of reserved snapshot space.
+                - name: total
+                  type: long
+                  description: >
+                    Total snapshot space in bytes.
+                  type: float
+                  description: >
+                    Percentage of used snapshot space.
+            - name: cloud_storage
+              type: group
+              description: >
+                Cloud storage space information for the aggregate.
+              fields:
+                - name: used
+                  type: long
+                  description: >
+                    Used cloud storage space in bytes.
+            - name: efficiency
+              type: group
+              description: >
+                Efficiency information for the aggregate.
+              fields:
+                - name: savings
+                  type: long
+                  description: >
+                    Space savings in bytes.
+                - name: ratio
+                  type: float
+                  description: >
+                    Efficiency ratio.
+                - name: logical_used
+                  type: long
+                  description: >
+                    Logical used space in bytes.
+                - name: cross_volume_background_dedupe
+                  type: long
+                  description: >
+                    Cross-volume background deduplication value.
+                - name: cross_volume_inline_dedupe
+                  type: long
+                  description: >
+                    Cross-volume inline deduplication value.
+                - name: cross_volume_dedupe_savings
+                  type: long
+                  description: >
+                    Cross-volume deduplication savings in bytes.
+                - name: auto_adaptive_compression_savings
+                  type: long
+                  description: >
+                    Auto-adaptive compression savings in bytes.
+                - name: enable_workload_informed_tsse
+                  type: boolean
+                  description: >
+                    Indicates if workload-informed TSSE is enabled.
+                - name: wise_tsse_min_used_capacity_pct
+                  type: float
+                  description: >
+                    Minimum used capacity percent for WISE TSSE.
+                  type: float
+                  description: >
+                    Percentage of space savings.
+            - name: efficiency_without_snapshots
+              type: group
+              description: >
+                Efficiency information without snapshots for the aggregate.
+              fields:
+                - name: logical_used
+                  type: long
+                  description: >
+                    Logical used space in bytes.
+                - name: physical_used
+                  type: long
+                  description: >
+                    Physical used space in bytes.
+                - name: savings
+                  type: long
+                  description: >
+                    Space savings in bytes.
+                - name: savings_percent
+                  type: float
+                  description: >
+                    Percentage of space savings.
+            - name: efficiency_without_snapshots_flexclones
+              type: group
+              description: >
+                Efficiency information without snapshots and FlexClones for the aggregate.
+              fields:
+                - name: logical_used
+                  type: long
+                  description: >
+                    Logical used space in bytes.
+                - name: physical_used
+                  type: long
+                  description: >
+                    Physical used space in bytes.
+                - name: savings
+                  type: long
+                  description: >
+                    Space savings in bytes.
+                - name: savings_percent
+                  type: float
+                  description: >
+                    Percentage of space savings.
+        - name: state
+          type: keyword
+          description: >
+            State of the aggregate.
+        - name: snaplock_type
+          type: keyword
+          description: >
+            SnapLock type of the aggregate.
+        - name: create_time
+          type: date
+          description: >
+            Creation time of the aggregate.
+        - name: data_encryption
+          type: group
+          description: >
+            Data encryption information for the aggregate.
+          fields:
+            - name: savings
+              type: long
+              description: >
+                Space savings in bytes.
+            - name: ratio
+              type: float
+              description: >
+                Efficiency ratio.
+            - name: logical_used
+              type: long
+              description: >
+                Logical used space in bytes.
+            
+                Type of encryption.
+        - name: block_storage
+          type: group
+          description: >
+            Block storage information for the aggregate.
+          fields:
+            - name: primary
+              type: boolean
+              description: >
+                Indicates if block storage is primary.
+            - name: type
+              type: keyword
+              description: >
+                Type of block storage.
+        - name: cloud_storage
+          type: group
+          description: >
+            Cloud storage information for the aggregate.
+          fields:
+            - name: attach_eligible
+              type: boolean
+              description: >
+                Indicates if the aggregate is eligible for cloud storage attachment.
+            - name: stores
+              type: keyword
+              description: >
+                JSON string representing the cloud storage stores.
+        - name: inactive_data_reporting
+          type: group
+          description: >
+            Inactive data reporting information for the aggregate.
+          fields:
+            - name: enabled
+              type: boolean
+              description: >
+                Indicates if inactive data reporting is enabled.
+            - name: start_time
+              type: date
+              description: >
+                Start time of inactive data reporting (present only if enabled).
+        - name: inode_attributes
+          type: group
+          description: >
+            Inode attributes for the aggregate.
+          fields:
+            - name: files_total
+              type: long
+              description: >
+                Total number of files.
+            - name: files_used
+              type: long
+              description: >
+                Number of files used.
+            - name: max_files_available
+              type: long
+              description: >
+                Maximum number of files available.
+            - name: max_files_possible
+              type: long
+              description: >
+                Maximum possible number of files.
+            - name: max_files_used
+              type: long
+              description: >
+                Maximum number of files used.
+            - name: used_percent
+              type: float
+              description: >
+                Percentage of used files.
+                Total number of files.
+        - name: volume_count
+          type: long
+          description: >
+            Number of volumes in the aggregate.
+        - name: metrics
+          type: group
+          description: >
+            Metrics for the aggregate.
+          fields:
+            - name: timestamp
+              type: date
+              description: Timestamp of the metric sample.
+            - name: duration
+              type: long
+              description: Duration of the metric sample in milliseconds.
+            - name: status
+              type: keyword
+              description: Status of the metric sample.
+            - name: latency
+              type: group
+              description: IO latency metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: Read IO latency in milliseconds.
+                - name: write
+                  type: float
+                  description: Write IO latency in milliseconds.
+                - name: other
+                  type: float
+                  description: Other IO latency in milliseconds.
+                - name: total
+                  type: float
+                  description: Total IO latency in milliseconds.
+            - name: iops
+              type: group
+              description: Input/output operations per second metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: Read IOPS.
+                - name: write
+                  type: float
+                  description: Write IOPS.
+                - name: other
+                  type: float
+                  description: Other IOPS.
+                - name: total
+                  type: float
+                  description: Total IOPS.
+            - name: throughput
+              type: group
+              description: Throughput metrics in bytes per second.
+              fields:
+                - name: read
+                  type: float
+                  description: Read throughput in bytes per second.
+                - name: write
+                  type: float
+                  description: Write throughput in bytes per second.
+                - name: other
+                  type: float
+                  description: Other throughput in bytes per second.
+                - name: total
+                  type: float
+                  description: Total throughput in bytes per second.
+        - name: statistics
+          type: group
+          description: >
+            Statistics for the aggregate.
+          fields:
+            - name: timestamp
+              type: date
+              description: >
+                Timestamp of the storage statistics sample.
+            - name: status
+              type: keyword
+              description: >
+                Status of the storage statistics sample.
+            - name: throughput_raw
+              type: group
+              description: >
+                Raw throughput metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: >
+                    Raw read throughput in bytes per second.
+                - name: write
+                  type: float
+                  description: >
+                    Raw write throughput in bytes per second.
+                - name: other
+                  type: float
+                  description: >
+                    Raw other throughput in bytes per second.
+                - name: total
+                  type: float
+                  description: >
+                    Raw total throughput in bytes per second.
+            - name: iops_raw
+              type: group
+              description: >
+                Raw IOPS metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: >
+                    Raw read IO latency.
+                - name: write
+                  type: float
+                  description: >
+                    Raw write IO latency.
+                - name: other
+                  type: float
+                  description: >
+                    Raw other IO latency.
+                - name: total
+                  type: float
+                  description: >
+                    Raw total IO latency.
+            - name: latency_raw
+              type: group
+              description: >
+                Raw latency metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: >
+                    Raw read latency.
+                - name: write
+                  type: float
+                  description: >
+                    Raw write latency.
+                - name: other
+                  type: float
+                  description: >
+                    Raw other latency.
+                - name: total
+                  type: float
+                  description: >
+                    Raw total latency.
     - name: lun
       type: group
       description: >
         Example group
       fields:
-        - name: example
+        - name: uuid
           type: keyword
           description: >
-            Example field
+            UUID of the LUN.
+        - name: svm
+          type: group
+          description: >
+            SVM (Storage Virtual Machine) information for the LUN.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                Name of the SVM.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the SVM.
+        - name: name
+          type: keyword
+          description: >
+            Name of the LUN.
+        - name: location
+          type: group
+          description: >
+            Location information for the LUN.
+          fields:
+            - name: logical_unit
+              type: keyword
+              description: Logical unit of the LUN location.
+            - name: node
+              type: group
+              description: Node information for the LUN location.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the node.
+                - name: uuid
+                  type: keyword
+                  description: UUID of the node.
+            - name: volume
+              type: group
+              description: Volume information for the LUN location.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the volume.
+                - name: uuid
+                  type: keyword
+                  description: UUID of the volume.
+        - name: class
+          type: keyword
+          description: >
+            Class of the LUN.
+        - name: create_time
+          type: date
+          description: >
+            Creation time of the LUN.
+        - name: enabled
+          type: boolean
+          description: >
+            Indicates if the LUN is enabled.
+        - name: os_type
+          type: keyword
+          description: >
+            OS type of the LUN.
+        - name: serial_number
+          type: keyword
+          description: >
+            Serial number of the LUN.
+        - name: space
+          type: group
+          description: >
+            Space information for the LUN.
+          fields:
+            - name: scsi_thin_provisioning_support_enabled
+              type: boolean
+              description: >
+                Indicates if SCSI thin provisioning support is enabled for the LUN.
+            - name: size
+              type: long
+              description: >
+                Total size of the LUN in bytes.
+            - name: used
+              type: long
+              description: >
+                Used space of the LUN in bytes.
+            - name: guarantee
+              type: group
+              description: >
+                Guarantee information for the LUN space.
+              fields:
+                - name: requested
+                  type: boolean
+                  description: >
+                    Requested space for the LUN guarantee in bytes.
+                - name: reserved
+                  type: boolean
+                  description: >
+                    Reserved space for the LUN guarantee in bytes.
+        - name: status
+          type: group
+          description: >
+            Status information for the LUN.
+          fields:
+            - name: container_state
+              type: keyword
+              description: >
+                State of the LUN container.
+            - name: mapped
+              type: boolean
+              description: >
+                Indicates if the LUN is mapped.
+            - name: read_only
+              type: boolean
+              description: >
+                Indicates if the LUN is read-only.
+            - name: state
+              type: keyword
+              description: >
+                State of the LUN.
+                State of the LUN.
+        - name: vvol
+          type: group
+          description: >
+            VVol information for the LUN.
+          fields:
+            - name: is_bound
+              type: boolean
+              description: >
+                Indicates if the VVol is bound.
+            - name: bindings
+              type: keyword
+              description: >
+                JSON string representing the VVol bindings (present only if is_bound is true).
     - name: qos_policy
       type: group
       description: >
         Example group
       fields:
-        - name: example
+        - name: name
           type: keyword
           description: >
-            Example field
+            Name of the QoS policy.
+        - name: object_count
+          type: long
+          description: >
+            Number of objects associated with the QoS policy.
+        - name: pgid
+          type: keyword
+          description: >
+            PGID of the QoS policy.
+        - name: policy_class
+          type: keyword
+          description: >
+            Policy class of the QoS policy.
+        - name: scope
+          type: keyword
+          description: >
+            Scope of the QoS policy.
+        - name: svm
+          type: group
+          description: >
+            SVM (Storage Virtual Machine) information for the QoS policy.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                Name of the SVM.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the QoS policy.
+        - name: adaptive
+          type: group
+          description: >
+            Adaptive QoS policy settings.
+          fields:
+          - name: absolute_min_iops
+            type: long
+            description: >
+              Absolute minimum IOPS for the adaptive QoS policy.
+          - name: block_size
+            type: long
+            description: >
+              Block size for the adaptive QoS policy.
+          - name: expected_iops
+            type: long
+            description: >
+              Expected IOPS for the adaptive QoS policy.
+          - name: expected_iops_allocation
+            type: long
+            description: >
+              Expected IOPS allocation for the adaptive QoS policy.
+          - name: peak_iops
+            type: long
+            description: >
+              Peak IOPS for the adaptive QoS policy.
+          - name: peak_iops_allocation
+            type: long
+            description: >
+              Peak IOPS allocation for the adaptive QoS policy.
+        - name: fixed
+          type: group
+          description: >
+            Fixed QoS policy settings.
+          fields:
+          - name: capacity_shared
+            type: boolean
+            description: >
+              Indicates if the fixed QoS policy is capacity shared.
+          - name: max_throughput_iops
+            type: long
+            description: >
+              Maximum throughput in IOPS for the fixed QoS policy.
+          - name: max_throughput_mbps
+            type: long
+            description: >
+              Maximum throughput in MBps for the fixed QoS policy.
+          - name: min_throughput_iops
+            type: long
+            description: >
+              Minimum throughput in IOPS for the fixed QoS policy.
+          - name: min_throughput_mbps
+            type: long
+            description: >
+              Minimum throughput in MBps for the fixed QoS policy.
     - name: qtree
       type: group
       description: >
-        Example group
+        Qtree information.
       fields:
-        - name: example
+        - name: volume
+          type: group
+          description: Volume information for the qtree.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the volume.
+            - name: uuid
+              type: keyword
+              description: UUID of the volume.
+        - name: id
           type: keyword
-          description: >
-            Example field
+          description: ID of the qtree.
+        - name: svm
+          type: group
+          description: SVM (Storage Virtual Machine) information for the qtree.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the SVM.
+            - name: uuid
+              type: keyword
+              description: UUID of the SVM.
+        - name: name
+          type: keyword
+          description: Name of the qtree.
+        - name: security_style
+          type: keyword
+          description: Security style of the qtree.
+        - name: unix_permissions
+          type: integer
+          description: UNIX permissions of the qtree.
+        - name: export_policy
+          type: group
+          description: Export policy information for the qtree.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the export policy.
+            - name: id
+              type: keyword
+              description: ID of the export policy.
+        - name: path
+          type: keyword
+          description: Path of the qtree.
+        - name: nas_path
+          type: keyword
+          description: NAS path of the qtree.
+        - name: user_id
+          type: keyword
+          description: User ID for the qtree.
+        - name: group_id
+          type: keyword
+          description: Group ID for the qtree.
+        - name: metric
+          type: group
+          description: Metrics for the qtree.
+          fields:
+            - name: duration
+              type: long
+              description: Duration of the metric sample in milliseconds.
+            - name: iops
+              type: group
+              description: IOPS metrics for the qtree.
+              fields:
+                - name: read
+                  type: float
+                  description: Read IOPS.
+                - name: write
+                  type: float
+                  description: Write IOPS.
+                - name: other
+                  type: float
+                  description: Other IOPS.
+                - name: total
+                  type: float
+                  description: Total IOPS.
+            - name: latency
+              type: group
+              description: Latency metrics for the qtree.
+              fields:
+                - name: read
+                  type: float
+                  description: Read latency in milliseconds.
+                - name: write
+                  type: float
+                  description: Write latency in milliseconds.
+                - name: other
+                  type: float
+                  description: Other latency in milliseconds.
+                - name: total
+                  type: float
+                  description: Total latency in milliseconds.
+            - name: throughput
+              type: group
+              description: Throughput metrics for the qtree in bytes per second.
+              fields:
+                - name: read
+                  type: float
+                  description: Read throughput in bytes per second.
+                - name: write
+                  type: float
+                  description: Write throughput in bytes per second.
+                - name: other
+                  type: float
+                  description: Other throughput in bytes per second.
+                - name: total
+                  type: float
+                  description: Total throughput in bytes per second.
+            - name: qtree
+              type: group
+              description: Brief qtree information for the metric.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the qtree.
+                - name: id
+                  type: keyword
+                  description: ID of the qtree.
+            - name: status
+              type: keyword
+              description: Status of the metric sample.
+            - name: svm
+              type: group
+              description: SVM (Storage Virtual Machine) information for the metric.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the SVM.
+                - name: uuid
+                  type: keyword
+                  description: UUID of the SVM.
+            - name: timestamp
+              type: date
+              description: Timestamp of the metric sample.
+            - name: volume
+              type: group
+              description: Volume information for the metric.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the volume.
+                - name: uuid
+                  type: keyword
+                  description: UUID of the volume.
     - name: quota_report
       type: group
       description: >
-        Example group
+        Quota report information.
       fields:
-        - name: example
+        - name: svm
+          type: group
+          description: SVM (Storage Virtual Machine) information for the quota report.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the SVM.
+            - name: uuid
+              type: keyword
+              description: UUID of the SVM.
+        - name: volume
+          type: group
+          description: Volume information for the quota report.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the volume.
+            - name: uuid
+              type: keyword
+              description: UUID of the volume.
+        - name: qtree
+          type: group
+          description: Qtree information for the quota report.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the qtree.
+            - name: id
+              type: keyword
+              description: ID of the qtree.
+        - name: type
           type: keyword
-          description: >
-            Example field
+          description: Type of the quota report.
+        - name: index
+          type: long
+          description: Index of the quota report.
+        - name: group
+          type: group
+          description: Group information for the quota report.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the group.
+            - name: uuid
+              type: keyword
+              description: UUID of the group.
+        - name: users
+          type: keyword
+          description: JSON string representing users for the quota report.
+        - name: files
+          type: group
+          description: File limits and usage for the quota report.
+          fields:
+            - name: hard_limit
+              type: long
+              description: Hard file limit.
+            - name: soft_limit
+              type: long
+              description: Soft file limit.
+            - name: used
+              type: long
+              description: Number of files used.
+        - name: space
+          type: group
+          description: Space limits and usage for the quota report.
+          fields:
+            - name: hard_limit
+              type: long
+              description: Hard space limit in bytes.
+            - name: soft_limit
+              type: long
+              description: Soft space limit in bytes.
+            - name: used
+              type: long
+              description: Space used in bytes.
     - name: quota_rule
       type: group
       description: >
-        Example group
+        Quota rule information.
       fields:
-        - name: example
+        - name: files
+          type: group
+          description: File limits for the quota rule.
+          fields:
+            - name: hard_limit
+              type: long
+              description: Hard file limit.
+            - name: soft_limit
+              type: long
+              description: Soft file limit.
+        - name: space
+          type: group
+          description: Space limits for the quota rule.
+          fields:
+            - name: hard_limit
+              type: long
+              description: Hard space limit in bytes.
+            - name: soft_limit
+              type: long
+              description: Soft space limit in bytes.
+        - name: qtree
+          type: group
+          description: Brief qtree information for the quota rule.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the qtree.
+            - name: id
+              type: keyword
+              description: ID of the qtree.
+        - name: svm_name
           type: keyword
+          description: Name of the SVM for the quota rule.
+        - name: type
+          type: keyword
+          description: Type of the quota rule.
+        - name: user_mapping
+          type: boolean
           description: >
-            Example field
+            If true, mapping applies after user mapping resolved.
+        - name: users
+          type: keyword
+          description: JSON string representing users for the quota rule.
+        - name: uuid
+          type: keyword
+          description: UUID of the quota rule.
+        - name: volume
+          type: keyword
+          description: Name of the volume for the quota rule.
     - name: volume
       type: group
       description: >
         Example group
       fields:
-        - name: example
+        - name: uuid
           type: keyword
-          description: >
-            Example field
+          description: UUID of the volume.
+        - name: comment
+          type: keyword
+          description: Comment for the volume.
+        - name: create_time
+          type: date
+          description: Creation time of the volume.
+        - name: language
+          type: keyword
+          description: Language of the volume.
+        - name: name
+          type: keyword
+          description: Name of the volume.
+        - name: size
+          type: long
+          description: Size of the volume in bytes.
+        - name: state
+          type: keyword
+          description: State of the volume.
+        - name: style
+          type: keyword
+          description: Style of the volume.
+        - name: tiering_policy
+          type: keyword
+          description: Tiering policy of the volume.
+        - name: cloud_retrieval_policy
+          type: keyword
+          description: Cloud retrieval policy of the volume.
+        - name: type
+          type: keyword
+          description: Type of the volume.
+        - name: aggregates
+          type: keyword
+          description: JSON string representing aggregates for the volume.
+        - name: snapshot_count
+          type: long
+          description: Number of snapshots for the volume.
+        - name: msid
+          type: keyword
+          description: MSID of the volume.
+        - name: scheduled_snapshot_naming_scheme
+          type: keyword
+          description: Scheduled snapshot naming scheme for the volume.
+        - name: clone
+          type: group
+          description: Clone information for the volume.
+          fields:
+            - name: is_flexclone
+              type: boolean
+              description: Indicates if the volume is a FlexClone.
+            - name: has_flexclone
+              type: boolean
+              description: Indicates if the volume has FlexClones.
+        - name: nas
+          type: group
+          description: NAS information for the volume.
+          fields:
+            - name: gid
+              type: keyword
+              description: GID for the NAS volume.
+            - name: security_style
+              type: keyword
+              description: Security style for the NAS volume.
+            - name: uid
+              type: keyword
+              description: UID for the NAS volume.
+            - name: unix_permissions
+              type: integer
+              description: UNIX permissions for the NAS volume.
+            - name: export_policy
+              type: group
+              description: Export policy information for the NAS volume.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the export policy.
+                - name: id
+                  type: keyword
+                  description: ID of the export policy.
+        - name: snapshot_locking_enabled
+          type: boolean
+          description: Indicates if snapshot locking is enabled for the volume.
+        - name: snapshot_policy
+          type: group
+          description: Snapshot policy information for the volume.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the snapshot policy.
+            - name: uuid
+              type: keyword
+              description: UUID of the snapshot policy.
+        - name: svm
+          type: group
+          description: SVM (Storage Virtual Machine) information for the volume.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the SVM.
+            - name: uuid
+              type: keyword
+              description: UUID of the SVM.
+        - name: space
+          type: group
+          description: Space information for the volume.
+          fields:
+            - name: size
+              type: long
+              description: Total size of the volume in bytes.
+            - name: available
+              type: long
+              description: Available space in bytes.
+            - name: used
+              type: long
+              description: Used space in bytes.
+            - name: is_used_stale
+              type: boolean
+              description: Indicates if the used space is stale.
+            - name: block_storage_inactive_user_data
+              type: long
+              description: Block storage inactive user data in bytes.
+            - name: local_tier_footprint
+              type: long
+              description: Local tier footprint in bytes.
+            - name: footprint
+              type: long
+              description: Footprint in bytes.
+            - name: over_provisioned
+              type: boolean
+              description: Indicates if the volume is over-provisioned.
+            - name: metadata
+              type: long
+              description: Metadata size in bytes.
+            - name: total_footprint
+              type: long
+              description: Total footprint in bytes.
+            - name: delayed_free_footprint
+              type: long
+              description: Delayed free footprint in bytes.
+            - name: file_operation_metadata
+              type: long
+              description: File operation metadata in bytes.
+            - name: volume_guarantee_footprint
+              type: long
+              description: Volume guarantee footprint in bytes.
+            - name: effective_total_footprint
+              type: long
+              description: Effective total footprint in bytes.
+            - name: user_data
+              type: long
+              description: User data size in bytes.
+            - name: used_by_afs
+              type: long
+              description: Space used by AFS in bytes.
+            - name: available_percent
+              type: float
+              description: Available space as a percentage.
+            - name: afs_total
+              type: long
+              description: Total AFS space in bytes.
+            - name: full_threshold_percent
+              type: float
+              description: Full threshold percentage.
+            - name: nearly_full_threshold_percent
+              type: float
+              description: Nearly full threshold percentage.
+            - name: overwrite_reserve
+              type: long
+              description: Overwrite reserve in bytes.
+            - name: overwrite_reserve_used
+              type: long
+              description: Overwrite reserve used in bytes.
+            - name: size_available_for_snapshots
+              type: long
+              description: Size available for snapshots in bytes.
+            - name: percent_used
+              type: float
+              description: Percent of space used.
+            - name: fractional_reserve
+              type: float
+              description: Fractional reserve percentage.
+            - name: block_storage_inactive_user_data_pct
+              type: float
+              description: Block storage inactive user data percentage.
+            - name: physical_used_percent
+              type: float
+              description: Physical used percentage.
+            - name: physical_used
+              type: long
+              description: Physical used space in bytes.
+            - name: expected_available
+              type: long
+              description: Expected available space in bytes.
+            - name: filesystem_size
+              type: long
+              description: Filesystem size in bytes.
+            - name: filesystem_size_fixed
+              type: boolean
+              description: Indicates if the filesystem size is fixed.
+            - name: large_size_enabled
+              type: boolean
+              description: Indicates if large size is enabled.
+            - name: total_metadata
+              type: long
+              description: Total metadata in bytes.
+            - name: total_metadata_footprint
+              type: long
+              description: Total metadata footprint in bytes.
+            - name: logical_space
+              type: group
+              description: Logical space information for the volume.
+              fields:
+                - name: reporting
+                  type: boolean
+                  description: Indicates if logical space reporting is enabled.
+                - name: enforcement
+                  type: boolean
+                  description: Indicates if logical space enforcement is enabled.
+                - name: used_by_afs
+                  type: long
+                  description: Logical space used by AFS in bytes.
+                - name: used_percent
+                  type: float
+                  description: Logical space used percent.
+                - name: used
+                  type: long
+                  description: Logical space used in bytes.
+                - name: used_by_snapshots
+                  type: long
+                  description: Logical space used by snapshots in bytes.
+            - name: snapshot
+              type: group
+              description: Snapshot space information for the volume.
+              fields:
+                - name: used
+                  type: long
+                  description: Snapshot space used in bytes.
+                - name: reserve_percent
+                  type: float
+                  description: Snapshot reserve percent.
+                - name: autodelete_enabled
+                  type: boolean
+                  description: Indicates if snapshot autodelete is enabled.
+                - name: reserve_size
+                  type: long
+                  description: Snapshot reserve size in bytes.
+                - name: space_used_percent
+                  type: float
+                  description: Snapshot space used percent.
+                - name: reserve_available
+                  type: long
+                  description: Snapshot reserve available in bytes.
+                - name: autodelete_trigger
+                  type: keyword
+                  description: Snapshot autodelete trigger.
+                - name: autodelete
+                  type: group
+                  description: Autodelete information for the snapshot.
+                  fields:
+                    - name: enabled
+                      type: boolean
+                      description: Indicates if autodelete is enabled.
+                    - name: trigger
+                      type: keyword
+                      description: Trigger for autodelete.
+                    - name: delete_order
+                      type: keyword
+                      description: Delete order for autodelete.
+                    - name: defer_delete
+                      type: boolean
+                      description: Indicates if delete is deferred for autodelete.
+                    - name: commitment
+                      type: keyword
+                      description: Commitment for autodelete.
+                    - name: target_free_space
+                      type: long
+                      description: Target free space in bytes for autodelete.
+                    - name: prefix
+                      type: keyword
+                      description: Prefix for autodelete.
+        - name: metrics
+          type: group
+          description: Metrics for the volume.
+          fields:
+            - name: timestamp
+              type: date
+              description: Timestamp of the metric sample.
+            - name: duration
+              type: long
+              description: Duration of the metric sample in milliseconds.
+            - name: status
+              type: keyword
+              description: Status of the metric sample.
+            - name: latency
+              type: group
+              description: IO latency metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: Read IO latency in milliseconds.
+                - name: write
+                  type: float
+                  description: Write IO latency in milliseconds.
+                - name: other
+                  type: float
+                  description: Other IO latency in milliseconds.
+                - name: total
+                  type: float
+                  description: Total IO latency in milliseconds.
+            - name: iops
+              type: group
+              description: Input/output operations per second metrics.
+              fields:
+                - name: read
+                  type: float
+                  description: Read IOPS.
+                - name: write
+                  type: float
+                  description: Write IOPS.
+                - name: other
+                  type: float
+                  description: Other IOPS.
+                - name: total
+                  type: float
+                  description: Total IOPS.
+            - name: throughput
+              type: group
+              description: Throughput metrics in bytes per second.
+              fields:
+                - name: read
+                  type: float
+                  description: Read throughput in bytes per second.
+                - name: write
+                  type: float
+                  description: Write throughput in bytes per second.
+                - name: other
+                  type: float
+                  description: Other throughput in bytes per second.
+                - name: total
+                  type: float
+                  description: Total throughput in bytes per second.
+        - name: snapmirror
+          type: keyword
+          description: SnapMirror information for the volume.
+        - name: activity_tracking
+          type: group
+          description: Activity tracking information for the volume.
+          fields:
+            - name: supported
+              type: boolean
+              description: Indicates if activity tracking is supported for the volume.
+            - name: state
+              type: keyword
+              description: State of activity tracking for the volume.
+        - name: granular_data
+          type: boolean
+          description: Indicates if granular data is enabled for the volume.
+        - name: granular_data_mode
+          type: keyword
+          description: Granular data mode for the volume.          
     - name: svm_peer
       type: group
       description: >
-        Example group
+        SVM peer information.
+      fields:
+      - name: applications
+        type: keyword
+        description: JSON string representing the applications associated with the SVM peer.
+      - name: name
+        type: keyword
+        description: Name of the SVM peer.
+      - name: peer
+        type: group
+        description: Peer information for the SVM peer.
+        fields:
+          - name: cluster
+            type: group
+            description: Cluster information for the peer.
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the cluster.
+              - name: uuid
+                type: keyword
+                description: UUID of the cluster.
+          - name: svm
+            type: group
+            description: SVM (Storage Virtual Machine) information for the peer.
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the SVM.
+              - name: uuid
+                type: keyword
+                description: UUID of the SVM.
+      - name: state
+        type: keyword
+        description: State of the SVM peer relationship.
+      - name: svm
+        type: group
+        description: SVM (Storage Virtual Machine) information for the SVM peer.
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM.
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM.
+      - name: uuid
+        type: keyword
+        description: UUID of the SVM peer.
     - name: svm
       type: group
       description: >
         Example group
       fields:
-        - name: example
-          type: keyword
-          description: >
+      - name: uuid
+        type: keyword
+        description: UUID of the SVM.
+      - name: name
+        type: keyword
+        description: Name of the SVM.
+      - name: subtype
+        type: keyword
+        description: Subtype of the SVM.
+      - name: language
+        type: keyword
+        description: Language of the SVM.
+      - name: aggregates
+        type: keyword
+        description: JSON string representing aggregates for the SVM.
+      - name: state
+        type: keyword
+        description: State of the SVM.
+      - name: comment
+        type: keyword
+        description: Comment for the SVM.
+      - name: ipspace
+        type: group
+        description: IPSpace information for the SVM.
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the IPSpace.
+          - name: uuid
+            type: keyword
+            description: UUID of the IPSpace.
+      - name: ip_interfaces
+        type: keyword
+        description: JSON string representing IP interfaces for the SVM.
+      - name: snapshot_policy
+        type: group
+        description: Snapshot policy information for the SVM.
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the snapshot policy.
+          - name: uuid
+            type: keyword
+            description: UUID of the snapshot policy.
+      - name: nis_enabled
+        type: boolean
+        description: Indicates if NIS is enabled for the SVM.
+      - name: ldap_enabled
+        type: boolean
+        description: Indicates if LDAP is enabled for the SVM.
+      - name: nfs
+        type: group
+        description: NFS protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if NFS is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if NFS is enabled.
+      - name: cifs
+        type: group
+        description: CIFS protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if CIFS is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if CIFS is enabled.
+      - name: iscsi
+        type: group
+        description: iSCSI protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if iSCSI is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if iSCSI is enabled.
+      - name: fcp
+        type: group
+        description: FCP protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if FCP is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if FCP is enabled.
+      - name: nvme
+        type: group
+        description: NVMe protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if NVMe is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if NVMe is enabled.
+      - name: ndmp_allowed
+        type: boolean
+        description: Indicates if NDMP is allowed for the SVM.
+      - name: s3
+        type: group
+        description: S3 protocol status for the SVM.
+        fields:
+          - name: allowed
+            type: boolean
+            description: Indicates if S3 is allowed.
+          - name: enabled
+            type: boolean
+            description: Indicates if S3 is enabled.
+      - name: certificate
+        type: keyword
+        description: UUID of the certificate for the SVM.
+      - name: aggregates_delegated
+        type: boolean
+        description: Indicates if aggregates are delegated for the SVM.
+      - name: retention_period
+        type: long
+        description: Retention period for the SVM.
+      - name: max_volumes
+        type: long
+        description: Maximum number of volumes for the SVM.
+      - name: anti_ransomware_default_volume_state
+        type: keyword
+        description: Default anti-ransomware state for volumes in the SVM.
+      - name: is_space_reporting_logical
+        type: boolean
+        description: Indicates if space reporting is logical for the SVM.
+      - name: is_space_enforcement_logical
+        type: boolean
+        description: Indicates if space enforcement is logical for the SVM.
+      - name: auto_enable_analytics
+        type: boolean
+        description: Indicates if analytics are auto-enabled for the SVM.
+      - name: auto_enable_activity_tracking
+        type: boolean
+        description: Indicates if activity tracking is auto-enabled for the SVM.
+      - name: anti_ransomware_auto_switch_enabled
+        type: boolean
+        description: Indicates if anti-ransomware auto-switch is enabled for the SVM.
+      - name: anti_ransomware_auto_switch_data_percent
+        type: float
+        description: Data percent threshold for anti-ransomware auto-switch.
+      - name: anti_ransomware_auto_switch_no_ext_days
+        type: long
+        description: Number of days with no extensions for anti-ransomware auto-switch.
+      - name: anti_ransomware_auto_switch_min_period
+        type: long
+        description: Minimum period for anti-ransomware auto-switch.
+      - name: anti_ransomware_auto_switch_min_files
+        type: long
+        description: Minimum files for anti-ransomware auto-switch.
+      - name: anti_ransomware_auto_switch_min_exts
+        type: long
+        description: Minimum extensions for anti-ransomware auto-switch.
             Example field
     - name: disk
       type: group

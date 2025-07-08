@@ -257,6 +257,31 @@ func createSnapshotSpaceFields(snapshotSpace SnapshotSpace) mapstr.M {
 	}
 }
 
+func createSnapshotFields(snapshot Snapshot) mapstr.M {
+	return mapstr.M{
+		"volume":            createNamedObjectFields(snapshot.Volume),
+		"uuid":              snapshot.UUID,
+		"svm":               createNamedObjectFields(snapshot.SVM),
+		"name":              snapshot.Name,
+		"create_time":       snapshot.CreateTime,
+		"snapmirror_label":  snapshot.SnapmirrorLabel,
+		"size":              snapshot.Size,
+		"version_uuid":      snapshot.VersionUUID,
+		"provenance_volume": createNamedObjectFields(snapshot.ProvenanceVolume),
+		"logical_size":      snapshot.LogicalSize,
+		"compress_savings":  snapshot.CompressSavings,
+		"dedup_savings":     snapshot.DedupSavings,
+		"vbn0_savings":      snapshot.VBN0Savings,
+	}
+}
+
+func createVolumeAutodeleteInfoFields(info VolumeAutodeleteInfo) mapstr.M {
+	// Implement this function based on the fields of VolumeAutodeleteInfo
+	return mapstr.M{
+		// Fill in fields as appropriate
+	}
+}
+
 func createBlockStorageSpaceFields(b BlockStorageSpace) mapstr.M {
 	return mapstr.M{
 		"size":                                     b.Size,
@@ -387,9 +412,17 @@ func createLunStatusFields(status LunStatus) mapstr.M {
 }
 
 func createLunVVolFields(vvol LunVVol) mapstr.M {
-	return mapstr.M{
+	m := mapstr.M{
 		"is_bound": vvol.IsBound,
 	}
+	if vvol.IsBound {
+		bindings, err := netapp.ToJSONString(vvol.Bindings)
+		if err != nil {
+			bindings = ""
+		}
+		m["bindings"] = bindings
+	}
+	return m
 }
 
 func createQTreeFields(q Qtree) mapstr.M {
@@ -801,8 +834,8 @@ func createVolumeFields(record Volume) mapstr.M {
 			"snapshot_count":                   record.SnapshotCount,
 			"msid":                             record.MSID,
 			"scheduled_snapshot_naming_scheme": record.ScheduledSnapshotNamingScheme,
-			"clone":                            record.Clone,
-			"nas":                              record.NAS,
+			"clone":                            createCloneInfoFields(record.Clone),
+			"nas":                              createNASInfoFields(record.NAS),
 			"snapshot_locking_enabled":         record.SnapshotLockingEnabled,
 			"snapshot_policy":                  createNamedObjectFields(record.NamedObject),
 			"svm":                              createNamedObjectFields(record.SVM),
@@ -817,6 +850,23 @@ func createVolumeFields(record Volume) mapstr.M {
 	}
 
 	return fields
+}
+
+func createCloneInfoFields(cloneInfo CloneInfo) mapstr.M {
+	return mapstr.M{
+		"is_flexclone":  cloneInfo.IsFlexclone,
+		"has_flexclone": cloneInfo.HasFlexclone,
+	}
+}
+
+func createNASInfoFields(nas NASInfo) mapstr.M {
+	return mapstr.M{
+		"gid":              nas.GID,
+		"security_style":   nas.SecurityStyle,
+		"uid":              nas.UID,
+		"unix_permissions": nas.UnixPermissions,
+		"export_policy":    createExportPolicyIDFields(nas.ExportPolicy),
+	}
 }
 
 func createVolumeSpaceFields(volumeSpace VolumeSpace) mapstr.M {
@@ -864,6 +914,20 @@ func createVolumeSpaceFields(volumeSpace VolumeSpace) mapstr.M {
 			"used":              volumeSpace.LogicalSpace.Used,
 			"used_by_snapshots": volumeSpace.LogicalSpace.UsedBySnapshots,
 		},
+		"snapshot": createVolumeSnapshotFields(volumeSpace.Snapshot),
+	}
+}
+
+func createVolumeSnapshotFields(snap VolumeSnapshot) mapstr.M {
+	return mapstr.M{
+		"used":               snap.Used,
+		"reserve_percent":    snap.ReservePercent,
+		"autodelete_enabled": snap.AutodeleteEnabled,
+		"reserve_size":       snap.ReserveSize,
+		"space_used_percent": snap.SpaceUsedPercent,
+		"reserve_available":  snap.ReserveAvailable,
+		"autodelete_trigger": snap.AutodeleteTrigger,
+		"autodelete":         createVolumeAutodeleteInfoFields(snap.Autodelete),
 	}
 }
 
@@ -959,10 +1023,31 @@ func createQosPolicyFields(policy QosPolicy) mapstr.M {
 		},
 	}
 	if policy.Adaptive != nil {
-		fields["adaptive"] = policy.Adaptive
+		fields["adaptive"] = createQosAdaptiveFields(*policy.Adaptive)
+	} else if policy.Fixed != nil {
+		fields["fixed"] = createQosFixedFields(*policy.Fixed)
 	}
-	if policy.Fixed != nil {
-		fields["fixed"] = policy.Fixed
-	}
+
 	return fields
+}
+
+func createQosAdaptiveFields(adaptive QosAdaptive) mapstr.M {
+	return mapstr.M{
+		"absolute_min_iops":        adaptive.AbsoluteMinIops,
+		"block_size":               adaptive.BlockSize,
+		"expected_iops":            adaptive.ExpectedIops,
+		"expected_iops_allocation": adaptive.ExpectedIopsAllocation,
+		"peak_iops":                adaptive.PeakIops,
+		"peak_iops_allocation":     adaptive.PeakIopsAllocation,
+	}
+}
+
+func createQosFixedFields(fixed QosFixed) mapstr.M {
+	return mapstr.M{
+		"capacity_shared":     fixed.CapacityShared,
+		"max_throughput_iops": fixed.MaxThroughputIops,
+		"max_throughput_mbps": fixed.MaxThroughputMbps,
+		"min_throughput_iops": fixed.MinThroughputIops,
+		"min_throughput_mbps": fixed.MinThroughputMbps,
+	}
 }
