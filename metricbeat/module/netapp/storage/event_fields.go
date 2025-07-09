@@ -257,28 +257,33 @@ func createSnapshotSpaceFields(snapshotSpace SnapshotSpace) mapstr.M {
 	}
 }
 
-func createSnapshotFields(snapshot Snapshot) mapstr.M {
-	return mapstr.M{
-		"volume":            createNamedObjectFields(snapshot.Volume),
-		"uuid":              snapshot.UUID,
-		"svm":               createNamedObjectFields(snapshot.SVM),
-		"name":              snapshot.Name,
-		"create_time":       snapshot.CreateTime,
-		"snapmirror_label":  snapshot.SnapmirrorLabel,
-		"size":              snapshot.Size,
-		"version_uuid":      snapshot.VersionUUID,
-		"provenance_volume": createNamedObjectFields(snapshot.ProvenanceVolume),
-		"logical_size":      snapshot.LogicalSize,
-		"compress_savings":  snapshot.CompressSavings,
-		"dedup_savings":     snapshot.DedupSavings,
-		"vbn0_savings":      snapshot.VBN0Savings,
-	}
-}
+// func createSnapshotFields(snapshot Snapshot) mapstr.M {
+// 	return mapstr.M{
+// 		"volume":            createNamedObjectFields(snapshot.Volume),
+// 		"uuid":              snapshot.UUID,
+// 		"svm":               createNamedObjectFields(snapshot.SVM),
+// 		"name":              snapshot.Name,
+// 		"create_time":       snapshot.CreateTime,
+// 		"snapmirror_label":  snapshot.SnapmirrorLabel,
+// 		"size":              snapshot.Size,
+// 		"version_uuid":      snapshot.VersionUUID,
+// 		"provenance_volume": createNamedObjectFields(snapshot.ProvenanceVolume),
+// 		"logical_size":      snapshot.LogicalSize,
+// 		"compress_savings":  snapshot.CompressSavings,
+// 		"dedup_savings":     snapshot.DedupSavings,
+// 		"vbn0_savings":      snapshot.VBN0Savings,
+// 	}
+// }
 
 func createVolumeAutodeleteInfoFields(info VolumeAutodeleteInfo) mapstr.M {
-	// Implement this function based on the fields of VolumeAutodeleteInfo
 	return mapstr.M{
-		// Fill in fields as appropriate
+		"enabled":           info.Enabled,
+		"trigger":           info.Trigger,
+		"delete_order":      info.DeleteOrder,
+		"defer_delete":      info.DeferDelete,
+		"commitment":        info.Commitment,
+		"target_free_space": info.TargetFreeSpace,
+		"prefix":            info.Prefix,
 	}
 }
 
@@ -301,9 +306,9 @@ func createBlockStorageSpaceFields(b BlockStorageSpace) mapstr.M {
 }
 
 func createDiskFields(record Disk) mapstr.M {
-	aggregates := make([]mapstr.M, len(record.Aggregates))
-	for i, agg := range record.Aggregates {
-		aggregates[i] = createNamedObjectFields(agg)
+	aggregates, err := netapp.ToJSONString(record.Aggregates)
+	if err != nil {
+		aggregates = ""
 	}
 
 	return mapstr.M{
@@ -324,7 +329,7 @@ func createDiskFields(record Disk) mapstr.M {
 		"node":                    createNamedObjectFields(record.Node),
 		"home_node":               createNamedObjectFields(record.HomeNode),
 		"aggregates":              aggregates,
-		"shelf":                   record.Shelf.UID,
+		"shelf_uuid":              record.Shelf.UID,
 		"local":                   record.Local,
 		"bay":                     record.Bay,
 		"self_encrypting":         record.SelfEncrypting,
@@ -554,7 +559,7 @@ func createACPEvents(m *MetricSet, record Shelf) []mb.Event {
 	return events
 }
 
-func createACPFields(acp ACP) interface{} {
+func createACPFields(acp ACP) mapstr.M {
 	return mapstr.M{
 		"enabled":          acp.Enabled,
 		"channel":          acp.Channel,
@@ -581,7 +586,7 @@ func createPortEvents(m *MetricSet, record Shelf) []mb.Event {
 	return events
 }
 
-func createPortFields(port ShelfPort) interface{} {
+func createPortFields(port ShelfPort) mapstr.M {
 	m := mapstr.M{
 		"id":         port.ID,
 		"module_id":  port.ModuleID,
@@ -729,7 +734,7 @@ func createPSUEvents(m *MetricSet, record Shelf) []mb.Event {
 	for _, fru := range record.FRUs {
 		if fru.Type == "psu" && fru.PSU != nil {
 			shelfFields := createShelfFields(record)
-			shelfFields["fru"] = createPSUFields(fru)
+			shelfFields["psu"] = createPSUFields(fru)
 			event := mb.Event{
 				Timestamp: timestamp,
 				MetricSetFields: mapstr.M{
@@ -761,7 +766,7 @@ func createDiskPathEvents(m *MetricSet, record Disk) []mb.Event {
 	return events
 }
 
-func createPSUFields(fru FRU) interface{} {
+func createPSUFields(fru FRU) mapstr.M {
 
 	return mapstr.M{
 		"type":             fru.Type,
@@ -771,12 +776,10 @@ func createPSUFields(fru FRU) interface{} {
 		"serial_number":    fru.SerialNumber,
 		"firmware_version": fru.FirmwareVersion,
 		"installed":        fru.Installed,
-		"psu": mapstr.M{
-			"model":        fru.PSU.Model,
-			"power_drawn":  fru.PSU.PowerDrawn,
-			"power_rating": fru.PSU.PowerRating,
-			"crest_factor": fru.PSU.CrestFactor,
-		},
+		"model":            fru.PSU.Model,
+		"power_drawn":      fru.PSU.PowerDrawn,
+		"power_rating":     fru.PSU.PowerRating,
+		"crest_factor":     fru.PSU.CrestFactor,
 	}
 }
 
@@ -842,7 +845,7 @@ func createVolumeFields(record Volume) mapstr.M {
 			"space":                            createVolumeSpaceFields(record.Space),
 			"metrics":                          createStorageMetricsFields(record.Metrics),
 			"snapmirror":                       record.Snapmirror,
-			"activity_tracking":                record.ActivityTracking,
+			"activity_tracking":                createActivityTrackingFields(record.ActivityTracking),
 			"granular_data":                    record.GranularData,
 			"granular_data_mode":               record.GranularDataMode,
 			// "analytics":                        record.Analytics,
@@ -852,6 +855,12 @@ func createVolumeFields(record Volume) mapstr.M {
 	return fields
 }
 
+func createActivityTrackingFields(activity ActivityTracking) mapstr.M {
+	return mapstr.M{
+		"supported": activity.Supported,
+		"state":     activity.State,
+	}
+}
 func createCloneInfoFields(cloneInfo CloneInfo) mapstr.M {
 	return mapstr.M{
 		"is_flexclone":  cloneInfo.IsFlexclone,

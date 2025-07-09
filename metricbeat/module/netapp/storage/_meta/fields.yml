@@ -552,6 +552,7 @@
                 Indicates if the aggregate is eligible for cloud storage attachment.
             - name: stores
               type: keyword
+              ignore_above: 32766
               description: >
                 JSON string representing the cloud storage stores.
         - name: inactive_data_reporting
@@ -876,6 +877,7 @@
                 Indicates if the VVol is bound.
             - name: bindings
               type: keyword
+              ignore_above: 32766
               description: >
                 JSON string representing the VVol bindings (present only if is_bound is true).
     - name: qos_policy
@@ -1173,6 +1175,7 @@
               description: UUID of the group.
         - name: users
           type: keyword
+          ignore_above: 32766
           description: JSON string representing users for the quota report.
         - name: files
           type: group
@@ -1247,6 +1250,7 @@
             If true, mapping applies after user mapping resolved.
         - name: users
           type: keyword
+          ignore_above: 32766
           description: JSON string representing users for the quota rule.
         - name: uuid
           type: keyword
@@ -1294,6 +1298,7 @@
           description: Type of the volume.
         - name: aggregates
           type: keyword
+          ignore_above: 32766
           description: JSON string representing aggregates for the volume.
         - name: snapshot_count
           type: long
@@ -1628,6 +1633,7 @@
       fields:
       - name: applications
         type: keyword
+        ignore_above: 32766
         description: JSON string representing the applications associated with the SVM peer.
       - name: name
         type: keyword
@@ -1691,6 +1697,7 @@
         description: Language of the SVM.
       - name: aggregates
         type: keyword
+        ignore_above: 32766
         description: JSON string representing aggregates for the SVM.
       - name: state
         type: keyword
@@ -1710,6 +1717,7 @@
             description: UUID of the IPSpace.
       - name: ip_interfaces
         type: keyword
+        ignore_above: 32766
         description: JSON string representing IP interfaces for the SVM.
       - name: snapshot_policy
         type: group
@@ -1839,18 +1847,361 @@
     - name: disk
       type: group
       description: >
-        Example group
+        Disk related information.
       fields:
-        - name: example
+        - name: name
           type: keyword
+          description: Name of the disk.
+        - name: uid
+          type: keyword
+          description: UID of the disk.
+        - name: serial_number
+          type: keyword
+          description: Serial number of the disk.
+        - name: model
+          type: keyword
+          description: Model of the disk.
+        - name: vendor
+          type: keyword
+          description: Vendor of the disk.
+        - name: firmware_version
+          type: keyword
+          description: Firmware version of the disk.
+        - name: usable_size
+          type: long
+          description: Usable size of the disk in bytes.
+        - name: rated_life_used_percent
+          type: float
+          description: Rated life used percent of the disk.
+        - name: type
+          type: keyword
+          description: Type of the disk.
+        - name: effective_type
+          type: keyword
+          description: Effective type of the disk.
+        - name: class
+          type: keyword
+          description: Class of the disk.
+        - name: container_type
+          type: keyword
+          description: Container type of the disk.
+        - name: pool
+          type: keyword
+          description: Pool of the disk.
+        - name: state
+          type: keyword
+          description: State of the disk.
+        - name: node
+          type: group
+          description: Node information for the disk.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the node.
+            - name: uuid
+              type: keyword
+              description: UUID of the node.
+        - name: home_node
+          type: group
+          description: Home node information for the disk.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the home node.
+            - name: uuid
+              type: keyword
+              description: UUID of the home node.
+        - name: aggregates
+          type: keyword
+          ignore_above: 32766
           description: >
-            Example field
+            JSON string containing Aggregates associated with the disk.
+        - name: shelf_uuid
+          type: keyword
+          description: UUID of the shelf containing the disk.
+        - name: local
+          type: boolean
+          description: Indicates if the disk is local.
+        - name: bay
+          type: long
+          description: Bay number of the disk.
+        - name: self_encrypting
+          type: boolean
+          description: Indicates if the disk is self-encrypting.
+        - name: fips_certified
+          type: boolean
+          description: Indicates if the disk is FIPS certified.
+        - name: bytes_per_sector
+          type: long
+          description: Number of bytes per sector on the disk.
+        - name: sector_count
+          type: long
+          description: Total sector count of the disk.
+        - name: right_size_sector_count
+          type: long
+          description: Right size sector count of the disk.
+        - name: physical_size
+          type: long
+          description: Physical size of the disk in bytes.
+        - name: stats
+          type: group
+          description: Statistics for the disk.
+          fields:
+            - name: average_latency
+              type: float
+              description: Average latency of the disk in milliseconds.
+            - name: throughput
+              type: float
+              description: Throughput of the disk in bytes per second.
+            - name: iops_total
+              type: float
+              description: Total input/output operations per second for the disk.
+            - name: path_error_count
+              type: long
+              description: Number of path errors for the disk.
+            - name: power_on_hours
+              type: long
+              description: Number of hours the disk has been powered on.
     - name: shelf
       type: group
       description: >
-        Example group
+        Shelf related information.
       fields:
-        - name: example
+        - name: uid
           type: keyword
-          description: >
-            Example field
+          description: UID of the shelf.
+        - name: name
+          type: keyword
+          description: Name of the shelf.
+        - name: id
+          type: keyword
+          description: ID of the shelf.
+        - name: serial_number
+          type: keyword
+          description: Serial number of the shelf.
+        - name: model
+          type: keyword
+          description: Model of the shelf.
+        - name: module_type
+          type: keyword
+          description: Module type of the shelf.
+        - name: internal
+          type: boolean
+          description: Indicates if the shelf is internal.
+        - name: local
+          type: boolean
+          description: Indicates if the shelf is local.
+        - name: manufacturer
+          type: keyword
+          description: Manufacturer name of the shelf.
+        - name: state
+          type: keyword
+          description: State of the shelf.
+        - name: connection_type
+          type: keyword
+          description: Connection type of the shelf.
+        - name: disk_count
+          type: long
+          description: Number of disks in the shelf.
+        - name: location_led
+          type: keyword
+          description: Location LED status of the shelf.
+        - name: paths
+          type: keyword
+          ignore_above: 32766
+          description: JSON string representing the paths of the shelf.
+        - name: bays
+          type: keyword
+          ignore_above: 32766
+          description: JSON string representing the bays of the shelf.
+        - name: acp
+          type: group
+          description: ACP (Automatic Configuration Protocol) information for the shelf.
+          fields:
+            - name: enabled
+              type: boolean
+              description: Indicates if ACP is enabled for the shelf.
+            - name: channel
+              type: keyword
+              description: Channel of the ACP for the shelf.
+            - name: connection_state
+              type: keyword
+              description: Connection state of the ACP for the shelf.
+            - name: node
+              type: group
+              description: Node information for the ACP.
+              fields:
+                - name: name
+                  type: keyword
+                  description: Name of the node.
+                - name: uuid
+                  type: keyword
+                  description: UUID of the node.
+        - name: port
+          type: group
+          description: Port information for the shelf.
+          fields:
+            - name: id
+              type: keyword
+              description: ID of the port.
+            - name: module_id
+              type: keyword
+              description: Module ID of the port.
+            - name: designator
+              type: keyword
+              description: Designator of the port.
+            - name: state
+              type: keyword
+              description: State of the port.
+            - name: internal
+              type: boolean
+              description: Indicates if the port is internal.
+            - name: wwn
+              type: keyword
+              description: WWN of the port.
+            - name: cable_id
+              type: keyword
+              description: Identifier of the cable attached to the port.
+            - name: remote_wwn
+              type: keyword
+              description: Remote WWN connected to the port.
+        - name: current_sensor
+          type: group
+          description: Current sensor information for the shelf.
+          fields:
+            - name: id
+              type: keyword
+              description: ID of the current sensor.
+            - name: location
+              type: keyword
+              description: Location of the current sensor.
+            - name: current
+              type: float
+              description: Current value measured by the sensor (in Amperes).
+            - name: state
+              type: keyword
+              description: State of the current sensor.
+            - name: installed
+              type: boolean
+              description: Indicates if the current sensor is installed.
+        - name: voltage_sensor
+          type: group
+          description: Voltage sensor information for the shelf.
+          fields:
+            - name: id
+              type: keyword
+              description: ID of the voltage sensor.
+            - name: location
+              type: keyword
+              description: Location of the voltage sensor.
+            - name: voltage
+              type: float
+              description: Voltage value measured by the sensor (in Volts).
+            - name: state
+              type: keyword
+              description: State of the voltage sensor.
+            - name: installed
+              type: boolean
+              description: Indicates if the voltage sensor is installed.
+        - name: temperature_sensor
+          type: group
+          description: Temperature sensor information for the shelf.
+          fields:
+            - name: id
+              type: keyword
+              description: ID of the temperature sensor.
+            - name: location
+              type: keyword
+              description: Location of the temperature sensor.
+            - name: temperature
+              type: float
+              description: Temperature value measured by the sensor (in Celsius).
+            - name: ambient
+              type: float
+              description: Ambient temperature value measured by the sensor (in Celsius).
+            - name: state
+              type: keyword
+              description: State of the temperature sensor.
+            - name: installed
+              type: boolean
+              description: Indicates if the temperature sensor is installed.
+            - name: threshold
+              type: group
+              description: Threshold information for the temperature sensor.
+              fields:
+                - name: high
+                  type: group
+                  description: High threshold values.
+                  fields:
+                    - name: critical
+                      type: float
+                      description: Critical high temperature threshold.
+                    - name: warning
+                      type: float
+                      description: Warning high temperature threshold.
+                - name: low
+                  type: group
+                  description: Low threshold values.
+                  fields:
+                    - name: critical
+                      type: float
+                      description: Critical low temperature threshold.
+                    - name: warning
+                      type: float
+                      description: Warning low temperature threshold.
+        - name: fan
+          type: group
+          description: Fan information for the shelf.
+          fields:
+            - name: id
+              type: keyword
+              description: ID of the fan.
+            - name: location
+              type: keyword
+              description: Location of the fan.
+            - name: rpm
+              type: long
+              description: Rotations per minute of the fan.
+            - name: state
+              type: keyword
+              description: State of the fan.
+            - name: installed
+              type: boolean
+              description: Indicates if the fan is installed.
+        - name: psu
+          type: group
+          description: Power Supply Unit (PSU) information for the shelf.
+          fields:
+            - name: type
+              type: keyword
+              description: Type of the PSU.
+            - name: id
+              type: keyword
+              description: ID of the PSU.
+            - name: state
+              type: keyword
+              description: State of the PSU.
+            - name: part_number
+              type: keyword
+              description: Part number of the PSU.
+            - name: serial_number
+              type: keyword
+              description: Serial number of the PSU.
+            - name: firmware_version
+              type: keyword
+              description: Firmware version of the PSU.
+            - name: installed
+              type: boolean
+              description: Indicates if the PSU is installed.
+            - name: model
+              type: keyword
+              description: Model of the PSU.
+            - name: power_drawn
+              type: float
+              description: Power drawn by the PSU (in Watts).
+            - name: power_rating
+              type: float
+              description: Power rating of the PSU (in Watts).
+            - name: crest_factor
+              type: float
+              description: Crest factor of the PSU.
