@@ -1,83 +1,69 @@
 package storage
 
-import "time"
+import (
+	"time"
 
-// General API response objects
-type Records[T any] struct {
-	NumRecords int           `json:"num_records"`
-	Records    []T           `json:"records"`
-	Error      StorageStatus `json:"error"`
-}
-
-type StorageStatus struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-// General types
-type NamedObject struct {
-	Name string `json:"name"`
-	UUID string `json:"uuid"`
-}
+	"github.com/elastic/beats/v7/metricbeat/module/netapp"
+)
 
 type StorageMetrics struct {
-	Timestamp  time.Time `json:"timestamp"`
-	Duration   string    `json:"duration"`
-	Status     string    `json:"status"`
-	Throughput IOLatency `json:"throughput"`
-	IOPS       IOLatency `json:"iops"`
-	Latency    IOLatency `json:"latency"`
+	Timestamp  time.Time        `json:"timestamp"`
+	Duration   string           `json:"duration"`
+	Status     string           `json:"status"`
+	Throughput netapp.IOLatency `json:"throughput"`
+	IOPS       netapp.IOLatency `json:"iops"`
+	Latency    netapp.IOLatency `json:"latency"`
 }
 
 type StorageStatistics struct {
-	Timestamp     time.Time `json:"timestamp"`
-	Status        string    `json:"status"`
-	ThroughputRaw IOLatency `json:"throughput_raw"`
-	IOPSRaw       IOLatency `json:"iops_raw"`
-	LatencyRaw    IOLatency `json:"latency_raw"`
+	Timestamp     time.Time        `json:"timestamp"`
+	Status        string           `json:"status"`
+	ThroughputRaw netapp.IOLatency `json:"throughput_raw"`
+	IOPSRaw       netapp.IOLatency `json:"iops_raw"`
+	LatencyRaw    netapp.IOLatency `json:"latency_raw"`
 }
 
 // Specific storage objects
 
 type Disk struct {
-	Name                 string        `json:"name"`
-	UID                  string        `json:"uid"`
-	SerialNumber         string        `json:"serial_number"`
-	Model                string        `json:"model"`
-	Vendor               string        `json:"vendor"`
-	FirmwareVersion      string        `json:"firmware_version"`
-	UsableSize           int64         `json:"usable_size"`
-	RatedLifeUsedPercent int           `json:"rated_life_used_percent"`
-	Type                 string        `json:"type"`
-	EffectiveType        string        `json:"effective_type"`
-	Class                string        `json:"class"`
-	ContainerType        string        `json:"container_type"`
-	Pool                 string        `json:"pool"`
-	State                string        `json:"state"`
-	Node                 NamedObject   `json:"node"`
-	HomeNode             NamedObject   `json:"home_node"`
-	Aggregates           []NamedObject `json:"aggregates"`
-	Shelf                Shelf         `json:"shelf"`
-	Local                bool          `json:"local"`
-	Paths                []DiskPath    `json:"paths"`
-	Bay                  int           `json:"bay"`
-	SelfEncrypting       bool          `json:"self_encrypting"`
-	FipsCertified        bool          `json:"fips_certified"`
-	BytesPerSector       int64         `json:"bytes_per_sector"`
-	SectorCount          int64         `json:"sector_count"`
-	RightSizeSectorCount int64         `json:"right_size_sector_count"`
-	PhysicalSize         int64         `json:"physical_size"`
-	Stats                DiskStats     `json:"stats"`
+	Name                 string               `json:"name"`
+	UID                  string               `json:"uid"`
+	SerialNumber         string               `json:"serial_number"`
+	Model                string               `json:"model"`
+	Vendor               string               `json:"vendor"`
+	FirmwareVersion      string               `json:"firmware_version"`
+	UsableSize           int64                `json:"usable_size"`
+	RatedLifeUsedPercent int                  `json:"rated_life_used_percent"`
+	Type                 string               `json:"type"`
+	EffectiveType        string               `json:"effective_type"`
+	Class                string               `json:"class"`
+	ContainerType        string               `json:"container_type"`
+	Pool                 string               `json:"pool"`
+	State                string               `json:"state"`
+	Node                 netapp.NamedObject   `json:"node"`
+	HomeNode             netapp.NamedObject   `json:"home_node"`
+	Aggregates           []netapp.NamedObject `json:"aggregates"`
+	Shelf                Shelf                `json:"shelf"`
+	Local                bool                 `json:"local"`
+	Paths                []DiskPath           `json:"paths"`
+	Bay                  int                  `json:"bay"`
+	SelfEncrypting       bool                 `json:"self_encrypting"`
+	FipsCertified        bool                 `json:"fips_certified"`
+	BytesPerSector       int64                `json:"bytes_per_sector"`
+	SectorCount          int64                `json:"sector_count"`
+	RightSizeSectorCount int64                `json:"right_size_sector_count"`
+	PhysicalSize         int64                `json:"physical_size"`
+	Stats                DiskStats            `json:"stats"`
 }
 
 type DiskPath struct {
-	DiskPathName string      `json:"disk_path_name"`
-	Initiator    string      `json:"initiator"`
-	PortName     string      `json:"port_name"`
-	PortType     string      `json:"port_type"`
-	WWNN         string      `json:"wwnn"`
-	WWPN         string      `json:"wwpn"`
-	Node         NamedObject `json:"node"`
+	DiskPathName string             `json:"disk_path_name"`
+	Initiator    string             `json:"initiator"`
+	PortName     string             `json:"port_name"`
+	PortType     string             `json:"port_type"`
+	WWNN         string             `json:"wwnn"`
+	WWPN         string             `json:"wwpn"`
+	Node         netapp.NamedObject `json:"node"`
 }
 
 type DiskStats struct {
@@ -89,41 +75,41 @@ type DiskStats struct {
 }
 
 type SVM struct {
-	UUID                                string         `json:"uuid"`
-	Name                                string         `json:"name"`
-	Subtype                             string         `json:"subtype"`
-	Language                            string         `json:"language"`
-	Aggregates                          []Aggregate    `json:"aggregates"`
-	State                               string         `json:"state"`
-	Comment                             string         `json:"comment"`
-	IPSpace                             NamedObject    `json:"ipspace"`
-	IPInterfaces                        []IPInterface  `json:"ip_interfaces"`
-	SnapshotPolicy                      NamedObject    `json:"snapshot_policy"`
-	NSSwitch                            NSSwitch       `json:"nsswitch"`
-	NIS                                 NIS            `json:"nis"`
-	LDAP                                LDAP           `json:"ldap"`
-	NFS                                 ProtocolStatus `json:"nfs"`
-	CIFS                                ProtocolStatus `json:"cifs"`
-	ISCSI                               ProtocolStatus `json:"iscsi"`
-	FCP                                 ProtocolStatus `json:"fcp"`
-	NVMe                                ProtocolStatus `json:"nvme"`
-	NDMP                                NDMP           `json:"ndmp"`
-	S3                                  ProtocolStatus `json:"s3"`
-	Certificate                         Certificate    `json:"certificate"`
-	AggregatesDelegated                 bool           `json:"aggregates_delegated"`
-	RetentionPeriod                     int            `json:"retention_period"`
-	MaxVolumes                          string         `json:"max_volumes"`
-	AntiRansomwareDefaultVolumeState    string         `json:"anti_ransomware_default_volume_state"`
-	IsSpaceReportingLogical             bool           `json:"is_space_reporting_logical"`
-	IsSpaceEnforcementLogical           bool           `json:"is_space_enforcement_logical"`
-	AutoEnableAnalytics                 bool           `json:"auto_enable_analytics"`
-	AutoEnableActivityTracking          bool           `json:"auto_enable_activity_tracking"`
-	AntiRansomwareAutoSwitchEnabled     bool           `json:"anti_ransomware_auto_switch_from_learning_to_enabled"`
-	AntiRansomwareAutoSwitchDataPercent int            `json:"anti_ransomware_auto_switch_minimum_incoming_data_percent"`
-	AntiRansomwareAutoSwitchNoExtDays   int            `json:"anti_ransomware_auto_switch_duration_without_new_file_extension"`
-	AntiRansomwareAutoSwitchMinPeriod   int            `json:"anti_ransomware_auto_switch_minimum_learning_period"`
-	AntiRansomwareAutoSwitchMinFiles    int            `json:"anti_ransomware_auto_switch_minimum_file_count"`
-	AntiRansomwareAutoSwitchMinExts     int            `json:"anti_ransomware_auto_switch_minimum_file_extension"`
+	UUID                                string             `json:"uuid"`
+	Name                                string             `json:"name"`
+	Subtype                             string             `json:"subtype"`
+	Language                            string             `json:"language"`
+	Aggregates                          []Aggregate        `json:"aggregates"`
+	State                               string             `json:"state"`
+	Comment                             string             `json:"comment"`
+	IPSpace                             netapp.NamedObject `json:"ipspace"`
+	IPInterfaces                        []IPInterface      `json:"ip_interfaces"`
+	SnapshotPolicy                      netapp.NamedObject `json:"snapshot_policy"`
+	NSSwitch                            NSSwitch           `json:"nsswitch"`
+	NIS                                 NIS                `json:"nis"`
+	LDAP                                LDAP               `json:"ldap"`
+	NFS                                 ProtocolStatus     `json:"nfs"`
+	CIFS                                ProtocolStatus     `json:"cifs"`
+	ISCSI                               ProtocolStatus     `json:"iscsi"`
+	FCP                                 ProtocolStatus     `json:"fcp"`
+	NVMe                                ProtocolStatus     `json:"nvme"`
+	NDMP                                NDMP               `json:"ndmp"`
+	S3                                  ProtocolStatus     `json:"s3"`
+	Certificate                         Certificate        `json:"certificate"`
+	AggregatesDelegated                 bool               `json:"aggregates_delegated"`
+	RetentionPeriod                     int                `json:"retention_period"`
+	MaxVolumes                          string             `json:"max_volumes"`
+	AntiRansomwareDefaultVolumeState    string             `json:"anti_ransomware_default_volume_state"`
+	IsSpaceReportingLogical             bool               `json:"is_space_reporting_logical"`
+	IsSpaceEnforcementLogical           bool               `json:"is_space_enforcement_logical"`
+	AutoEnableAnalytics                 bool               `json:"auto_enable_analytics"`
+	AutoEnableActivityTracking          bool               `json:"auto_enable_activity_tracking"`
+	AntiRansomwareAutoSwitchEnabled     bool               `json:"anti_ransomware_auto_switch_from_learning_to_enabled"`
+	AntiRansomwareAutoSwitchDataPercent int                `json:"anti_ransomware_auto_switch_minimum_incoming_data_percent"`
+	AntiRansomwareAutoSwitchNoExtDays   int                `json:"anti_ransomware_auto_switch_duration_without_new_file_extension"`
+	AntiRansomwareAutoSwitchMinPeriod   int                `json:"anti_ransomware_auto_switch_minimum_learning_period"`
+	AntiRansomwareAutoSwitchMinFiles    int                `json:"anti_ransomware_auto_switch_minimum_file_count"`
+	AntiRansomwareAutoSwitchMinExts     int                `json:"anti_ransomware_auto_switch_minimum_file_extension"`
 }
 
 type IPInterface struct {
@@ -167,32 +153,32 @@ type Certificate struct {
 }
 
 type Volume struct {
-	UUID                          string           `json:"uuid"`
-	Comment                       string           `json:"comment"`
-	CreateTime                    time.Time        `json:"create_time"`
-	Language                      string           `json:"language"`
-	Name                          string           `json:"name"`
-	Size                          int64            `json:"size"`
-	State                         string           `json:"state"`
-	Style                         string           `json:"style"`
-	Tiering                       Tiering          `json:"tiering"`
-	CloudRetrievalPolicy          string           `json:"cloud_retrieval_policy"`
-	Type                          string           `json:"type"`
-	Aggregates                    []NamedObject    `json:"aggregates"`
-	SnapshotCount                 int              `json:"snapshot_count"`
-	MSID                          int64            `json:"msid"`
-	ScheduledSnapshotNamingScheme string           `json:"scheduled_snapshot_naming_scheme"`
-	Clone                         CloneInfo        `json:"clone"`
-	NAS                           NASInfo          `json:"nas"`
-	SnapshotLockingEnabled        bool             `json:"snapshot_locking_enabled"`
-	NamedObject                   NamedObject      `json:"snapshot_policy"`
-	SVM                           NamedObject      `json:"svm"`
-	Space                         VolumeSpace      `json:"space"`
-	Metrics                       StorageMetrics   `json:"metric"`
-	Snapmirror                    SnapmirrorInfo   `json:"snapmirror"`
-	ActivityTracking              ActivityTracking `json:"activity_tracking"`
-	GranularData                  bool             `json:"granular_data"`
-	GranularDataMode              string           `json:"granular_data_mode"`
+	UUID                          string               `json:"uuid"`
+	Comment                       string               `json:"comment"`
+	CreateTime                    time.Time            `json:"create_time"`
+	Language                      string               `json:"language"`
+	Name                          string               `json:"name"`
+	Size                          int64                `json:"size"`
+	State                         string               `json:"state"`
+	Style                         string               `json:"style"`
+	Tiering                       Tiering              `json:"tiering"`
+	CloudRetrievalPolicy          string               `json:"cloud_retrieval_policy"`
+	Type                          string               `json:"type"`
+	Aggregates                    []netapp.NamedObject `json:"aggregates"`
+	SnapshotCount                 int                  `json:"snapshot_count"`
+	MSID                          int64                `json:"msid"`
+	ScheduledSnapshotNamingScheme string               `json:"scheduled_snapshot_naming_scheme"`
+	Clone                         CloneInfo            `json:"clone"`
+	NAS                           NASInfo              `json:"nas"`
+	SnapshotLockingEnabled        bool                 `json:"snapshot_locking_enabled"`
+	NamedObject                   netapp.NamedObject   `json:"snapshot_policy"`
+	SVM                           netapp.NamedObject   `json:"svm"`
+	Space                         VolumeSpace          `json:"space"`
+	Metrics                       StorageMetrics       `json:"metric"`
+	Snapmirror                    SnapmirrorInfo       `json:"snapmirror"`
+	ActivityTracking              ActivityTracking     `json:"activity_tracking"`
+	GranularData                  bool                 `json:"granular_data"`
+	GranularDataMode              string               `json:"granular_data_mode"`
 	// Analytics                     AnalyticsState   `json:"analytics"`
 }
 
@@ -305,35 +291,35 @@ type ActivityTracking struct {
 }
 
 type Snapshot struct {
-	Volume           NamedObject `json:"volume"`
-	UUID             string      `json:"uuid"`
-	SVM              NamedObject `json:"svm"`
-	Name             string      `json:"name"`
-	CreateTime       time.Time   `json:"create_time"`
-	SnapmirrorLabel  string      `json:"snapmirror_label"`
-	Size             int64       `json:"size"`
-	VersionUUID      string      `json:"version_uuid"`
-	ProvenanceVolume NamedObject `json:"provenance_volume"`
-	LogicalSize      int64       `json:"logical_size"`
-	CompressSavings  int64       `json:"compress_savings"`
-	DedupSavings     int64       `json:"dedup_savings"`
-	VBN0Savings      int64       `json:"vbn0_savings"`
+	Volume           netapp.NamedObject `json:"volume"`
+	UUID             string             `json:"uuid"`
+	SVM              netapp.NamedObject `json:"svm"`
+	Name             string             `json:"name"`
+	CreateTime       time.Time          `json:"create_time"`
+	SnapmirrorLabel  string             `json:"snapmirror_label"`
+	Size             int64              `json:"size"`
+	VersionUUID      string             `json:"version_uuid"`
+	ProvenanceVolume netapp.NamedObject `json:"provenance_volume"`
+	LogicalSize      int64              `json:"logical_size"`
+	CompressSavings  int64              `json:"compress_savings"`
+	DedupSavings     int64              `json:"dedup_savings"`
+	VBN0Savings      int64              `json:"vbn0_savings"`
 }
 
 type Qtree struct {
-	Volume          NamedObject     `json:"volume"`
-	ID              int             `json:"id"`
-	SVM             NamedObject     `json:"svm"`
-	Name            string          `json:"name"`
-	SecurityStyle   string          `json:"security_style"`
-	UnixPermissions int             `json:"unix_permissions"`
-	ExportPolicy    ExportPolicyID  `json:"export_policy"`
-	Path            string          `json:"path"`
-	NAS             NASPath         `json:"nas"`
-	User            UnixID          `json:"user"`
-	Group           UnixID          `json:"group"`
-	Metrics         QtreeMetrics    `json:"metricss"`
-	Statistics      QtreeStatistics `json:"statistics"`
+	Volume          netapp.NamedObject `json:"volume"`
+	ID              int                `json:"id"`
+	SVM             netapp.NamedObject `json:"svm"`
+	Name            string             `json:"name"`
+	SecurityStyle   string             `json:"security_style"`
+	UnixPermissions int                `json:"unix_permissions"`
+	ExportPolicy    ExportPolicyID     `json:"export_policy"`
+	Path            string             `json:"path"`
+	NAS             NASPath            `json:"nas"`
+	User            UnixID             `json:"user"`
+	Group           UnixID             `json:"group"`
+	Metrics         QtreeMetrics       `json:"metricss"`
+	Statistics      QtreeStatistics    `json:"statistics"`
 }
 
 type ExportPolicyID struct {
@@ -350,30 +336,23 @@ type UnixID struct {
 }
 
 type QtreeMetrics struct {
-	Duration        string      `json:"duration"`
-	IOPS            IOLatency   `json:"iops"`
-	Latency         IOLatency   `json:"latency"`
-	Throughput      IOLatency   `json:"throughput"`
-	Qtree           QtreeRef    `json:"qtree"`
-	Status          string      `json:"status"`
-	SVM             NamedObject `json:"svm"`
-	MetricTimestamp string      `json:"timestamp"`
-	Volume          NamedObject `json:"volume"`
+	Duration        string             `json:"duration"`
+	IOPS            netapp.IOLatency   `json:"iops"`
+	Latency         netapp.IOLatency   `json:"latency"`
+	Throughput      netapp.IOLatency   `json:"throughput"`
+	Qtree           QtreeRef           `json:"qtree"`
+	Status          string             `json:"status"`
+	SVM             netapp.NamedObject `json:"svm"`
+	MetricTimestamp string             `json:"timestamp"`
+	Volume          netapp.NamedObject `json:"volume"`
 }
 
 type QtreeStatistics struct {
-	IOPSRaw             IOLatency `json:"iops_raw"`
-	LatencyRaw          IOLatency `json:"latency_raw"`
-	Status              string    `json:"status"`
-	ThroughputRaw       IOLatency `json:"throughput_raw"`
-	StatisticsTimestamp string    `json:"timestamp"`
-}
-
-type IOLatency struct {
-	Read  int `json:"read"`
-	Write int `json:"write"`
-	Other int `json:"other"`
-	Total int `json:"total"`
+	IOPSRaw             netapp.IOLatency `json:"iops_raw"`
+	LatencyRaw          netapp.IOLatency `json:"latency_raw"`
+	Status              string           `json:"status"`
+	ThroughputRaw       netapp.IOLatency `json:"throughput_raw"`
+	StatisticsTimestamp string           `json:"timestamp"`
 }
 
 type QtreeRef struct {
@@ -382,15 +361,15 @@ type QtreeRef struct {
 }
 
 type QuotaReport struct {
-	Files  QuotaUsage    `json:"files"`
-	Group  NamedObject   `json:"group"`
-	Index  int           `json:"index"`
-	Qtree  QtreeRef      `json:"qtree"`
-	Space  QuotaUsage    `json:"space"`
-	SVM    NamedObject   `json:"svm"`
-	Type   string        `json:"type"`
-	Users  []NamedObject `json:"users"`
-	Volume NamedObject   `json:"volume"`
+	Files  QuotaUsage           `json:"files"`
+	Group  netapp.NamedObject   `json:"group"`
+	Index  int                  `json:"index"`
+	Qtree  QtreeRef             `json:"qtree"`
+	Space  QuotaUsage           `json:"space"`
+	SVM    netapp.NamedObject   `json:"svm"`
+	Type   string               `json:"type"`
+	Users  []netapp.NamedObject `json:"users"`
+	Volume netapp.NamedObject   `json:"volume"`
 }
 
 type QuotaUsage struct {
@@ -435,7 +414,7 @@ type VolumeNameOnly struct {
 }
 
 type FailoverInfo struct {
-	Error  StorageStatus    `json:"error"`
+	Error  netapp.Status    `json:"error"`
 	State  string           `json:"state"`
 	Status SnapmirrorStatus `json:"status"`
 	Type   string           `json:"type"`
@@ -447,11 +426,11 @@ type SnapmirrorStatus struct {
 }
 
 type SnapMirrorEndpoint struct {
-	Cluster                 NamedObject      `json:"cluster"`
-	ConsistencyGroupVolumes []VolumeNameOnly `json:"consistency_group_volumes"`
-	LUNs                    NamedObject      `json:"luns"`
-	Path                    string           `json:"path"`
-	SVM                     NamedObject      `json:"svm"`
+	Cluster                 netapp.NamedObject `json:"cluster"`
+	ConsistencyGroupVolumes []VolumeNameOnly   `json:"consistency_group_volumes"`
+	LUNs                    netapp.NamedObject `json:"luns"`
+	Path                    string             `json:"path"`
+	SVM                     netapp.NamedObject `json:"svm"`
 }
 
 type SnapmirrorPolicy struct {
@@ -500,8 +479,8 @@ type Manufacturer struct {
 }
 
 type ShelfPath struct {
-	Name string      `json:"name"`
-	Node NamedObject `json:"node"`
+	Name string             `json:"name"`
+	Node netapp.NamedObject `json:"node"`
 }
 
 type Bay struct {
@@ -593,10 +572,10 @@ type CurrentSensor struct {
 }
 
 type ACP struct {
-	Enabled         bool        `json:"enabled"`
-	Channel         string      `json:"channel"`
-	ConnectionState string      `json:"connection_state"`
-	Node            NamedObject `json:"node"`
+	Enabled         bool               `json:"enabled"`
+	Channel         string             `json:"channel"`
+	ConnectionState string             `json:"connection_state"`
+	Node            netapp.NamedObject `json:"node"`
 }
 
 type SnapMirrorRelationship struct {
@@ -622,15 +601,15 @@ type SnapMirrorRelationship struct {
 	TotalTransferBytes       int64                    `json:"total_transfer_bytes"`
 	TotalTransferDuration    string                   `json:"total_transfer_duration"`
 	Transfer                 Transfer                 `json:"transfer"`
-	TransferSchedule         NamedObject              `json:"transfer_schedule"`
-	UnhealthyReason          []StorageStatus          `json:"unhealthy_reason"`
+	TransferSchedule         netapp.NamedObject       `json:"transfer_schedule"`
+	UnhealthyReason          []netapp.Status          `json:"unhealthy_reason"`
 	UUID                     string                   `json:"uuid"`
 }
 
 type ConsistencyGroupFailover struct {
-	Error  StorageStatus `json:"error"`
+	Error  netapp.Status `json:"error"`
 	State  string        `json:"state"`
-	Status StorageStatus `json:"status"`
+	Status netapp.Status `json:"status"`
 	Type   string        `json:"type"`
 }
 
@@ -657,8 +636,8 @@ type Transfer struct {
 type Aggregate struct {
 	UUID               string                `json:"uuid"`
 	Name               string                `json:"name"`
-	Node               NamedObject           `json:"node"`
-	HomeNode           NamedObject           `json:"home_node"`
+	Node               netapp.NamedObject    `json:"node"`
+	HomeNode           netapp.NamedObject    `json:"home_node"`
 	Snapshot           AggregateSnapshot     `json:"snapshot"`
 	Space              AggregateSpace        `json:"space"`
 	State              string                `json:"state"`
@@ -778,8 +757,8 @@ type AggregateCloudStorage struct {
 }
 
 type AggregateStoreRef struct {
-	CloudStore NamedObject `json:"cloud_store"`
-	Used       int64       `json:"used"`
+	CloudStore netapp.NamedObject `json:"cloud_store"`
+	Used       int64              `json:"used"`
 }
 
 type InactiveDataReport struct {
@@ -803,15 +782,15 @@ type QosPolicy struct {
 		 A policy can be either a fixed policy or an adaptive one, not both."
 		Hence pointers for Adaptive and Fixed - only one will be set at a time.
 	*/
-	Adaptive    *QosAdaptive `json:"adaptive,omitempty"`
-	Fixed       *QosFixed    `json:"fixed,omitempty"`
-	Name        string       `json:"name"`
-	ObjectCount int          `json:"object_count"`
-	Pgid        int          `json:"pgid"`
-	PolicyClass string       `json:"policy_class"`
-	Scope       string       `json:"scope"`
-	SVM         NamedObject  `json:"svm"`
-	UUID        string       `json:"uuid"`
+	Adaptive    *QosAdaptive       `json:"adaptive,omitempty"`
+	Fixed       *QosFixed          `json:"fixed,omitempty"`
+	Name        string             `json:"name"`
+	ObjectCount int                `json:"object_count"`
+	Pgid        int                `json:"pgid"`
+	PolicyClass string             `json:"policy_class"`
+	Scope       string             `json:"scope"`
+	SVM         netapp.NamedObject `json:"svm"`
+	UUID        string             `json:"uuid"`
 }
 
 type QosAdaptive struct {
@@ -832,26 +811,26 @@ type QosFixed struct {
 }
 
 type LUN struct {
-	UUID         string            `json:"uuid"`
-	SVM          NamedObject       `json:"svm"`
-	Name         string            `json:"name"`
-	Location     LunLocation       `json:"location"`
-	Class        string            `json:"class"`
-	CreateTime   time.Time         `json:"create_time"`
-	Enabled      bool              `json:"enabled"`
-	OsType       string            `json:"os_type"`
-	SerialNumber string            `json:"serial_number"`
-	Space        LunSpace          `json:"space"`
-	Status       LunStatus         `json:"status"`
-	VVol         LunVVol           `json:"vvol"`
-	Metrics      StorageMetrics    `json:"metric"`
-	Statistics   StorageStatistics `json:"statistics"`
+	UUID         string             `json:"uuid"`
+	SVM          netapp.NamedObject `json:"svm"`
+	Name         string             `json:"name"`
+	Location     LunLocation        `json:"location"`
+	Class        string             `json:"class"`
+	CreateTime   time.Time          `json:"create_time"`
+	Enabled      bool               `json:"enabled"`
+	OsType       string             `json:"os_type"`
+	SerialNumber string             `json:"serial_number"`
+	Space        LunSpace           `json:"space"`
+	Status       LunStatus          `json:"status"`
+	VVol         LunVVol            `json:"vvol"`
+	Metrics      StorageMetrics     `json:"metric"`
+	Statistics   StorageStatistics  `json:"statistics"`
 }
 
 type LunLocation struct {
-	LogicalUnit string      `json:"logical_unit"`
-	Node        NamedObject `json:"node"`
-	Volume      NamedObject `json:"volume"`
+	LogicalUnit string             `json:"logical_unit"`
+	Node        netapp.NamedObject `json:"node"`
+	Volume      netapp.NamedObject `json:"volume"`
 }
 
 type LunSpace struct {
@@ -890,15 +869,15 @@ type LunPartner struct {
 }
 
 type PeerInfo struct {
-	Cluster NamedObject `json:"cluster"`
-	SVM     NamedObject `json:"svm"`
+	Cluster netapp.NamedObject `json:"cluster"`
+	SVM     netapp.NamedObject `json:"svm"`
 }
 
 type SVMPeer struct {
-	Applications []string    `json:"applications"`
-	Name         string      `json:"name"`
-	Peer         PeerInfo    `json:"peer"`
-	State        string      `json:"state"`
-	SVM          NamedObject `json:"svm"`
-	UUID         string      `json:"uuid"`
+	Applications []string           `json:"applications"`
+	Name         string             `json:"name"`
+	Peer         PeerInfo           `json:"peer"`
+	State        string             `json:"state"`
+	SVM          netapp.NamedObject `json:"svm"`
+	UUID         string             `json:"uuid"`
 }

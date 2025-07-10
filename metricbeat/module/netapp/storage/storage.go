@@ -29,12 +29,15 @@ type MetricSet struct {
 	netappClient *netapp.NetAppRestClient
 }
 
+var fullyQualifiedName string
+var logger *logp.Logger
+
 // New creates a new instance of the MetricSet. New is responsible for unpacking
 // any MetricSet specific configuration options if there are any.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Beta("The netapp storage metricset is beta.")
-
-	logger := logp.NewLogger(base.FullyQualifiedName())
+	fullyQualifiedName = base.FullyQualifiedName()
+	logger := logp.NewLogger(fullyQualifiedName)
 
 	config, err := netapp.NewConfig(base, logger)
 	if err != nil {
@@ -52,7 +55,6 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	return &MetricSet{
 		BaseMetricSet: base,
 		config:        config,
-		logger:        logger,
 		netappClient:  netappClient,
 	}, nil
 }
@@ -67,20 +69,20 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 
 	// basic endpoints can all be processed with the ProcessEndpoint function
 	for _, endpoint := range basicEndpoints {
-		m.logger.Infof("Calling endpoint %s ....", endpoint.Name)
+		logger.Infof("Calling endpoint %s ....", endpoint.Name)
 
 		dispatch, ok := endpointDispatchers[endpoint.Name]
 		if !ok {
-			m.logger.Errorf("No dispatcher registered for endpoint %s", endpoint.Name)
+			logger.Errorf("No dispatcher registered for endpoint %s", endpoint.Name)
 			continue
 		}
 
-		m.logger.Infof("Calling endpoint %s ....", endpoint.Name)
-		events, err := dispatch(m, endpoint)
-		m.logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
+		logger.Infof("Calling endpoint %s ....", endpoint.Name)
+		events, err := dispatch(m.netappClient, endpoint)
+		logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
 
 		if err != nil {
-			m.logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
+			logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
 			errs = append(errs, err)
 		} else {
 			for _, event := range events {
@@ -92,12 +94,12 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 	// custom endpoints are processed with their own GetFunc - mainly to handle unrolling
 	// arrays into individual events
 	for _, endpoint := range customEndpoints {
-		m.logger.Infof("Calling endpoint %s ....", endpoint.Name)
-		events, err := endpoint.GetFunc(m, endpoint)
-		m.logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
+		logger.Infof("Calling endpoint %s ....", endpoint.Name)
+		events, err := endpoint.GetFunc(m.netappClient, endpoint)
+		logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
 
 		if err != nil {
-			m.logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
+			logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
 			errs = append(errs, err)
 		} else {
 			for _, event := range events {

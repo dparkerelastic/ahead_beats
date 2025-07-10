@@ -8,18 +8,6 @@ import (
 	"github.com/elastic/elastic-agent-libs/mapstr"
 )
 
-func createECSFields(ms *MetricSet) mapstr.M {
-
-	return mapstr.M{
-		"observer": mapstr.M{
-			"hostname": ms.config.HostInfo.Hostname,
-			"ip":       ms.config.HostInfo.IP,
-			"type":     "storage",
-			"vendor":   "NetApp",
-		},
-	}
-}
-
 func createStorageStatisticsFields(stats StorageStatistics) mapstr.M {
 	return mapstr.M{
 		"timestamp":      stats.Timestamp,
@@ -85,17 +73,10 @@ func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M 
 
 func createGroupFailoverFields(failover ConsistencyGroupFailover) mapstr.M {
 	return mapstr.M{
-		"error":  createStatusFields(failover.Error),
+		"error":  netapp.CreateStatusFields(failover.Error),
 		"state":  failover.State,
-		"status": createStatusFields(failover.Status),
+		"status": netapp.CreateStatusFields(failover.Status),
 		"type":   failover.Type,
-	}
-}
-
-func createStatusFields(status StorageStatus) mapstr.M {
-	return mapstr.M{
-		"code":    status.Code,
-		"message": status.Message,
 	}
 }
 
@@ -107,9 +88,9 @@ func createSnapMirrorEndpointFields(snapEndpoint SnapMirrorEndpoint) mapstr.M {
 	}
 
 	return mapstr.M{
-		"cluster":                   createNamedObjectFields(snapEndpoint.Cluster),
-		"svm":                       createNamedObjectFields(snapEndpoint.SVM),
-		"luns":                      createNamedObjectFields(snapEndpoint.LUNs),
+		"cluster":                   netapp.CreateNamedObjectFields(snapEndpoint.Cluster),
+		"svm":                       netapp.CreateNamedObjectFields(snapEndpoint.SVM),
+		"luns":                      netapp.CreateNamedObjectFields(snapEndpoint.LUNs),
 		"path":                      snapEndpoint.Path,
 		"consistency_group_volumes": volumes,
 	}
@@ -121,8 +102,8 @@ func createAggregateFields(record Aggregate) mapstr.M {
 		"aggregate": mapstr.M{
 			"uuid":                    record.UUID,
 			"name":                    record.Name,
-			"node":                    createNamedObjectFields(record.Node),
-			"home_node":               createNamedObjectFields(record.HomeNode),
+			"node":                    netapp.CreateNamedObjectFields(record.Node),
+			"home_node":               netapp.CreateNamedObjectFields(record.HomeNode),
 			"snapshot":                createAggregateSnapshotFields(record.Snapshot),
 			"space":                   createAggregateSpaceFields(record.Space),
 			"state":                   record.State,
@@ -193,13 +174,6 @@ func createAggregateBlockStorageFields(blockStorage AggregateBlockStorage) mapst
 	}
 }
 
-func createNamedObjectFields(namedObject NamedObject) mapstr.M {
-	return mapstr.M{
-		"name": namedObject.Name,
-		"uuid": namedObject.UUID,
-	}
-}
-
 func createAggregateSnapshotFields(s AggregateSnapshot) mapstr.M {
 	return mapstr.M{
 		"files_total":         s.FilesTotal,
@@ -259,15 +233,15 @@ func createSnapshotSpaceFields(snapshotSpace SnapshotSpace) mapstr.M {
 
 // func createSnapshotFields(snapshot Snapshot) mapstr.M {
 // 	return mapstr.M{
-// 		"volume":            createNamedObjectFields(snapshot.Volume),
+// 		"volume":            netapp.CreateNamedObjectFields(snapshot.Volume),
 // 		"uuid":              snapshot.UUID,
-// 		"svm":               createNamedObjectFields(snapshot.SVM),
+// 		"svm":               netapp.CreateNamedObjectFields(snapshot.SVM),
 // 		"name":              snapshot.Name,
 // 		"create_time":       snapshot.CreateTime,
 // 		"snapmirror_label":  snapshot.SnapmirrorLabel,
 // 		"size":              snapshot.Size,
 // 		"version_uuid":      snapshot.VersionUUID,
-// 		"provenance_volume": createNamedObjectFields(snapshot.ProvenanceVolume),
+// 		"provenance_volume": netapp.CreateNamedObjectFields(snapshot.ProvenanceVolume),
 // 		"logical_size":      snapshot.LogicalSize,
 // 		"compress_savings":  snapshot.CompressSavings,
 // 		"dedup_savings":     snapshot.DedupSavings,
@@ -326,8 +300,8 @@ func createDiskFields(record Disk) mapstr.M {
 		"container_type":          record.ContainerType,
 		"pool":                    record.Pool,
 		"state":                   record.State,
-		"node":                    createNamedObjectFields(record.Node),
-		"home_node":               createNamedObjectFields(record.HomeNode),
+		"node":                    netapp.CreateNamedObjectFields(record.Node),
+		"home_node":               netapp.CreateNamedObjectFields(record.HomeNode),
 		"aggregates":              aggregates,
 		"shelf_uuid":              record.Shelf.UID,
 		"local":                   record.Local,
@@ -350,7 +324,7 @@ func createDiskPathFields(path DiskPath) mapstr.M {
 		"port_type":      path.PortType,
 		"wwnn":           path.WWNN,
 		"wwpn":           path.WWPN,
-		"node":           createNamedObjectFields(path.Node),
+		"node":           netapp.CreateNamedObjectFields(path.Node),
 	}
 }
 
@@ -368,7 +342,7 @@ func createLUNFields(record LUN) mapstr.M {
 	return mapstr.M{
 		"lun": mapstr.M{
 			"uuid":          record.UUID,
-			"svm":           createNamedObjectFields(record.SVM),
+			"svm":           netapp.CreateNamedObjectFields(record.SVM),
 			"name":          record.Name,
 			"location":      createLunLocationFields(record.Location),
 			"class":         record.Class,
@@ -386,8 +360,8 @@ func createLUNFields(record LUN) mapstr.M {
 func createLunLocationFields(location LunLocation) mapstr.M {
 	return mapstr.M{
 		"logical_unit": location.LogicalUnit,
-		"node":         createNamedObjectFields(location.Node),
-		"volume":       createNamedObjectFields(location.Volume),
+		"node":         netapp.CreateNamedObjectFields(location.Node),
+		"volume":       netapp.CreateNamedObjectFields(location.Volume),
 	}
 }
 
@@ -433,9 +407,9 @@ func createLunVVolFields(vvol LunVVol) mapstr.M {
 func createQTreeFields(q Qtree) mapstr.M {
 	return mapstr.M{
 		"qtree": mapstr.M{
-			"volume":           createNamedObjectFields(q.Volume),
+			"volume":           netapp.CreateNamedObjectFields(q.Volume),
 			"id":               q.ID,
-			"svm":              createNamedObjectFields(q.SVM),
+			"svm":              netapp.CreateNamedObjectFields(q.SVM),
 			"name":             q.Name,
 			"security_style":   q.SecurityStyle,
 			"unix_permissions": q.UnixPermissions,
@@ -464,13 +438,13 @@ func createQtreeMetricsFields(q QtreeMetrics) mapstr.M {
 		"throughput": createIOLatencyFields(q.Throughput),
 		"qtree":      createQtreeBriefFields(q.Qtree),
 		"status":     q.Status,
-		"svm":        createNamedObjectFields(q.SVM),
+		"svm":        netapp.CreateNamedObjectFields(q.SVM),
 		"timestamp":  q.MetricTimestamp,
-		"volume":     createNamedObjectFields(q.Volume),
+		"volume":     netapp.CreateNamedObjectFields(q.Volume),
 	}
 }
 
-func createIOLatencyFields(io IOLatency) mapstr.M {
+func createIOLatencyFields(io netapp.IOLatency) mapstr.M {
 	return mapstr.M{
 		"read":  io.Read,
 		"write": io.Write,
@@ -494,12 +468,12 @@ func createQuotaReportFields(qr QuotaReport) mapstr.M {
 
 	return mapstr.M{
 		"quota_report": mapstr.M{
-			"svm":    createNamedObjectFields(qr.SVM),
-			"volume": createNamedObjectFields(qr.Volume),
+			"svm":    netapp.CreateNamedObjectFields(qr.SVM),
+			"volume": netapp.CreateNamedObjectFields(qr.Volume),
 			"qtree":  createQtreeBriefFields(qr.Qtree),
 			"type":   qr.Type,
 			"index":  qr.Index,
-			"group":  createNamedObjectFields(qr.Group),
+			"group":  netapp.CreateNamedObjectFields(qr.Group),
 			"users":  users,
 			"files": mapstr.M{
 				"hard_limit": qr.Files.HardLimit,
@@ -541,7 +515,7 @@ func createQuotaRuleFields(qr QuotaRule) mapstr.M {
 	}
 }
 
-func createACPEvents(m *MetricSet, record Shelf) []mb.Event {
+func createACPEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, acp := range record.ACPs {
@@ -552,7 +526,7 @@ func createACPEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -564,11 +538,11 @@ func createACPFields(acp ACP) mapstr.M {
 		"enabled":          acp.Enabled,
 		"channel":          acp.Channel,
 		"connection_state": acp.ConnectionState,
-		"node":             createNamedObjectFields(acp.Node),
+		"node":             netapp.CreateNamedObjectFields(acp.Node),
 	}
 }
 
-func createPortEvents(m *MetricSet, record Shelf) []mb.Event {
+func createPortEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, port := range record.Ports {
@@ -579,7 +553,7 @@ func createPortEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -604,7 +578,7 @@ func createPortFields(port ShelfPort) mapstr.M {
 	return m
 }
 
-func createCurrentEvents(m *MetricSet, record Shelf) []mb.Event {
+func createCurrentEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, sensor := range record.CurrentSensors {
@@ -615,7 +589,7 @@ func createCurrentEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -632,7 +606,7 @@ func createCurrentFields(sensor CurrentSensor) mapstr.M {
 	}
 }
 
-func createVoltageEvents(m *MetricSet, record Shelf) []mb.Event {
+func createVoltageEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, sensor := range record.VoltageSensors {
@@ -643,7 +617,7 @@ func createVoltageEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -660,7 +634,7 @@ func createVoltageFields(sensor VoltageSensor) mapstr.M {
 	}
 }
 
-func createThermalEvents(m *MetricSet, record Shelf) []mb.Event {
+func createThermalEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, sensor := range record.TempSensors {
@@ -671,7 +645,7 @@ func createThermalEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -699,7 +673,7 @@ func createTempSensorFields(sensor TemperatureSensor) mapstr.M {
 	}
 }
 
-func createFanEvents(m *MetricSet, record Shelf) []mb.Event {
+func createFanEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, fan := range record.Fans {
@@ -710,7 +684,7 @@ func createFanEvents(m *MetricSet, record Shelf) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"shelf": shelfFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -727,7 +701,7 @@ func createFansFields(fan Fan) mapstr.M {
 	}
 }
 
-func createPSUEvents(m *MetricSet, record Shelf) []mb.Event {
+func createPSUEvents(record Shelf) []mb.Event {
 	timestamp := time.Now().UTC()
 
 	var events []mb.Event
@@ -740,7 +714,7 @@ func createPSUEvents(m *MetricSet, record Shelf) []mb.Event {
 				MetricSetFields: mapstr.M{
 					"shelf": shelfFields,
 				},
-				RootFields: createECSFields(m),
+				RootFields: netapp.CreateECSFields(),
 			}
 			events = append(events, event)
 		}
@@ -748,7 +722,7 @@ func createPSUEvents(m *MetricSet, record Shelf) []mb.Event {
 	return events
 }
 
-func createDiskPathEvents(m *MetricSet, record Disk) []mb.Event {
+func createDiskPathEvents(record Disk) []mb.Event {
 	timestamp := time.Now().UTC()
 	var events []mb.Event
 	for _, path := range record.Paths {
@@ -759,7 +733,7 @@ func createDiskPathEvents(m *MetricSet, record Disk) []mb.Event {
 			MetricSetFields: mapstr.M{
 				"disk": diskFields,
 			},
-			RootFields: createECSFields(m),
+			RootFields: netapp.CreateECSFields(),
 		}
 		events = append(events, event)
 	}
@@ -840,8 +814,8 @@ func createVolumeFields(record Volume) mapstr.M {
 			"clone":                            createCloneInfoFields(record.Clone),
 			"nas":                              createNASInfoFields(record.NAS),
 			"snapshot_locking_enabled":         record.SnapshotLockingEnabled,
-			"snapshot_policy":                  createNamedObjectFields(record.NamedObject),
-			"svm":                              createNamedObjectFields(record.SVM),
+			"snapshot_policy":                  netapp.CreateNamedObjectFields(record.NamedObject),
+			"svm":                              netapp.CreateNamedObjectFields(record.SVM),
 			"space":                            createVolumeSpaceFields(record.Space),
 			"metrics":                          createStorageMetricsFields(record.Metrics),
 			"snapmirror":                       record.Snapmirror,
@@ -950,11 +924,11 @@ func createSVMPeerFields(record SVMPeer) mapstr.M {
 			"applications": applications,
 			"name":         record.Name,
 			"peer": mapstr.M{
-				"cluster": createNamedObjectFields(record.Peer.Cluster),
-				"svm":     createNamedObjectFields(record.Peer.SVM),
+				"cluster": netapp.CreateNamedObjectFields(record.Peer.Cluster),
+				"svm":     netapp.CreateNamedObjectFields(record.Peer.SVM),
 			},
 			"state": record.State,
-			"svm":   createNamedObjectFields(record.SVM),
+			"svm":   netapp.CreateNamedObjectFields(record.SVM),
 			"uuid":  record.UUID,
 		},
 	}
@@ -979,9 +953,9 @@ func createSVMFields(record SVM) mapstr.M {
 			"aggregates":                           aggregates,
 			"state":                                record.State,
 			"comment":                              record.Comment,
-			"ipspace":                              createNamedObjectFields(record.IPSpace),
+			"ipspace":                              netapp.CreateNamedObjectFields(record.IPSpace),
 			"ip_interfaces":                        ipInterfaces,
-			"snapshot_policy":                      createNamedObjectFields(record.SnapshotPolicy),
+			"snapshot_policy":                      netapp.CreateNamedObjectFields(record.SnapshotPolicy),
 			"nis_enabled":                          record.NIS.Enabled,
 			"ldap_enabled":                         record.LDAP.Enabled,
 			"nfs":                                  createProtocolStatusFields(record.NFS),
@@ -1027,7 +1001,7 @@ func createQosPolicyFields(policy QosPolicy) mapstr.M {
 			"pgid":         policy.Pgid,
 			"policy_class": policy.PolicyClass,
 			"scope":        policy.Scope,
-			"svm":          createNamedObjectFields(policy.SVM),
+			"svm":          netapp.CreateNamedObjectFields(policy.SVM),
 			"uuid":         policy.UUID,
 		},
 	}
