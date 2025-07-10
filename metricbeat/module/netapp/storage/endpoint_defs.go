@@ -2,21 +2,11 @@ package storage
 
 import (
 	"github.com/elastic/beats/v7/metricbeat/mb"
-	"github.com/elastic/elastic-agent-libs/mapstr"
+	"github.com/elastic/beats/v7/metricbeat/module/netapp"
 )
 
-type CreateFieldsFunc[T any] func(T) mapstr.M
-type EndpointFunc func(*MetricSet, Endpoint) ([]mb.Event, error)
-
-type Endpoint struct {
-	Name        string
-	Endpoint    string
-	GetFunc     EndpointFunc // nil for basic endpoints
-	QueryFields []string
-}
-
-var basicEndpoints map[string]Endpoint
-var customEndpoints map[string]Endpoint
+var basicEndpoints map[string]netapp.Endpoint
+var customEndpoints map[string]netapp.Endpoint
 
 const (
 	SnapmirrorRelationshipsName = "SnapmirrorRelationships"
@@ -35,7 +25,7 @@ const (
 
 func init() {
 
-	basicEndpoints = map[string]Endpoint{
+	basicEndpoints = map[string]netapp.Endpoint{
 		SnapmirrorRelationshipsName: {Name: SnapmirrorRelationshipsName,
 			Endpoint:    "/api/snapmirror/relationships",
 			QueryFields: SnapMirrorFields,
@@ -78,7 +68,7 @@ func init() {
 		},
 	}
 
-	customEndpoints = map[string]Endpoint{
+	customEndpoints = map[string]netapp.Endpoint{
 		DisksName: {Name: DisksName,
 			Endpoint:    "/api/storage/disks",
 			GetFunc:     getDisks,
@@ -94,7 +84,16 @@ func init() {
 // For processing basic endpoints we need a type-specific function to create the fields.
 // ProcessEndpoint is a generic function that can be used for all basic endpoints,
 // but it needs to know how to create the fields for the specific type.
-type DispatchFunc func(*MetricSet, Endpoint) ([]mb.Event, error)
+type DispatchFunc func(*netapp.NetAppRestClient, netapp.Endpoint) ([]mb.Event, error)
+
+// makeDispatchFunc creates a DispatchFunc for a specific type T. The create[type name]Fields functions
+// passed to this function are defined with concrete types, so that's where we get our T type from.
+// This allows us to use the same ProcessEndpoint function for all basic endpoints, while still being type-safe.
+func makeDispatchFunc[T any](createFunc netapp.CreateFieldsFunc[T]) DispatchFunc {
+	return func(client *netapp.NetAppRestClient, e netapp.Endpoint) ([]mb.Event, error) {
+		return netapp.ProcessEndpoint(*client, e, createFunc)
+	}
+}
 
 var endpointDispatchers = map[string]DispatchFunc{
 	SnapmirrorRelationshipsName: makeDispatchFunc(createSnapMirrorRelationshipFields),
@@ -107,15 +106,6 @@ var endpointDispatchers = map[string]DispatchFunc{
 	VolumesName:                 makeDispatchFunc(createVolumeFields),
 	SvmPeersName:                makeDispatchFunc(createSVMPeerFields),
 	SvmsName:                    makeDispatchFunc(createSVMFields),
-}
-
-// makeDispatchFunc creates a DispatchFunc for a specific type T. The create[type name]Fields functions
-// passed to this function are defined with concrete types, so that's where we get our T type from.
-// This allows us to use the same ProcessEndpoint function for all basic endpoints, while still being type-safe.
-func makeDispatchFunc[T any](createFunc CreateFieldsFunc[T]) DispatchFunc {
-	return func(m *MetricSet, e Endpoint) ([]mb.Event, error) {
-		return ProcessEndpoint(m, e, createFunc)
-	}
 }
 
 // Fields to be used in endpoint calls - ONTAP API only returns name and uuid unless fields are specified.

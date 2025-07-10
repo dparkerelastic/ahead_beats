@@ -23,6 +23,8 @@ import (
 	"net"
 	"strings"
 	"time"
+
+	"github.com/elastic/elastic-agent-libs/logp"
 )
 
 func StringToBool(s string) (bool, error) {
@@ -120,4 +122,8 @@ func ConvertStringTime(value string) (*time.Time, error) {
 	}
 
 	return &t, nil
+}
+
+func GetLogger(fullName string) *logp.Logger {
+	return logp.NewLogger(fullName)
 }
