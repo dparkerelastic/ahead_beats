@@ -1,20 +1,14 @@
 package protocols
 
+import "github.com/elastic/beats/v7/metricbeat/module/netapp"
+
 // endpoint: /api/protocols/san/iscsi/services
-type ISCSIServicesResponse struct {
-	Records    []ISCSIService `json:"records"`
-	NumRecords int            `json:"num_records"`
-}
-
 type ISCSIService struct {
-	SVM     SVMInfo    `json:"svm"`
-	Enabled bool       `json:"enabled"`
-	Target  TargetInfo `json:"target"`
-}
-
-type SVMInfo struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
+	SVM        netapp.NamedObject `json:"svm"`
+	Enabled    bool               `json:"enabled"`
+	Target     TargetInfo         `json:"target"`
+	Metric     netapp.Metrics     `json:"metric"`
+	Statistics netapp.Statistics  `json:"statistics"`
 }
 
 type TargetInfo struct {
@@ -24,26 +18,18 @@ type TargetInfo struct {
 
 // endpoint: /api/protocols/san/iscsi/sessions
 
-type ISCSISessionsResponse struct {
-	Links      Links          `json:"_links"`
-	NumRecords int            `json:"num_records"`
-	Records    []ISCSISession `json:"records"`
-}
-
 type ISCSISession struct {
-	Links                Links             `json:"_links"`
-	Connections          []ISCSIConnection `json:"connections"`
-	Igroups              []ISCSIGroup      `json:"igroups"`
-	Initiator            ISCSIInitiator    `json:"initiator"`
-	ISID                 string            `json:"isid"`
-	SVM                  ISCSISessionSVM   `json:"svm"`
-	TargetPortalGroup    string            `json:"target_portal_group"`
-	TargetPortalGroupTag int               `json:"target_portal_group_tag"`
-	TSIH                 int               `json:"tsih"`
+	Connections          []ISCSIConnection    `json:"connections"`
+	Igroups              []netapp.NamedObject `json:"igroups"`
+	Initiator            ISCSIInitiator       `json:"initiator"`
+	ISID                 string               `json:"isid"`
+	SVM                  netapp.NamedObject   `json:"svm"`
+	TargetPortalGroup    string               `json:"target_portal_group"`
+	TargetPortalGroupTag int                  `json:"target_portal_group_tag"`
+	TSIH                 int                  `json:"tsih"`
 }
 
 type ISCSIConnection struct {
-	Links              Links          `json:"_links"`
 	AuthenticationType string         `json:"authentication_type"`
 	CID                int            `json:"cid"`
 	InitiatorAddress   ISCSIAddress   `json:"initiator_address"`
@@ -56,16 +42,9 @@ type ISCSIAddress struct {
 }
 
 type ISCSIInterface struct {
-	Links Links        `json:"_links"`
-	IP    ISCSIAddress `json:"ip"`
-	Name  string       `json:"name"`
-	UUID  string       `json:"uuid"`
-}
-
-type ISCSIGroup struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+	IP   ISCSIAddress `json:"ip"`
+	Name string       `json:"name"`
+	UUID string       `json:"uuid"`
 }
 
 type ISCSIInitiator struct {
@@ -74,86 +53,41 @@ type ISCSIInitiator struct {
 	Name    string `json:"name"`
 }
 
-type ISCSISessionSVM struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
-type Links struct {
-	Next *Link `json:"next,omitempty"`
-	Self *Link `json:"self,omitempty"`
-}
-
-type Link struct {
-	Href string `json:"href"`
-}
-
 // endpoint: /api/protocols/cifs/services
 
-type CIFSServicesResponse struct {
-	Links      Links         `json:"_links"`
-	NumRecords int           `json:"num_records"`
-	Records    []CIFSService `json:"records"`
-}
-
 type CIFSService struct {
-	Links                    Links          `json:"_links"`
-	AdDomain                 CIFSAdDomain   `json:"ad_domain"`
-	AuthStyle                string         `json:"auth-style"`
-	AuthUserType             string         `json:"auth_user_type"`
-	AuthenticationMethod     string         `json:"authentication_method"`
-	ClientID                 string         `json:"client_id"`
-	Comment                  string         `json:"comment"`
-	DefaultUnixUser          string         `json:"default_unix_user"`
-	Enabled                  bool           `json:"enabled"`
-	GroupPolicyObjectEnabled bool           `json:"group_policy_object_enabled"`
-	KeyVaultURI              string         `json:"key_vault_uri"`
-	Metric                   CIFSMetric     `json:"metric"`
-	Name                     string         `json:"name"`
-	Netbios                  CIFSNetbios    `json:"netbios"`
-	OAuthHost                string         `json:"oauth_host"`
-	Options                  CIFSOptions    `json:"options"`
-	ProxyHost                string         `json:"proxy_host"`
-	ProxyPort                int            `json:"proxy_port"`
-	ProxyType                string         `json:"proxy_type"`
-	ProxyUsername            string         `json:"proxy_username"`
-	Security                 CIFSSecurity   `json:"security"`
-	Statistics               CIFSStatistics `json:"statistics"`
-	SVM                      CIFSSVM        `json:"svm"`
-	TenantID                 string         `json:"tenant_id"`
-	Timeout                  int            `json:"timeout"`
-	VerifyHost               bool           `json:"verify_host"`
-	Workgroup                string         `json:"workgroup"`
+	AdDomain                 CIFSAdDomain       `json:"ad_domain"`
+	AuthStyle                string             `json:"auth-style"`
+	AuthUserType             string             `json:"auth_user_type"`
+	AuthenticationMethod     string             `json:"authentication_method"`
+	ClientID                 string             `json:"client_id"`
+	Comment                  string             `json:"comment"`
+	DefaultUnixUser          string             `json:"default_unix_user"`
+	Enabled                  bool               `json:"enabled"`
+	GroupPolicyObjectEnabled bool               `json:"group_policy_object_enabled"`
+	KeyVaultURI              string             `json:"key_vault_uri"`
+	Metric                   netapp.Metrics     `json:"metric"`
+	Name                     string             `json:"name"`
+	Netbios                  CIFSNetbios        `json:"netbios"`
+	OAuthHost                string             `json:"oauth_host"`
+	Options                  CIFSOptions        `json:"options"`
+	ProxyHost                string             `json:"proxy_host"`
+	ProxyPort                int                `json:"proxy_port"`
+	ProxyType                string             `json:"proxy_type"`
+	ProxyUsername            string             `json:"proxy_username"`
+	Security                 CIFSSecurity       `json:"security"`
+	Statistics               netapp.Statistics  `json:"statistics"`
+	SVM                      netapp.NamedObject `json:"svm"`
+	TenantID                 string             `json:"tenant_id"`
+	Timeout                  int                `json:"timeout"`
+	VerifyHost               bool               `json:"verify_host"`
+	Workgroup                string             `json:"workgroup"`
 }
 
 type CIFSAdDomain struct {
 	DefaultSite        string `json:"default_site"`
 	FQDN               string `json:"fqdn"`
 	OrganizationalUnit string `json:"organizational_unit"`
-}
-
-type CIFSMetric struct {
-	Links      Links          `json:"_links"`
-	Duration   string         `json:"duration"`
-	IOPS       CIFSIOPS       `json:"iops"`
-	Latency    CIFSIOPS       `json:"latency"`
-	Status     string         `json:"status"`
-	Throughput CIFSThroughput `json:"throughput"`
-	Timestamp  string         `json:"timestamp"`
-}
-
-type CIFSIOPS struct {
-	Other int `json:"other"`
-	Read  int `json:"read"`
-	Total int `json:"total"`
-	Write int `json:"write"`
-}
-
-type CIFSThroughput struct {
-	Read  int `json:"read"`
-	Total int `json:"total"`
-	Write int `json:"write"`
 }
 
 type CIFSNetbios struct {
@@ -208,80 +142,47 @@ type CIFSSecurity struct {
 	UseStartTLS              bool     `json:"use_start_tls"`
 }
 
-type CIFSStatistics struct {
-	IOPSRaw       CIFSIOPS       `json:"iops_raw"`
-	LatencyRaw    CIFSIOPS       `json:"latency_raw"`
-	Status        string         `json:"status"`
-	ThroughputRaw CIFSThroughput `json:"throughput_raw"`
-	Timestamp     string         `json:"timestamp"`
-}
-
-type CIFSSVM struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 // endpoint: /api/protocols/cifs/shares
-type CIFSSharesResponse struct {
-	Links      Links       `json:"_links"`
-	NumRecords int         `json:"num_records"`
-	Records    []CIFSShare `json:"records"`
-}
 
 type CIFSShare struct {
-	Links                  Links          `json:"_links"`
-	AccessBasedEnumeration bool           `json:"access_based_enumeration"`
-	Acls                   []CIFSShareACL `json:"acls"`
-	AllowUnencryptedAccess bool           `json:"allow_unencrypted_access"`
-	AttributeCache         bool           `json:"attribute_cache"`
-	Browsable              bool           `json:"browsable"`
-	ChangeNotify           bool           `json:"change_notify"`
-	Comment                string         `json:"comment"`
-	ContinuouslyAvailable  bool           `json:"continuously_available"`
-	DirUmask               string         `json:"dir_umask"`
-	Encryption             bool           `json:"encryption"`
-	FileUmask              string         `json:"file_umask"`
-	ForceGroupForCreate    string         `json:"force_group_for_create"`
-	HomeDirectory          bool           `json:"home_directory"`
-	MaxConnectionsPerShare int            `json:"max_connections_per_share"`
-	Name                   string         `json:"name"`
-	NamespaceCaching       bool           `json:"namespace_caching"`
-	NoStrictSecurity       bool           `json:"no_strict_security"`
-	OfflineFiles           string         `json:"offline_files"`
-	Oplocks                bool           `json:"oplocks"`
-	Path                   string         `json:"path"`
-	ShowPreviousVersions   bool           `json:"show_previous_versions"`
-	ShowSnapshot           bool           `json:"show_snapshot"`
-	SVM                    CIFSSVM        `json:"svm"`
-	UnixSymlink            string         `json:"unix_symlink"`
-	Volume                 CIFSVolume     `json:"volume"`
-	VscanProfile           string         `json:"vscan_profile"`
+	AccessBasedEnumeration bool               `json:"access_based_enumeration"`
+	Acls                   []CIFSShareACL     `json:"acls"`
+	AllowUnencryptedAccess bool               `json:"allow_unencrypted_access"`
+	AttributeCache         bool               `json:"attribute_cache"`
+	Browsable              bool               `json:"browsable"`
+	ChangeNotify           bool               `json:"change_notify"`
+	Comment                string             `json:"comment"`
+	ContinuouslyAvailable  bool               `json:"continuously_available"`
+	DirUmask               string             `json:"dir_umask"`
+	Encryption             bool               `json:"encryption"`
+	FileUmask              string             `json:"file_umask"`
+	ForceGroupForCreate    string             `json:"force_group_for_create"`
+	HomeDirectory          bool               `json:"home_directory"`
+	MaxConnectionsPerShare int                `json:"max_connections_per_share"`
+	Name                   string             `json:"name"`
+	NamespaceCaching       bool               `json:"namespace_caching"`
+	NoStrictSecurity       bool               `json:"no_strict_security"`
+	OfflineFiles           string             `json:"offline_files"`
+	Oplocks                bool               `json:"oplocks"`
+	Path                   string             `json:"path"`
+	ShowPreviousVersions   bool               `json:"show_previous_versions"`
+	ShowSnapshot           bool               `json:"show_snapshot"`
+	SVM                    netapp.NamedObject `json:"svm"`
+	UnixSymlink            string             `json:"unix_symlink"`
+	Volume                 netapp.NamedObject `json:"volume"`
+	VscanProfile           string             `json:"vscan_profile"`
 }
 
 type CIFSShareACL struct {
-	Links        Links  `json:"_links"`
 	Permission   string `json:"permission"`
 	Type         string `json:"type"`
 	UserOrGroup  string `json:"user_or_group"`
 	WinSidUnixID string `json:"win_sid_unix_id"`
 }
 
-type CIFSVolume struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 // endpoint: /api/protocols/san/igroups
-type IGrouplistResponse struct {
-	Links      Links    `json:"_links"`
-	NumRecords int      `json:"num_records"`
-	Records    []IGroup `json:"records"`
-}
 
 type IGroup struct {
-	Links                Links               `json:"_links"`
 	Comment              string              `json:"comment"`
 	ConnectivityTracking *IGroupConnectivity `json:"connectivity_tracking,omitempty"`
 	DeleteOnUnmap        bool                `json:"delete_on_unmap"`
@@ -291,19 +192,19 @@ type IGroup struct {
 	Name                 string              `json:"name"`
 	OsType               string              `json:"os_type"`
 	ParentIgroups        []IGroupParent      `json:"parent_igroups"`
-	Portset              *IGroupPortset      `json:"portset,omitempty"`
+	Portset              *netapp.NamedObject `json:"portset,omitempty"`
 	Protocol             string              `json:"protocol"`
 	Replication          *IGroupReplication  `json:"replication,omitempty"`
 	SupportsIgroups      bool                `json:"supports_igroups"`
-	SVM                  IGroupSVM           `json:"svm"`
+	SVM                  netapp.NamedObject  `json:"svm"`
 	Target               *IGroupTarget       `json:"target,omitempty"`
 	UUID                 string              `json:"uuid"`
 }
 
 type IGroupConnectivity struct {
-	Alerts          []IGroupAlert `json:"alerts"`
-	ConnectionState string        `json:"connection_state"`
-	RequiredNodes   []IGroupNode  `json:"required_nodes"`
+	Alerts          []IGroupAlert        `json:"alerts"`
+	ConnectionState string               `json:"connection_state"`
+	RequiredNodes   []netapp.NamedObject `json:"required_nodes"`
 }
 
 type IGroupAlert struct {
@@ -321,14 +222,7 @@ type IGroupAlertArgument struct {
 	Message string `json:"message"`
 }
 
-type IGroupNode struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 type IGroupNested struct {
-	Links   Links           `json:"_links"`
 	Comment string          `json:"comment"`
 	Igroups []*IGroupNested `json:"igroups"`
 	Name    string          `json:"name"`
@@ -336,7 +230,6 @@ type IGroupNested struct {
 }
 
 type IGroupInitiator struct {
-	Links                IGroupInitiatorLinks `json:"_links"`
 	Comment              string               `json:"comment"`
 	ConnectivityTracking *IGroupInitiatorConn `json:"connectivity_tracking,omitempty"`
 	Igroup               *IGroupNested        `json:"igroup,omitempty"`
@@ -345,8 +238,8 @@ type IGroupInitiator struct {
 }
 
 type IGroupInitiatorLinks struct {
-	ConnectivityTracking *Link `json:"connectivity_tracking,omitempty"`
-	Self                 *Link `json:"self,omitempty"`
+	ConnectivityTracking *netapp.Link `json:"connectivity_tracking,omitempty"`
+	Self                 *netapp.Link `json:"self,omitempty"`
 }
 
 type IGroupInitiatorConn struct {
@@ -354,46 +247,31 @@ type IGroupInitiatorConn struct {
 }
 
 type IGroupInitiatorProx struct {
-	LocalSVM bool            `json:"local_svm"`
-	PeerSVMs []IGroupPeerSVM `json:"peer_svms"`
-}
-
-type IGroupPeerSVM struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+	LocalSVM bool                 `json:"local_svm"`
+	PeerSVMs []netapp.NamedObject `json:"peer_svms"`
 }
 
 type IGroupLunMap struct {
-	Links             Links     `json:"_links"`
 	LogicalUnitNumber int       `json:"logical_unit_number"`
 	Lun               IGroupLun `json:"lun"`
 }
 
 type IGroupLun struct {
-	Links Links       `json:"_links"`
-	Name  string      `json:"name"`
-	Node  *IGroupNode `json:"node,omitempty"`
-	UUID  string      `json:"uuid"`
+	Name string              `json:"name"`
+	Node *netapp.NamedObject `json:"node,omitempty"`
+	UUID string              `json:"uuid"`
 }
 
 type IGroupParent struct {
-	Links         Links           `json:"_links"`
 	Comment       string          `json:"comment"`
 	Name          string          `json:"name"`
 	ParentIgroups []*IGroupParent `json:"parent_igroups"`
 	UUID          string          `json:"uuid"`
 }
 
-type IGroupPortset struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 type IGroupReplication struct {
 	Error   *IGroupReplicationError `json:"error,omitempty"`
-	PeerSVM *IGroupPeerSVM          `json:"peer_svm,omitempty"`
+	PeerSVM *netapp.NamedObject     `json:"peer_svm,omitempty"`
 	State   string                  `json:"state"`
 }
 
@@ -408,12 +286,6 @@ type IGroupReplicationErrorIgroup struct {
 	UUID     string `json:"uuid"`
 }
 
-type IGroupSVM struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 type IGroupTarget struct {
 	FirmwareRevision string `json:"firmware_revision"`
 	ProductID        string `json:"product_id"`
@@ -422,90 +294,44 @@ type IGroupTarget struct {
 
 // endpoint: /api/network/fc/interfaces
 
-// endpoint: /api/network/fc/interfaces
-
-type FCInterfacesResponse struct {
-	Links      Links         `json:"_links"`
-	NumRecords int           `json:"num_records"`
-	Recommend  *FCRecommend  `json:"recommend,omitempty"`
-	Records    []FCInterface `json:"records"`
-}
-
-type FCRecommend struct {
-	Messages []FCRecommendMessage `json:"messages"`
-}
-
-type FCRecommendMessage struct {
-	Arguments []FCRecommendArgument `json:"arguments"`
-	Code      int                   `json:"code"`
-	Message   string                `json:"message"`
-	Severity  string                `json:"severity"`
-}
-
-type FCRecommendArgument struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
 type FCInterface struct {
-	Links        Links         `json:"_links"`
-	Comment      string        `json:"comment"`
-	DataProtocol string        `json:"data_protocol"`
-	Enabled      bool          `json:"enabled"`
-	Location     FCLocation    `json:"location"`
-	Metric       *FCMetric     `json:"metric,omitempty"`
-	Name         string        `json:"name"`
-	PortAddress  string        `json:"port_address"`
-	State        string        `json:"state"`
-	Statistics   *FCStatistics `json:"statistics,omitempty"`
-	SVM          CIFSSVM       `json:"svm"`
-	UUID         string        `json:"uuid"`
-	WWNN         string        `json:"wwnn"`
-	WWPN         string        `json:"wwpn"`
+	Comment      string             `json:"comment"`
+	DataProtocol string             `json:"data_protocol"`
+	Enabled      bool               `json:"enabled"`
+	Location     FCLocation         `json:"location"`
+	Metric       netapp.Metrics     `json:"metric,omitempty"`
+	Name         string             `json:"name"`
+	PortAddress  string             `json:"port_address"`
+	State        string             `json:"state"`
+	Statistics   netapp.Statistics  `json:"statistics,omitempty"`
+	SVM          netapp.NamedObject `json:"svm"`
+	UUID         string             `json:"uuid"`
+	WWNN         string             `json:"wwnn"`
+	WWPN         string             `json:"wwpn"`
 }
 
 type FCLocation struct {
-	HomeNode FCNode `json:"home_node"`
-	HomePort FCPort `json:"home_port"`
-	IsHome   bool   `json:"is_home"`
-	Node     FCNode `json:"node"`
-	Port     FCPort `json:"port"`
+	HomeNode netapp.NamedObject `json:"home_node"`
+	HomePort HomePort           `json:"home_port"`
+	IsHome   bool               `json:"is_home"`
+	Node     netapp.NamedObject `json:"node"`
+	Port     HomePort           `json:"port"`
 }
 
-type FCNode struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+type HomePort struct {
+	Name string   `json:"name"`
+	Node PortNode `json:"node"`
+	UUID string   `json:"uuid"`
 }
 
-type FCMetric struct {
-	Links      Links          `json:"_links"`
-	Duration   string         `json:"duration"`
-	IOPS       CIFSIOPS       `json:"iops"`
-	Latency    CIFSIOPS       `json:"latency"`
-	Status     string         `json:"status"`
-	Throughput CIFSThroughput `json:"throughput"`
-	Timestamp  string         `json:"timestamp"`
+type PortNode struct {
+	Name string `json:"name"`
 }
 
-type FCStatistics struct {
-	IOPSRaw       CIFSIOPS       `json:"iops_raw"`
-	LatencyRaw    CIFSIOPS       `json:"latency_raw"`
-	Status        string         `json:"status"`
-	ThroughputRaw CIFSThroughput `json:"throughput_raw"`
-	Timestamp     string         `json:"timestamp"`
-}
-
-// endpoint: /api/network/fc/port
-
-type FCPortsResponse struct {
-	NumRecords int      `json:"num_records"`
-	Records    []FCPort `json:"records"`
-}
+// endpoint: /api/network/fc/ports
 
 type FCPort struct {
-	Links              Links              `json:"_links"`
-	Node               FCNode             `json:"node"`
+	Node               netapp.NamedObject `json:"node"`
 	Name               string             `json:"name"`
 	UUID               string             `json:"uuid"`
 	Description        string             `json:"description"`
@@ -518,6 +344,8 @@ type FCPort struct {
 	Transceiver        *FCPortTransceiver `json:"transceiver,omitempty"`
 	WWNN               string             `json:"wwnn"`
 	WWPN               string             `json:"wwpn"`
+	Metric             netapp.Metrics     `json:"metric"`
+	Statistics         netapp.Statistics  `json:"statistics"`
 }
 
 type FCPortFabric struct {
@@ -541,19 +369,12 @@ type FCPortTransceiver struct {
 
 // endpoint: /api/protocols/san/fcp/services
 
-type FCPServicesResponse struct {
-	Links      Links        `json:"_links"`
-	NumRecords int          `json:"num_records"`
-	Records    []FCPService `json:"records"`
-}
-
 type FCPService struct {
-	Links      Links            `json:"_links"`
-	Enabled    bool             `json:"enabled"`
-	Metric     *FCMetric        `json:"metric,omitempty"`
-	Statistics *FCStatistics    `json:"statistics,omitempty"`
-	SVM        CIFSSVM          `json:"svm"`
-	Target     FCPServiceTarget `json:"target"`
+	Enabled    bool               `json:"enabled"`
+	Metric     netapp.Metrics     `json:"metric,omitempty"`
+	Statistics netapp.Statistics  `json:"statistics,omitempty"`
+	SVM        netapp.NamedObject `json:"svm"`
+	Target     FCPServiceTarget   `json:"target"`
 }
 
 type FCPServiceTarget struct {
@@ -562,13 +383,8 @@ type FCPServiceTarget struct {
 
 // endpoint: /api/protocols/nfs/services
 
-type NFSServicesResponse struct {
-	Records    []NFSService `json:"records"`
-	NumRecords int          `json:"num_records"`
-}
-
 type NFSService struct {
-	SVM                           SVMInfo              `json:"svm"`
+	SVM                           netapp.NamedObject   `json:"svm"`
 	Enabled                       bool                 `json:"enabled"`
 	State                         string               `json:"state"`
 	Transport                     NFSTransport         `json:"transport"`
@@ -586,6 +402,20 @@ type NFSService struct {
 	Exports                       NFSExports           `json:"exports"`
 	Security                      NFSSecurity          `json:"security"`
 	Windows                       NFSWindows           `json:"windows"`
+	Metric                        NFSMetric            `json:"metric"`
+	Statistics                    NFSStatistics        `json:"statistics"`
+}
+
+type NFSMetric struct {
+	V3  netapp.Metrics `json:"v3"`
+	V4  netapp.Metrics `json:"v4"`
+	V41 netapp.Metrics `json:"v41"`
+}
+
+type NFSStatistics struct {
+	V3  netapp.Statistics `json:"v3"`
+	V4  netapp.Statistics `json:"v4"`
+	V41 netapp.Statistics `json:"v41"`
 }
 
 type NFSTransport struct {
@@ -653,73 +483,36 @@ type NFSWindows struct {
 	V3MsDosClientEnabled bool `json:"v3_ms_dos_client_enabled"`
 }
 
-// endpoint: /api/protocols/nfs/services/{svm.uuid}/metrics
-
-type NFSServicesMetricsResponse struct {
-	Records    []NFSServiceMetrics `json:"records"`
-	NumRecords int                 `json:"num_records"`
-}
-
-type NFSServiceMetrics struct {
-	UUID      string             `json:"uuid"`
-	Timestamp string             `json:"timestamp"`
-	SVM       SVMInfo            `json:"svm"`
-	V3        NFSServiceMetricsV `json:"v3"`
-	V4        NFSServiceMetricsV `json:"v4"`
-	V41       NFSServiceMetricsV `json:"v41"`
-}
-
-type NFSServiceMetricsV struct {
-	Status     string         `json:"status"`
-	Duration   string         `json:"duration"`
-	Throughput CIFSThroughput `json:"throughput"`
-	IOPS       CIFSIOPS       `json:"iops"`
-	Latency    CIFSIOPS       `json:"latency"`
-}
-
 // endpoint: /api/protocols/nfs/export-policies
 
-type NFSExportPoliciesResponse struct {
-	Records    []NFSExportPolicy `json:"records"`
-	NumRecords int               `json:"num_records"`
-}
-
 type NFSExportPolicy struct {
-	SVM  SVMInfo `json:"svm"`
-	ID   int64   `json:"id"`
-	Name string  `json:"name"`
+	SVM  netapp.NamedObject `json:"svm"`
+	ID   int64              `json:"id"`
+	Name string             `json:"name"`
 }
 
 // endpoint: /api/network/ip/interfaces
 
-type IPInterfacesResponse struct {
-	Links      Links         `json:"_links"`
-	NumRecords int           `json:"num_records"`
-	Recommend  *FCRecommend  `json:"recommend,omitempty"`
-	Records    []IPInterface `json:"records"`
-}
-
 type IPInterface struct {
-	Links         Links           `json:"_links"`
-	DDNSEnabled   bool            `json:"ddns_enabled"`
-	DNSZone       string          `json:"dns_zone"`
-	Enabled       bool            `json:"enabled"`
-	IP            IPAddress       `json:"ip"`
-	IPSpace       IPSpace         `json:"ipspace"`
-	Location      IPLocation      `json:"location"`
-	Metric        *FCMetric       `json:"metric,omitempty"`
-	Name          string          `json:"name"`
-	ProbePort     int             `json:"probe_port"`
-	RDMAProtocols []string        `json:"rdma_protocols"`
-	Scope         string          `json:"scope"`
-	ServicePolicy IPServicePolicy `json:"service_policy"`
-	Services      []string        `json:"services"`
-	State         string          `json:"state"`
-	Statistics    *FCStatistics   `json:"statistics,omitempty"`
-	Subnet        IPSubnet        `json:"subnet"`
-	SVM           CIFSSVM         `json:"svm"`
-	UUID          string          `json:"uuid"`
-	VIP           bool            `json:"vip"`
+	DDNSEnabled   bool               `json:"ddns_enabled"`
+	DNSZone       string             `json:"dns_zone"`
+	Enabled       bool               `json:"enabled"`
+	IP            IPAddress          `json:"ip"`
+	IPSpace       netapp.NamedObject `json:"ipspace"`
+	Location      IPLocation         `json:"location"`
+	Metric        netapp.Metrics     `json:"metric,omitempty"`
+	Name          string             `json:"name"`
+	ProbePort     int                `json:"probe_port"`
+	RDMAProtocols []string           `json:"rdma_protocols"`
+	Scope         string             `json:"scope"`
+	ServicePolicy netapp.NamedObject `json:"service_policy"`
+	Services      []string           `json:"services"`
+	State         string             `json:"state"`
+	Statistics    netapp.Statistics  `json:"statistics,omitempty"`
+	Subnet        netapp.NamedObject `json:"subnet"`
+	SVM           netapp.NamedObject `json:"svm"`
+	UUID          string             `json:"uuid"`
+	VIP           bool               `json:"vip"`
 }
 
 type IPAddress struct {
@@ -728,37 +521,18 @@ type IPAddress struct {
 	Netmask string `json:"netmask"`
 }
 
-type IPSpace struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
 type IPLocation struct {
-	AutoRevert bool           `json:"auto_revert"`
-	Failover   string         `json:"failover"`
-	HomeNode   FCNode         `json:"home_node"`
-	HomePort   IPLocationPort `json:"home_port"`
-	IsHome     bool           `json:"is_home"`
-	Node       FCNode         `json:"node"`
-	Port       IPLocationPort `json:"port"`
+	AutoRevert bool               `json:"auto_revert"`
+	Failover   string             `json:"failover"`
+	HomeNode   netapp.NamedObject `json:"home_node"`
+	HomePort   IPLocationPort     `json:"home_port"`
+	IsHome     bool               `json:"is_home"`
+	Node       netapp.NamedObject `json:"node"`
+	Port       IPLocationPort     `json:"port"`
 }
 
 type IPLocationPort struct {
-	Links Links   `json:"_links"`
-	Name  string  `json:"name"`
-	Node  *FCNode `json:"node,omitempty"`
-	UUID  string  `json:"uuid"`
-}
-
-type IPServicePolicy struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
-}
-
-type IPSubnet struct {
-	Links Links  `json:"_links"`
-	Name  string `json:"name"`
-	UUID  string `json:"uuid"`
+	Name string              `json:"name"`
+	Node *netapp.NamedObject `json:"node,omitempty"`
+	UUID string              `json:"uuid"`
 }

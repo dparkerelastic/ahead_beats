@@ -42,6 +42,50 @@ func CreateNamedObjectFields(namedObject NamedObject) mapstr.M {
 	}
 }
 
+func CreateStatisticsFields(stats Statistics) mapstr.M {
+	return mapstr.M{
+		"timestamp":      stats.Timestamp,
+		"status":         stats.Status,
+		"throughput_raw": createIOLatencyFields(stats.ThroughputRaw),
+		"iops_raw":       createIOLatencyFields(stats.IOPSRaw),
+		"latency_raw":    createIOLatencyFields(stats.LatencyRaw),
+	}
+}
+
+func CreateMetricsFields(metric Metrics) mapstr.M {
+	return mapstr.M{
+		"timestamp":  metric.Timestamp,
+		"duration":   metric.Duration,
+		"status":     metric.Status,
+		"latency":    createIOLatencyFields(metric.Latency),
+		"iops":       createIOLatencyFields(metric.IOPS),
+		"throughput": createIOLatencyFields(metric.Throughput),
+	}
+}
+
+func createIOLatencyFields(io IOLatency) mapstr.M {
+	return mapstr.M{
+		"read":  io.Read,
+		"write": io.Write,
+		"other": io.Other,
+		"total": io.Total,
+	}
+}
+
+// For processing basic endpoints we need a type-specific function to create the fields.
+// ProcessEndpoint is a generic function that can be used for all basic endpoints,
+// but it needs to know how to create the fields for the specific type.
+type DispatchFunc func(*NetAppRestClient, Endpoint) ([]mb.Event, error)
+
+// makeDispatchFunc creates a DispatchFunc for a specific type T. The create[type name]Fields functions
+// passed to this function are defined with concrete types, so that's where we get our T type from.
+// This allows us to use the same ProcessEndpoint function for all basic endpoints, while still being type-safe.
+func MakeDispatchFunc[T any](createFunc CreateFieldsFunc[T]) DispatchFunc {
+	return func(client *NetAppRestClient, e Endpoint) ([]mb.Event, error) {
+		return ProcessEndpoint(*client, e, createFunc)
+	}
+}
+
 // ProcessEndpoint is a generic function to process basic endpoints.
 // It takes a MetricSet, an Endpoint, and a function to create fields for the specific type T.
 func ProcessEndpoint[T any](client NetAppRestClient, endpoint Endpoint, createFieldsFunc CreateFieldsFunc[T]) ([]mb.Event, error) {

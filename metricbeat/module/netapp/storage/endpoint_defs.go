@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"github.com/elastic/beats/v7/metricbeat/mb"
 	"github.com/elastic/beats/v7/metricbeat/module/netapp"
 )
 
@@ -84,28 +83,17 @@ func init() {
 // For processing basic endpoints we need a type-specific function to create the fields.
 // ProcessEndpoint is a generic function that can be used for all basic endpoints,
 // but it needs to know how to create the fields for the specific type.
-type DispatchFunc func(*netapp.NetAppRestClient, netapp.Endpoint) ([]mb.Event, error)
-
-// makeDispatchFunc creates a DispatchFunc for a specific type T. The create[type name]Fields functions
-// passed to this function are defined with concrete types, so that's where we get our T type from.
-// This allows us to use the same ProcessEndpoint function for all basic endpoints, while still being type-safe.
-func makeDispatchFunc[T any](createFunc netapp.CreateFieldsFunc[T]) DispatchFunc {
-	return func(client *netapp.NetAppRestClient, e netapp.Endpoint) ([]mb.Event, error) {
-		return netapp.ProcessEndpoint(*client, e, createFunc)
-	}
-}
-
-var endpointDispatchers = map[string]DispatchFunc{
-	SnapmirrorRelationshipsName: makeDispatchFunc(createSnapMirrorRelationshipFields),
-	AggregatesName:              makeDispatchFunc(createAggregateFields),
-	LUNsName:                    makeDispatchFunc(createLUNFields),
-	QosPoliciesName:             makeDispatchFunc(createQosPolicyFields),
-	QtreesName:                  makeDispatchFunc(createQTreeFields),
-	QuotaReportsName:            makeDispatchFunc(createQuotaReportFields),
-	QuotaRulesName:              makeDispatchFunc(createQuotaRuleFields),
-	VolumesName:                 makeDispatchFunc(createVolumeFields),
-	SvmPeersName:                makeDispatchFunc(createSVMPeerFields),
-	SvmsName:                    makeDispatchFunc(createSVMFields),
+var endpointDispatchers = map[string]netapp.DispatchFunc{
+	SnapmirrorRelationshipsName: netapp.MakeDispatchFunc(createSnapMirrorRelationshipFields),
+	AggregatesName:              netapp.MakeDispatchFunc(createAggregateFields),
+	LUNsName:                    netapp.MakeDispatchFunc(createLUNFields),
+	QosPoliciesName:             netapp.MakeDispatchFunc(createQosPolicyFields),
+	QtreesName:                  netapp.MakeDispatchFunc(createQTreeFields),
+	QuotaReportsName:            netapp.MakeDispatchFunc(createQuotaReportFields),
+	QuotaRulesName:              netapp.MakeDispatchFunc(createQuotaRuleFields),
+	VolumesName:                 netapp.MakeDispatchFunc(createVolumeFields),
+	SvmPeersName:                netapp.MakeDispatchFunc(createSVMPeerFields),
+	SvmsName:                    netapp.MakeDispatchFunc(createSVMFields),
 }
 
 // Fields to be used in endpoint calls - ONTAP API only returns name and uuid unless fields are specified.

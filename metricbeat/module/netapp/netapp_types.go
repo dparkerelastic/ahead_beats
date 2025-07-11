@@ -20,7 +20,7 @@ type NamedObject struct {
 	UUID string `json:"uuid"`
 }
 
-type NetappMetrics struct {
+type Metrics struct {
 	Timestamp  time.Time `json:"timestamp"`
 	Duration   string    `json:"duration"`
 	Status     string    `json:"status"`
@@ -29,7 +29,7 @@ type NetappMetrics struct {
 	Latency    IOLatency `json:"latency"`
 }
 
-type NetappStatistics struct {
+type Statistics struct {
 	Timestamp     time.Time `json:"timestamp"`
 	Status        string    `json:"status"`
 	ThroughputRaw IOLatency `json:"throughput_raw"`
@@ -42,4 +42,8 @@ type IOLatency struct {
 	Write int `json:"write"`
 	Other int `json:"other"`
 	Total int `json:"total"`
+}
+
+type Link struct {
+	Href string `json:"href"`
 }
