@@ -4,7 +4,993 @@
   description: >
     protocols
   fields:
-    - name: example
-      type: keyword
-      description: >
-        Example field
+  - name: iscsi_service
+    type: group
+    description: ISCSI service information
+    fields:
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          # Fields from netapp.CreateNamedObjectFields(service.SVM)
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: enabled
+        type: boolean
+        description: Whether the ISCSI service is enabled
+      - name: target
+        type: group
+        description: ISCSI target information
+        fields:
+          # Fields from createTargetInfoFields(service.Target)
+          - name: iqn
+            type: keyword
+            description: ISCSI Qualified Name of the target
+          - name: alias
+            type: keyword
+            description: Alias of the ISCSI target
+      - name: metric
+        type: object
+        description: ISCSI service metrics
+      - name: statistics
+        type: object
+        description: ISCSI service statistics
+  - name: cifs_service
+    type: group
+    description: CIFS service information
+    fields:
+      - name: ad_domain
+        type: group
+        description: Active Directory domain information
+        fields:
+          - name: default_site
+            type: keyword
+            description: Default site of the AD domain
+          - name: fqdn
+            type: keyword
+            description: FQDN of the AD domain
+          - name: organizational_unit
+            type: keyword
+            description: Organizational unit of the AD domain
+      - name: auth_style
+        type: keyword
+        description: Authentication style
+      - name: auth_user_type
+        type: keyword
+        description: Authentication user type
+      - name: authentication_method
+        type: keyword
+        description: Authentication method
+      - name: client_id
+        type: keyword
+        description: Client ID
+      - name: comment
+        type: keyword
+        description: Comment for the CIFS service
+      - name: default_unix_user
+        type: keyword
+        description: Default UNIX user
+      - name: enabled
+        type: boolean
+        description: Whether the CIFS service is enabled
+      - name: group_policy_object_enabled
+        type: boolean
+        description: Whether Group Policy Object is enabled
+      - name: key_vault_uri
+        type: keyword
+        description: Key Vault URI
+      - name: name
+        type: keyword
+        description: Name of the CIFS service
+      - name: netbios
+        type: group
+        description: NetBIOS information
+        fields:
+          - name: aliases
+            type: keyword
+            description: List of NetBIOS aliases
+          - name: enabled
+            type: boolean
+            description: Whether NetBIOS is enabled
+          - name: wins_servers
+            type: keyword
+            description: WINS servers (JSON string)
+      - name: oauth_host
+        type: keyword
+        description: OAuth host
+      - name: options
+        type: object
+        description: CIFS service options
+      - name: proxy_host
+        type: keyword
+        description: Proxy host
+      - name: proxy_port
+        type: long
+        description: Proxy port
+      - name: proxy_type
+        type: keyword
+        description: Proxy type
+      - name: proxy_username
+        type: keyword
+        description: Proxy username
+      - name: security
+        type: object
+        description: CIFS security settings
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: tenant_id
+        type: keyword
+        description: Tenant ID
+      - name: timeout
+        type: long
+        description: Timeout value
+      - name: verify_host
+        type: boolean
+        description: Whether to verify the host
+      - name: workgroup
+        type: keyword
+        description: Workgroup name
+      - name: metric
+        type: object
+        description: CIFS service metrics
+      - name: statistics
+        type: object
+        description: CIFS service statistics
+  - name: cifs_share
+    type: group
+    description: CIFS share information
+    fields:
+      - name: access_based_enumeration
+        type: boolean
+        description: Whether access-based enumeration is enabled
+      - name: acls
+        type: keyword
+        description: ACLs for the CIFS share (JSON string)
+      - name: allow_unencrypted_access
+        type: boolean
+        description: Whether unencrypted access is allowed
+      - name: attribute_cache
+        type: boolean
+        description: Whether attribute caching is enabled
+      - name: browsable
+        type: boolean
+        description: Whether the share is browsable
+      - name: change_notify
+        type: boolean
+        description: Whether change notify is enabled
+      - name: comment
+        type: keyword
+        description: Comment for the CIFS share
+      - name: continuously_available
+        type: boolean
+        description: Whether the share is continuously available
+      - name: dir_umask
+        type: keyword
+        description: Directory umask for the share
+      - name: encryption
+        type: boolean
+        description: Whether encryption is enabled for the share
+      - name: file_umask
+        type: keyword
+        description: File umask for the share
+      - name: force_group_for_create
+        type: keyword
+        description: Group to force for file creation
+      - name: home_directory
+        type: boolean
+        description: Whether the share is a home directory
+      - name: max_connections_per_share
+        type: long
+        description: Maximum connections allowed per share
+      - name: name
+        type: keyword
+        description: Name of the CIFS share
+      - name: namespace_caching
+        type: boolean
+        description: Whether namespace caching is enabled
+      - name: no_strict_security
+        type: boolean
+        description: Whether strict security is disabled
+      - name: offline_files
+        type: keyword
+        description: Offline files setting
+      - name: oplocks
+        type: boolean
+        description: Whether opportunistic locking is enabled
+      - name: path
+        type: keyword
+        description: Path of the CIFS share
+      - name: show_previous_versions
+        type: boolean
+        description: Whether previous versions are shown
+      - name: show_snapshot
+        type: boolean
+        description: Whether snapshots are shown
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: unix_symlink
+        type: boolean
+        description: Whether UNIX symlinks are enabled
+      - name: volume
+        type: group
+        description: Volume information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the volume
+          - name: uuid
+            type: keyword
+            description: UUID of the volume
+      - name: vscan_profile
+        type: keyword
+        description: Vscan profile for the share
+  - name: fc_interface
+    type: group
+    description: FC interface information
+    fields:
+      - name: comment
+        type: keyword
+        description: Comment for the FC interface
+      - name: data_protocol
+        type: keyword
+        description: Data protocol used by the FC interface
+      - name: enabled
+        type: boolean
+        description: Whether the FC interface is enabled
+      - name: location
+        type: group
+        description: Location information for the FC interface
+        fields:
+          - name: home_node
+            type: group
+            description: Home node information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the home node
+              - name: uuid
+                type: keyword
+                description: UUID of the home node
+          - name: home_port
+            type: group
+            description: Home port information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the home port
+              - name: uuid
+                type: keyword
+                description: UUID of the home port
+          - name: is_home
+            type: boolean
+            description: Whether this is the home location
+          - name: node
+            type: group
+            description: Node information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the node
+              - name: uuid
+                type: keyword
+                description: UUID of the node
+          - name: port
+            type: group
+            description: Port information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the port
+              - name: uuid
+                type: keyword
+                description: UUID of the port
+      - name: metric
+        type: object
+        description: FC interface metrics
+      - name: name
+        type: keyword
+        description: Name of the FC interface
+      - name: port_address
+        type: keyword
+        description: Port address of the FC interface
+      - name: state
+        type: keyword
+        description: State of the FC interface
+      - name: statistics
+        type: object
+        description: FC interface statistics
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: uuid
+        type: keyword
+        description: UUID of the FC interface
+      - name: wwnn
+        type: keyword
+        description: World Wide Node Name (WWNN) of the FC interface
+      - name: wwpn
+        type: keyword
+        description: World Wide Port Name (WWPN) of the FC interface
+  - name: fc_port
+    type: group
+    description: FC port information
+    fields:
+      - name: node
+        type: group
+        description: Node information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the node
+          - name: uuid
+            type: keyword
+            description: UUID of the node
+      - name: name
+        type: keyword
+        description: Name of the FC port
+      - name: uuid
+        type: keyword
+        description: UUID of the FC port
+      - name: description
+        type: keyword
+        description: Description of the FC port
+      - name: enabled
+        type: boolean
+        description: Whether the FC port is enabled
+      - name: fabric
+        type: group
+        description: Fabric information
+        fields:
+          - name: connected
+            type: boolean
+            description: Whether the port is connected to the fabric
+          - name: connected_speed
+            type: keyword
+            description: Connected speed of the fabric
+          - name: port_address
+            type: keyword
+            description: Port address in the fabric
+          - name: switch_port
+            type: keyword
+            description: Switch port in the fabric
+      - name: physical_protocol
+        type: keyword
+        description: Physical protocol of the FC port
+      - name: speed
+        type: group
+        description: Speed information
+        fields:
+          - name: maximum
+            type: keyword
+            description: Maximum speed of the port
+          - name: configured
+            type: keyword
+            description: Configured speed of the port
+      - name: state
+        type: keyword
+        description: State of the FC port
+      - name: supported_protocols
+        type: keyword
+        description: Supported protocols (JSON string)
+      - name: transceiver
+        type: group
+        description: Transceiver information
+        fields:
+          - name: form_factor
+            type: keyword
+            description: Form factor of the transceiver
+          - name: manufacturer
+            type: keyword
+            description: Manufacturer of the transceiver
+          - name: capabilities
+            type: keyword
+            description: Capabilities of the transceiver (comma-separated string)
+          - name: part_number
+            type: keyword
+            description: Part number of the transceiver
+      - name: wwnn
+        type: keyword
+        description: World Wide Node Name (WWNN) of the FC port
+      - name: wwpn
+        type: keyword
+        description: World Wide Port Name (WWPN) of the FC port
+      - name: metric
+        type: object
+        description: FC port metrics
+      - name: statistics
+        type: object
+        description: FC port statistics
+  - name: fcp_service
+    type: group
+    description: FCP service information
+    fields:
+      - name: enabled
+        type: boolean
+        description: Whether the FCP service is enabled
+      - name: metric
+        type: object
+        description: FCP service metrics
+      - name: statistics
+        type: object
+        description: FCP service statistics
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: target_name
+        type: keyword
+        description: Name of the FCP target
+  - name: nfs_service
+    type: group
+    description: NFS service information
+    fields:
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: enabled
+        type: boolean
+        description: Whether the NFS service is enabled
+      - name: state
+        type: keyword
+        description: State of the NFS service
+      - name: transport
+        type: group
+        description: NFS transport protocol settings
+        fields:
+          - name: udp_enabled
+            type: boolean
+            description: Whether UDP transport is enabled
+          - name: tcp_enabled
+            type: boolean
+            description: Whether TCP transport is enabled
+          - name: rdma_enabled
+            type: boolean
+            description: Whether RDMA transport is enabled
+      - name: protocol
+        type: group
+        description: NFS protocol settings
+        fields:
+          - name: v3_enabled
+            type: boolean
+            description: Whether NFSv3 is enabled
+          - name: v3_64bit_identifiers_enabled
+            type: boolean
+            description: Whether 64-bit identifiers are enabled for NFSv3
+          - name: v4_id_domain
+            type: keyword
+            description: ID domain for NFSv4
+          - name: v4_64bit_identifiers_enabled
+            type: boolean
+            description: Whether 64-bit identifiers are enabled for NFSv4
+          - name: v40_enabled
+            type: boolean
+            description: Whether NFSv4.0 is enabled
+          - name: v41_enabled
+            type: boolean
+            description: Whether NFSv4.1 is enabled
+          - name: v4_grace_seconds
+            type: long
+            description: Grace period in seconds for NFSv4
+          - name: v40_features
+            type: group
+            description: NFSv4.0 feature settings
+            fields:
+              - name: acl_enabled
+                type: boolean
+                description: Whether ACL is enabled for NFSv4.0
+              - name: read_delegation_enabled
+                type: boolean
+                description: Whether read delegation is enabled for NFSv4.0
+              - name: write_delegation_enabled
+                type: boolean
+                description: Whether write delegation is enabled for NFSv4.0
+              - name: acl_preserve
+                type: boolean
+                description: Whether ACL preservation is enabled for NFSv4.0
+          - name: v41_features
+            type: group
+            description: NFSv4.1 feature settings
+            fields:
+              - name: acl_enabled
+                type: boolean
+                description: Whether ACL is enabled for NFSv4.1
+              - name: read_delegation_enabled
+                type: boolean
+                description: Whether read delegation is enabled for NFSv4.1
+              - name: write_delegation_enabled
+                type: boolean
+                description: Whether write delegation is enabled for NFSv4.1
+              - name: pnfs_enabled
+                type: boolean
+                description: Whether pNFS is enabled for NFSv4.1
+          - name: v3_features
+            type: group
+            description: NFSv3 feature settings
+            fields:
+              - name: mount_root_only
+                type: boolean
+                description: Whether only root can mount NFSv3 exports
+      - name: vstorage_enabled
+        type: boolean
+        description: Whether vStorage is enabled
+      - name: rquota_enabled
+        type: boolean
+        description: Whether rquota is enabled
+      - name: showmount_enabled
+        type: boolean
+        description: Whether showmount is enabled
+      - name: auth_sys_extended_groups_enabled
+        type: boolean
+        description: Whether AUTH_SYS extended groups are enabled
+      - name: extended_groups_limit
+        type: long
+        description: Limit for extended groups
+      - name: credential_cache
+        type: group
+        description: Credential cache settings
+        fields:
+          - name: positive_ttl
+            type: long
+            description: Positive TTL for credential cache
+      - name: qtree
+        type: group
+        description: Qtree export settings
+        fields:
+          - name: export_enabled
+            type: boolean
+            description: Whether qtree export is enabled
+          - name: validate_export
+            type: boolean
+            description: Whether qtree export validation is enabled
+      - name: access_cache_config
+        type: group
+        description: Access cache configuration
+        fields:
+          - name: ttl_positive
+            type: long
+            description: Positive TTL for access cache
+          - name: ttl_negative
+            type: long
+            description: Negative TTL for access cache
+          - name: harvest_timeout
+            type: long
+            description: Harvest timeout for access cache
+          - name: is_dns_ttl_enabled
+            type: boolean
+            description: Whether DNS TTL is enabled for access cache
+      - name: file_session_io_grouping_count
+        type: long
+        description: File session IO grouping count
+      - name: file_session_io_grouping_duration
+        type: long
+        description: File session IO grouping duration
+      - name: exports
+        type: group
+        description: NFS export settings
+        fields:
+          - name: name_service_lookup_protocol
+            type: keyword
+            description: Name service lookup protocol for exports
+      - name: security
+        type: group
+        description: NFS security settings
+        fields:
+          - name: permitted_encryption_types
+            type: keyword
+            description: Permitted encryption types (comma-separated string)
+      - name: windows
+        type: group
+        description: Windows-specific NFS settings
+        fields:
+          - name: v3_ms_dos_client_enabled
+            type: boolean
+            description: Whether NFSv3 MS-DOS client support is enabled
+      - name: metric
+        type: group
+        description: NFS service metrics
+        fields:
+          - name: v3
+            type: object
+            description: NFSv3 metrics
+          - name: v4
+            type: object
+            description: NFSv4 metrics
+          - name: v41
+            type: object
+            description: NFSv4.1 metrics
+      - name: statistics
+        type: group
+        description: NFS service statistics
+        fields:
+          - name: v3
+            type: object
+            description: NFSv3 statistics
+          - name: v4
+            type: object
+            description: NFSv4 statistics
+          - name: v41
+            type: object
+            description: NFSv4.1 statistics
+  - name: nfs_export_policy
+    type: group
+    description: NFS export policy information
+    fields:
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: id
+        type: long
+        description: ID of the NFS export policy
+      - name: name
+        type: keyword
+        description: Name of the NFS export policy
+  - name: ip_interface
+    type: group
+    description: IP interface information
+    fields:
+      - name: ddns_enabled
+        type: boolean
+        description: Whether DDNS is enabled
+      - name: dns_zone
+        type: keyword
+        description: DNS zone of the interface
+      - name: enabled
+        type: boolean
+        description: Whether the IP interface is enabled
+      - name: ip
+        type: group
+        description: IP address information
+        fields:
+          - name: address
+            type: ip
+            description: IP address of the interface
+          - name: family
+            type: keyword
+            description: IP address family (e.g., IPv4, IPv6)
+          - name: netmask
+            type: ip
+            description: Netmask of the IP address
+      - name: ipspace
+        type: group
+        description: IPspace information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the IPspace
+          - name: uuid
+            type: keyword
+            description: UUID of the IPspace
+      - name: location
+        type: group
+        description: Location information for the IP interface
+        fields:
+          - name: auto_revert
+            type: boolean
+            description: Whether auto-revert is enabled
+          - name: failover
+            type: boolean
+            description: Whether failover is enabled
+          - name: home_node
+            type: group
+            description: Home node information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the home node
+              - name: uuid
+                type: keyword
+                description: UUID of the home node
+          - name: home_port
+            type: group
+            description: Home port information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the home port
+              - name: uuid
+                type: keyword
+                description: UUID of the home port
+          - name: is_home
+            type: boolean
+            description: Whether this is the home location
+          - name: node
+            type: group
+            description: Node information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the node
+              - name: uuid
+                type: keyword
+                description: UUID of the node
+          - name: port
+            type: group
+            description: Port information
+            fields:
+              - name: name
+                type: keyword
+                description: Name of the port
+              - name: uuid
+                type: keyword
+                description: UUID of the port
+      - name: metric
+        type: object
+        description: IP interface metrics
+      - name: name
+        type: keyword
+        description: Name of the IP interface
+      - name: probe_port
+        type: long
+        description: Probe port of the IP interface
+      - name: rdma_protocols
+        type: keyword
+        description: RDMA protocols (JSON string)
+      - name: scope
+        type: keyword
+        description: Scope of the IP interface
+      - name: service_policy
+        type: group
+        description: Service policy information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the service policy
+          - name: uuid
+            type: keyword
+            description: UUID of the service policy
+      - name: services
+        type: keyword
+        description: Services (JSON string)
+      - name: state
+        type: keyword
+        description: State of the IP interface
+      - name: statistics
+        type: object
+        description: IP interface statistics
+      - name: subnet
+        type: group
+        description: Subnet information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the subnet
+          - name: uuid
+            type: keyword
+            description: UUID of the subnet
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: uuid
+        type: keyword
+        description: UUID of the IP interface
+      - name: vip
+        type: boolean
+        description: Whether the interface is a virtual IP (VIP)
+  - name: iscsi_session
+    type: group
+    description: ISCSI session information
+    fields:
+      - name: igroups
+        type: keyword
+        description: ISCSI initiator groups (JSON string)
+      - name: initiator
+        type: group
+        description: ISCSI initiator information
+        fields:
+          - name: alias
+            type: keyword
+            description: Alias of the ISCSI initiator
+          - name: comment
+            type: keyword
+            description: Comment for the ISCSI initiator
+          - name: name
+            type: keyword
+            description: Name of the ISCSI initiator
+      - name: isid
+        type: keyword
+        description: ISCSI session identifier (ISID)
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: target_portal_group
+        type: keyword
+        description: Target portal group
+      - name: target_portal_group_tag
+        type: long
+        description: Target portal group tag
+      - name: tsih
+        type: long
+        description: Target session identifier handle (TSIH)
+      - name: connection
+        type: group
+        description: ISCSI connection in the session
+        fields:
+          - name: authentication_type
+            type: keyword
+            description: Authentication type used for the connection
+          - name: cid
+            type: long
+            description: Connection identifier (CID)
+          - name: initiator_address
+            type: group
+            description: Initiator address information
+            fields:
+              - name: address
+                type: ip
+                description: IP address of the initiator
+              - name: port
+                type: long
+                description: Port of the initiator
+          - name: interface
+            type: group
+            description: Interface information
+            fields:
+              - name: ip
+                type: group
+                description: IP information of the interface
+                fields:
+                  - name: address
+                    type: ip
+                    description: IP address of the interface
+                  - name: port
+                    type: long
+                    description: Port of the interface
+              - name: name
+                type: keyword
+                description: Name of the interface
+              - name: uuid
+                type: keyword
+                description: UUID of the interface
+  - name: igroup
+    type: group
+    description: ISCSI initiator group (igroup) information
+    fields:
+      - name: comment
+        type: keyword
+        description: Comment for the igroup
+      - name: connectivity_tracking
+        type: object
+        description: Connectivity tracking information for the igroup
+      - name: delete_on_unmap
+        type: boolean
+        description: Whether to delete the igroup on unmap
+      - name: lun_maps
+        type: keyword
+        description: LUN maps for the igroup (JSON string)
+      - name: name
+        type: keyword
+        description: Name of the igroup
+      - name: os_type
+        type: keyword
+        description: Operating system type for the igroup
+      - name: portset
+        type: keyword
+        description: Portset information for the igroup (JSON string)
+      - name: protocol
+        type: keyword
+        description: Protocol used by the igroup
+      - name: replication
+        type: object
+        description: Replication information for the igroup
+      - name: supports_igroups
+        type: boolean
+        description: Whether igroups are supported
+      - name: svm
+        type: group
+        description: Storage Virtual Machine (SVM) information
+        fields:
+          - name: name
+            type: keyword
+            description: Name of the SVM
+          - name: uuid
+            type: keyword
+            description: UUID of the SVM
+      - name: target
+        type: group
+        description: Target information for the igroup
+        fields:
+          - name: firmware_revision
+            type: keyword
+            description: Firmware revision of the target
+          - name: product_id
+            type: keyword
+            description: Product ID of the target
+          - name: vendor_id
+            type: keyword
+            description: Vendor ID of the target
+      - name: uuid
+        type: keyword
+        description: UUID of the igroup
+      - name: initiator
+        type: group
+        description: ISCSI initiator information
+        fields:
+          - name: comment
+            type: keyword
+            description: Comment for the ISCSI initiator
+          - name: connection_state
+            type: keyword
+            description: Connection state of the initiator
+          - name: igroup
+            type: group
+            description: Igroup information for the initiator
+            fields:
+              - name: comment
+                type: keyword
+                description: Comment for the igroup
+              - name: igroups
+                type: object
+                description: Placeholder for igroups (always null to avoid recursion)
+              - name: name
+                type: keyword
+                description: Name of the igroup
+              - name: uuid
+                type: keyword
+                description: UUID of the igroup
+          - name: name
+            type: keyword
+            description: Name of the ISCSI initiator
+          - name: proximity
+            type: object
+            description: Proximity information for the initiator
