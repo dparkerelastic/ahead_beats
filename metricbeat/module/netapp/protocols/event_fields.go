@@ -8,11 +8,13 @@ import (
 // endpoint: /api/protocols/san/iscsi/services
 func createISCSIServiceFields(service ISCSIService) mapstr.M {
 	return mapstr.M{
-		"svm":        netapp.CreateNamedObjectFields(service.SVM),
-		"enabled":    service.Enabled,
-		"target":     createTargetInfoFields(service.Target),
-		"metric":     service.Metric,
-		"statistics": service.Statistics,
+		"iscsi_service": mapstr.M{
+			"svm":        netapp.CreateNamedObjectFields(service.SVM),
+			"enabled":    service.Enabled,
+			"target":     createTargetInfoFields(service.Target),
+			"metric":     service.Metric,
+			"statistics": service.Statistics,
+		},
 	}
 }
 
@@ -25,51 +27,54 @@ func createTargetInfoFields(info TargetInfo) mapstr.M {
 
 // endpoint: /api/protocols/san/iscsi/sessions
 func createISCSISessionFields(session ISCSISession) mapstr.M {
-	connections := make([]mapstr.M, len(session.Connections))
-	for i, conn := range session.Connections {
-		connections[i] = mapstr.M{
-			"authentication_type": conn.AuthenticationType,
-			"cid":                 conn.CID,
-			"initiator_address": mapstr.M{
-				"address": conn.InitiatorAddress.Address,
-				"port":    conn.InitiatorAddress.Port,
-			},
-			"interface": mapstr.M{
-				"ip": mapstr.M{
-					"address": conn.Interface.IP.Address,
-					"port":    conn.Interface.IP.Port,
-				},
-				"name": conn.Interface.Name,
-				"uuid": conn.Interface.UUID,
-			},
-		}
-	}
 
-	igroups := make([]mapstr.M, len(session.Igroups))
-	for i, ig := range session.Igroups {
-		igroups[i] = netapp.CreateNamedObjectFields(ig)
-	}
-
-	initiator := mapstr.M{
-		"alias":   session.Initiator.Alias,
-		"comment": session.Initiator.Comment,
-		"name":    session.Initiator.Name,
+	igroups, err := netapp.ToJSONString(session.Igroups)
+	if err != nil {
+		igroups = ""
 	}
 
 	return mapstr.M{
-		"connections":             connections,
-		"igroups":                 igroups,
-		"initiator":               initiator,
-		"isid":                    session.ISID,
-		"svm":                     netapp.CreateNamedObjectFields(session.SVM),
-		"target_portal_group":     session.TargetPortalGroup,
-		"target_portal_group_tag": session.TargetPortalGroupTag,
-		"tsih":                    session.TSIH,
+		"iscsi_session": mapstr.M{
+			"igroups": igroups,
+			"initiator": mapstr.M{
+				"alias":   session.Initiator.Alias,
+				"comment": session.Initiator.Comment,
+				"name":    session.Initiator.Name,
+			},
+			"isid":                    session.ISID,
+			"svm":                     netapp.CreateNamedObjectFields(session.SVM),
+			"target_portal_group":     session.TargetPortalGroup,
+			"target_portal_group_tag": session.TargetPortalGroupTag,
+			"tsih":                    session.TSIH,
+		},
+	}
+}
+
+func createISCSIConnectionFields(conn ISCSIConnection) mapstr.M {
+	return mapstr.M{
+		"authentication_type": conn.AuthenticationType,
+		"cid":                 conn.CID,
+		"initiator_address": mapstr.M{
+			"address": conn.InitiatorAddress.Address,
+			"port":    conn.InitiatorAddress.Port,
+		},
+		"interface": mapstr.M{
+			"ip": mapstr.M{
+				"address": conn.Interface.IP.Address,
+				"port":    conn.Interface.IP.Port,
+			},
+			"name": conn.Interface.Name,
+			"uuid": conn.Interface.UUID,
+		},
 	}
 }
 
 // endpoint: /api/protocols/cifs/services
 func createCIFSServicesFields(service CIFSService) mapstr.M {
+	winservers, err := netapp.ToJSONString(service.Netbios.WinsServers)
+	if err != nil {
+		winservers = ""
+	}
 	return mapstr.M{
 		"ad_domain": mapstr.M{
 			"default_site":        service.AdDomain.DefaultSite,
@@ -85,81 +90,84 @@ func createCIFSServicesFields(service CIFSService) mapstr.M {
 		"enabled":                     service.Enabled,
 		"group_policy_object_enabled": service.GroupPolicyObjectEnabled,
 		"key_vault_uri":               service.KeyVaultURI,
-		"metric":                      service.Metric,
-		"name":                        service.Name,
+
+		"name": service.Name,
 		"netbios": mapstr.M{
 			"aliases":      service.Netbios.Aliases,
 			"enabled":      service.Netbios.Enabled,
-			"wins_servers": service.Netbios.WinsServers,
+			"wins_servers": winservers,
 		},
-		"oauth_host": service.OAuthHost,
-		"options": mapstr.M{
-			"admin_to_root_mapping":                 service.Options.AdminToRootMapping,
-			"advanced_sparse_file":                  service.Options.AdvancedSparseFile,
-			"backup_symlink_enabled":                service.Options.BackupSymlinkEnabled,
-			"client_dup_detection_enabled":          service.Options.ClientDupDetectionEnabled,
-			"client_version_reporting_enabled":      service.Options.ClientVersionReportingEnabled,
-			"copy_offload":                          service.Options.CopyOffload,
-			"dac_enabled":                           service.Options.DacEnabled,
-			"export_policy_enabled":                 service.Options.ExportPolicyEnabled,
-			"fake_open":                             service.Options.FakeOpen,
-			"fsctl_trim":                            service.Options.FsctlTrim,
-			"junction_reparse":                      service.Options.JunctionReparse,
-			"large_mtu":                             service.Options.LargeMTU,
-			"max_connections_per_session":           service.Options.MaxConnectionsPerSession,
-			"max_lifs_per_session":                  service.Options.MaxLifsPerSession,
-			"max_opens_same_file_per_tree":          service.Options.MaxOpensSameFilePerTree,
-			"max_same_tree_connect_per_session":     service.Options.MaxSameTreeConnectPerSession,
-			"max_same_user_sessions_per_connection": service.Options.MaxSameUserSessionsPerConnection,
-			"max_watches_set_per_tree":              service.Options.MaxWatchesSetPerTree,
-			"multichannel":                          service.Options.Multichannel,
-			"null_user_windows_name":                service.Options.NullUserWindowsName,
-			"path_component_cache":                  service.Options.PathComponentCache,
-			"referral":                              service.Options.Referral,
-			"shadowcopy":                            service.Options.Shadowcopy,
-			"shadowcopy_dir_depth":                  service.Options.ShadowcopyDirDepth,
-			"smb_credits":                           service.Options.SmbCredits,
-			"trusted_domain_enum_search_enabled":    service.Options.TrustedDomainEnumSearchEnabled,
-			"widelink_reparse_versions":             service.Options.WidelinkReparseVersions,
-		},
+		"oauth_host":     service.OAuthHost,
+		"options":        createCIFSOptionsFields(service.Options),
 		"proxy_host":     service.ProxyHost,
 		"proxy_port":     service.ProxyPort,
 		"proxy_type":     service.ProxyType,
 		"proxy_username": service.ProxyUsername,
-		"security": mapstr.M{
-			"advertised_kdc_encryptions": service.Security.AdvertisedKDCEncryptions,
-			"aes_netlogon_enabled":       service.Security.AESNetlogonEnabled,
-			"encrypt_dc_connection":      service.Security.EncryptDCConnection,
-			"kdc_encryption":             service.Security.KDCEncryption,
-			"ldap_referral_enabled":      service.Security.LDAPReferralEnabled,
-			"lm_compatibility_level":     service.Security.LMCompatibilityLevel,
-			"restrict_anonymous":         service.Security.RestrictAnonymous,
-			"session_security":           service.Security.SessionSecurity,
-			"smb_encryption":             service.Security.SMBEncryption,
-			"smb_signing":                service.Security.SMBSigning,
-			"try_ldap_channel_binding":   service.Security.TryLDAPChannelBinding,
-			"use_ldaps":                  service.Security.UseLDAPS,
-			"use_start_tls":              service.Security.UseStartTLS,
-		},
-		"statistics":  service.Statistics,
-		"svm":         netapp.CreateNamedObjectFields(service.SVM),
-		"tenant_id":   service.TenantID,
-		"timeout":     service.Timeout,
-		"verify_host": service.VerifyHost,
-		"workgroup":   service.Workgroup,
+		"security":       createCIFSSecurityFields(service.Security),
+		"svm":            netapp.CreateNamedObjectFields(service.SVM),
+		"tenant_id":      service.TenantID,
+		"timeout":        service.Timeout,
+		"verify_host":    service.VerifyHost,
+		"workgroup":      service.Workgroup,
+		"metric":         netapp.CreateMetricsFields(service.Metric),
+		"statistics":     netapp.CreateStatisticsFields(service.Statistics),
+	}
+}
+
+func createCIFSSecurityFields(security CIFSSecurity) mapstr.M {
+	return mapstr.M{
+		"advertised_kdc_encryptions": security.AdvertisedKDCEncryptions,
+		"aes_netlogon_enabled":       security.AESNetlogonEnabled,
+		"encrypt_dc_connection":      security.EncryptDCConnection,
+		"kdc_encryption":             security.KDCEncryption,
+		"ldap_referral_enabled":      security.LDAPReferralEnabled,
+		"lm_compatibility_level":     security.LMCompatibilityLevel,
+		"restrict_anonymous":         security.RestrictAnonymous,
+		"session_security":           security.SessionSecurity,
+		"smb_encryption":             security.SMBEncryption,
+		"smb_signing":                security.SMBSigning,
+		"try_ldap_channel_binding":   security.TryLDAPChannelBinding,
+		"use_ldaps":                  security.UseLDAPS,
+		"use_start_tls":              security.UseStartTLS,
+	}
+}
+func createCIFSOptionsFields(options CIFSOptions) mapstr.M {
+	return mapstr.M{
+		"admin_to_root_mapping":                 options.AdminToRootMapping,
+		"advanced_sparse_file":                  options.AdvancedSparseFile,
+		"backup_symlink_enabled":                options.BackupSymlinkEnabled,
+		"client_dup_detection_enabled":          options.ClientDupDetectionEnabled,
+		"client_version_reporting_enabled":      options.ClientVersionReportingEnabled,
+		"copy_offload":                          options.CopyOffload,
+		"dac_enabled":                           options.DacEnabled,
+		"export_policy_enabled":                 options.ExportPolicyEnabled,
+		"fake_open":                             options.FakeOpen,
+		"fsctl_trim":                            options.FsctlTrim,
+		"junction_reparse":                      options.JunctionReparse,
+		"large_mtu":                             options.LargeMTU,
+		"max_connections_per_session":           options.MaxConnectionsPerSession,
+		"max_lifs_per_session":                  options.MaxLifsPerSession,
+		"max_opens_same_file_per_tree":          options.MaxOpensSameFilePerTree,
+		"max_same_tree_connect_per_session":     options.MaxSameTreeConnectPerSession,
+		"max_same_user_sessions_per_connection": options.MaxSameUserSessionsPerConnection,
+		"max_watches_set_per_tree":              options.MaxWatchesSetPerTree,
+		"multichannel":                          options.Multichannel,
+		"null_user_windows_name":                options.NullUserWindowsName,
+		"path_component_cache":                  options.PathComponentCache,
+		"referral":                              options.Referral,
+		"shadowcopy":                            options.Shadowcopy,
+		"shadowcopy_dir_depth":                  options.ShadowcopyDirDepth,
+		"smb_credits":                           options.SmbCredits,
+		"trusted_domain_enum_search_enabled":    options.TrustedDomainEnumSearchEnabled,
+		"widelink_reparse_versions":             options.WidelinkReparseVersions,
 	}
 }
 
 // endpoint: /api/protocols/cifs/shares
 func createCIFSShareFields(share CIFSShare) mapstr.M {
-	acls := make([]mapstr.M, len(share.Acls))
-	for i, acl := range share.Acls {
-		acls[i] = mapstr.M{
-			"permission":      acl.Permission,
-			"type":            acl.Type,
-			"user_or_group":   acl.UserOrGroup,
-			"win_sid_unix_id": acl.WinSidUnixID,
-		}
+	acls, err := netapp.ToJSONString(share.Acls)
+	if err != nil {
+		acls = ""
 	}
 
 	return mapstr.M{
@@ -195,168 +203,18 @@ func createCIFSShareFields(share CIFSShare) mapstr.M {
 // endpoint: /api/protocols/san/igroups
 
 func createIGroupFields(igroup IGroup) mapstr.M {
-	var connectivityTracking mapstr.M
-	if igroup.ConnectivityTracking != nil {
-		alerts := make([]mapstr.M, len(igroup.ConnectivityTracking.Alerts))
-		for i, alert := range igroup.ConnectivityTracking.Alerts {
-			args := make([]mapstr.M, len(alert.Summary.Arguments))
-			for j, arg := range alert.Summary.Arguments {
-				args[j] = mapstr.M{
-					"code":    arg.Code,
-					"message": arg.Message,
-				}
-			}
-			alerts[i] = mapstr.M{
-				"summary": mapstr.M{
-					"arguments": args,
-					"code":      alert.Summary.Code,
-					"message":   alert.Summary.Message,
-				},
-			}
-		}
-		requiredNodes := make([]mapstr.M, len(igroup.ConnectivityTracking.RequiredNodes))
-		for i, node := range igroup.ConnectivityTracking.RequiredNodes {
-			requiredNodes[i] = netapp.CreateNamedObjectFields(node)
-		}
-		connectivityTracking = mapstr.M{
-			"alerts":           alerts,
-			"connection_state": igroup.ConnectivityTracking.ConnectionState,
-			"required_nodes":   requiredNodes,
-		}
+
+	lunMaps, err := netapp.ToJSONString(igroup.LunMaps)
+	if err != nil {
+		lunMaps = ""
 	}
 
-	igroups := make([]mapstr.M, len(igroup.Igroups))
-	for i, ig := range igroup.Igroups {
-		nested := make([]mapstr.M, len(ig.Igroups))
-		for j, n := range ig.Igroups {
-			nested[j] = mapstr.M{
-				"comment": n.Comment,
-				"igroups": nil, // avoid deep recursion
-				"name":    n.Name,
-				"uuid":    n.UUID,
-			}
-		}
-		igroups[i] = mapstr.M{
-			"comment": ig.Comment,
-			"igroups": nested,
-			"name":    ig.Name,
-			"uuid":    ig.UUID,
-		}
+	portset, err := netapp.ToJSONString(igroup.Portset)
+	if err != nil {
+		portset = ""
 	}
 
-	initiators := make([]mapstr.M, len(igroup.Initiators))
-	for i, ini := range igroup.Initiators {
-		var conn mapstr.M
-		if ini.ConnectivityTracking != nil {
-			conn = mapstr.M{
-				"connection_state": ini.ConnectivityTracking.ConnectionState,
-			}
-		}
-		var ig mapstr.M
-		if ini.Igroup != nil {
-			ig = mapstr.M{
-				"comment": ini.Igroup.Comment,
-				"igroups": nil, // avoid deep recursion
-				"name":    ini.Igroup.Name,
-				"uuid":    ini.Igroup.UUID,
-			}
-		}
-		var prox mapstr.M
-		if ini.Proximity != nil {
-			peerSvms := make([]mapstr.M, len(ini.Proximity.PeerSVMs))
-			for j, svm := range ini.Proximity.PeerSVMs {
-				peerSvms[j] = netapp.CreateNamedObjectFields(svm)
-			}
-			prox = mapstr.M{
-				"local_svm": ini.Proximity.LocalSVM,
-				"peer_svms": peerSvms,
-			}
-		}
-		initiators[i] = mapstr.M{
-			"comment":               ini.Comment,
-			"connectivity_tracking": conn,
-			"igroup":                ig,
-			"name":                  ini.Name,
-			"proximity":             prox,
-		}
-	}
-
-	lunMaps := make([]mapstr.M, len(igroup.LunMaps))
-	for i, lm := range igroup.LunMaps {
-		var node mapstr.M
-		if lm.Lun.Node != nil {
-			node = netapp.CreateNamedObjectFields(*lm.Lun.Node)
-		}
-		lunMaps[i] = mapstr.M{
-			"logical_unit_number": lm.LogicalUnitNumber,
-			"lun": mapstr.M{
-				"name": lm.Lun.Name,
-				"node": node,
-				"uuid": lm.Lun.UUID,
-			},
-		}
-	}
-
-	parentIgroups := make([]mapstr.M, len(igroup.ParentIgroups))
-	for i, p := range igroup.ParentIgroups {
-		nested := make([]mapstr.M, len(p.ParentIgroups))
-		for j, n := range p.ParentIgroups {
-			nested[j] = mapstr.M{
-				"comment":        n.Comment,
-				"name":           n.Name,
-				"parent_igroups": nil, // avoid deep recursion
-				"uuid":           n.UUID,
-			}
-		}
-		parentIgroups[i] = mapstr.M{
-			"comment":        p.Comment,
-			"name":           p.Name,
-			"parent_igroups": nested,
-			"uuid":           p.UUID,
-		}
-	}
-
-	var portset mapstr.M
-	if igroup.Portset != nil {
-		portset = netapp.CreateNamedObjectFields(*igroup.Portset)
-	}
-
-	var replication mapstr.M
-	if igroup.Replication != nil {
-		var err mapstr.M
-		if igroup.Replication.Error != nil {
-			err = mapstr.M{
-				"igroup": mapstr.M{
-					"local_svm": igroup.Replication.Error.Igroup.LocalSVM,
-					"name":      igroup.Replication.Error.Igroup.Name,
-					"uuid":      igroup.Replication.Error.Igroup.UUID,
-				},
-				"summary": mapstr.M{
-					"arguments": func() []mapstr.M {
-						args := make([]mapstr.M, len(igroup.Replication.Error.Summary.Arguments))
-						for i, arg := range igroup.Replication.Error.Summary.Arguments {
-							args[i] = mapstr.M{
-								"code":    arg.Code,
-								"message": arg.Message,
-							}
-						}
-						return args
-					}(),
-					"code":    igroup.Replication.Error.Summary.Code,
-					"message": igroup.Replication.Error.Summary.Message,
-				},
-			}
-		}
-		var peerSvm mapstr.M
-		if igroup.Replication.PeerSVM != nil {
-			peerSvm = netapp.CreateNamedObjectFields(*igroup.Replication.PeerSVM)
-		}
-		replication = mapstr.M{
-			"error":    err,
-			"peer_svm": peerSvm,
-			"state":    igroup.Replication.State,
-		}
-	}
+	replication := createIGroupReplicationFields(igroup.Replication)
 
 	var target mapstr.M
 	if igroup.Target != nil {
@@ -369,14 +227,11 @@ func createIGroupFields(igroup IGroup) mapstr.M {
 
 	return mapstr.M{
 		"comment":               igroup.Comment,
-		"connectivity_tracking": connectivityTracking,
+		"connectivity_tracking": createConnectivityTrackingFields(igroup.ConnectivityTracking),
 		"delete_on_unmap":       igroup.DeleteOnUnmap,
-		"igroups":               igroups,
-		"initiators":            initiators,
 		"lun_maps":              lunMaps,
 		"name":                  igroup.Name,
 		"os_type":               igroup.OsType,
-		"parent_igroups":        parentIgroups,
 		"portset":               portset,
 		"protocol":              igroup.Protocol,
 		"replication":           replication,
@@ -384,6 +239,83 @@ func createIGroupFields(igroup IGroup) mapstr.M {
 		"svm":                   netapp.CreateNamedObjectFields(igroup.SVM),
 		"target":                target,
 		"uuid":                  igroup.UUID,
+	}
+}
+
+func createIGroupReplicationFields(replication *IGroupReplication) mapstr.M {
+	if replication == nil {
+		return nil
+	}
+
+	var err mapstr.M
+	if replication.Error != nil {
+		err = mapstr.M{
+			"igroup": mapstr.M{
+				"local_svm": replication.Error.Igroup.LocalSVM,
+				"name":      replication.Error.Igroup.Name,
+				"uuid":      replication.Error.Igroup.UUID,
+			},
+			"summary": mapstr.M{
+				"code":    replication.Error.Summary.Code,
+				"message": replication.Error.Summary.Message,
+			},
+		}
+	}
+
+	var peerSvm mapstr.M
+	if replication.PeerSVM != nil {
+		peerSvm = netapp.CreateNamedObjectFields(*replication.PeerSVM)
+	}
+
+	return mapstr.M{
+		"error":    err,
+		"peer_svm": peerSvm,
+		"state":    replication.State,
+	}
+}
+
+func createInitiatorFields(initiator IGroupInitiator) mapstr.M {
+
+	return mapstr.M{
+		"comment":          initiator.Comment,
+		"connection_state": initiator.ConnectivityTracking.ConnectionState,
+		"igroup": mapstr.M{
+			"comment": initiator.Igroup.Comment,
+			"igroups": nil, // avoid deep recursion
+			"name":    initiator.Igroup.Name,
+			"uuid":    initiator.Igroup.UUID,
+		},
+		"name":      initiator.Name,
+		"proximity": createProximityFields(initiator.Proximity),
+	}
+}
+
+func createProximityFields(proximity IGroupInitiatorProximity) mapstr.M {
+	peerSvms, err := netapp.ToJSONString(proximity.PeerSVMs)
+	if err != nil {
+		peerSvms = ""
+	}
+	return mapstr.M{
+		"local_svm": proximity.LocalSVM,
+		"peer_svms": peerSvms,
+	}
+}
+
+func createConnectivityTrackingFields(ct IGroupConnectivity) mapstr.M {
+	alerts, err := netapp.ToJSONString(ct.Alerts)
+	if err != nil {
+		alerts = ""
+	}
+
+	required, err := netapp.ToJSONString(ct.RequiredNodes)
+	if err != nil {
+		required = ""
+	}
+
+	return mapstr.M{
+		"alerts":           alerts,
+		"connection_state": ct.ConnectionState,
+		"required_nodes":   required,
 	}
 }
 
@@ -400,11 +332,11 @@ func createFCInterfaceFields(iface FCInterface) mapstr.M {
 			"node":      netapp.CreateNamedObjectFields(iface.Location.Node),
 			"port":      createLocationPortFields(iface.Location.Port),
 		},
-		"metric":       iface.Metric,
+		"metric":       netapp.CreateMetricsFields(iface.Metric),
 		"name":         iface.Name,
 		"port_address": iface.PortAddress,
 		"state":        iface.State,
-		"statistics":   iface.Statistics,
+		"statistics":   netapp.CreateStatisticsFields(iface.Statistics),
 		"svm":          netapp.CreateNamedObjectFields(iface.SVM),
 		"uuid":         iface.UUID,
 		"wwnn":         iface.WWNN,
@@ -425,16 +357,21 @@ func createLocationPortFields(port HomePort) mapstr.M {
 // endpoint: /api/network/fc/ports
 
 func createFCPortFields(port FCPort) mapstr.M {
+	capabilities := netapp.IntArrayToString(port.Transceiver.Capabilities)
 	var transceiver mapstr.M
 	if port.Transceiver != nil {
 		transceiver = mapstr.M{
 			"form_factor":  port.Transceiver.FormFactor,
 			"manufacturer": port.Transceiver.Manufacturer,
-			"capabilities": port.Transceiver.Capabilities,
+			"capabilities": capabilities,
 			"part_number":  port.Transceiver.PartNumber,
 		}
 	}
 
+	supportedProtocols, err := netapp.ToJSONString(port.SupportedProtocols)
+	if err != nil {
+		supportedProtocols = ""
+	}
 	return mapstr.M{
 		"node":        netapp.CreateNamedObjectFields(port.Node),
 		"name":        port.Name,
@@ -453,12 +390,12 @@ func createFCPortFields(port FCPort) mapstr.M {
 			"configured": port.Speed.Configured,
 		},
 		"state":               port.State,
-		"supported_protocols": port.SupportedProtocols,
+		"supported_protocols": supportedProtocols,
 		"transceiver":         transceiver,
 		"wwnn":                port.WWNN,
 		"wwpn":                port.WWPN,
-		"metric":              port.Metric,
-		"statistics":          port.Statistics,
+		"metric":              netapp.CreateMetricsFields(port.Metric),
+		"statistics":          netapp.CreateStatisticsFields(port.Statistics),
 	}
 }
 
@@ -466,12 +403,12 @@ func createFCPortFields(port FCPort) mapstr.M {
 
 func createFCPServiceFields(service FCPService) mapstr.M {
 	return mapstr.M{
-		"enabled":    service.Enabled,
-		"metric":     service.Metric,
-		"statistics": service.Statistics,
-		"svm":        netapp.CreateNamedObjectFields(service.SVM),
-		"target": mapstr.M{
-			"name": service.Target.Name,
+		"fcp_service": mapstr.M{
+			"enabled":     service.Enabled,
+			"metric":      netapp.CreateMetricsFields(service.Metric),
+			"statistics":  netapp.CreateStatisticsFields(service.Statistics),
+			"svm":         netapp.CreateNamedObjectFields(service.SVM),
+			"target_name": service.Target.Name,
 		},
 	}
 }
@@ -480,76 +417,78 @@ func createFCPServiceFields(service FCPService) mapstr.M {
 
 func createNFSServiceFields(service NFSService) mapstr.M {
 	return mapstr.M{
-		"svm":     netapp.CreateNamedObjectFields(service.SVM),
-		"enabled": service.Enabled,
-		"state":   service.State,
-		"transport": mapstr.M{
-			"udp_enabled":  service.Transport.UDPEnabled,
-			"tcp_enabled":  service.Transport.TCPEnabled,
-			"rdma_enabled": service.Transport.RDMAEnabled,
-		},
-		"protocol": mapstr.M{
-			"v3_enabled":                   service.Protocol.V3Enabled,
-			"v3_64bit_identifiers_enabled": service.Protocol.V364bitIdentifiersEnabled,
-			"v4_id_domain":                 service.Protocol.V4IDDomain,
-			"v4_64bit_identifiers_enabled": service.Protocol.V464bitIdentifiersEnabled,
-			"v40_enabled":                  service.Protocol.V40Enabled,
-			"v41_enabled":                  service.Protocol.V41Enabled,
-			"v4_grace_seconds":             service.Protocol.V4GraceSeconds,
-			"v40_features": mapstr.M{
-				"acl_enabled":              service.Protocol.V40Features.ACLEnabled,
-				"read_delegation_enabled":  service.Protocol.V40Features.ReadDelegationEnabled,
-				"write_delegation_enabled": service.Protocol.V40Features.WriteDelegationEnabled,
-				"acl_preserve":             service.Protocol.V40Features.ACLPreserve,
+		"nfs_service": mapstr.M{
+			"svm":     netapp.CreateNamedObjectFields(service.SVM),
+			"enabled": service.Enabled,
+			"state":   service.State,
+			"transport": mapstr.M{
+				"udp_enabled":  service.Transport.UDPEnabled,
+				"tcp_enabled":  service.Transport.TCPEnabled,
+				"rdma_enabled": service.Transport.RDMAEnabled,
 			},
-			"v41_features": mapstr.M{
-				"acl_enabled":              service.Protocol.V41Features.ACLEnabled,
-				"read_delegation_enabled":  service.Protocol.V41Features.ReadDelegationEnabled,
-				"write_delegation_enabled": service.Protocol.V41Features.WriteDelegationEnabled,
-				"pnfs_enabled":             service.Protocol.V41Features.PnfsEnabled,
+			"protocol": mapstr.M{
+				"v3_enabled":                   service.Protocol.V3Enabled,
+				"v3_64bit_identifiers_enabled": service.Protocol.V364bitIdentifiersEnabled,
+				"v4_id_domain":                 service.Protocol.V4IDDomain,
+				"v4_64bit_identifiers_enabled": service.Protocol.V464bitIdentifiersEnabled,
+				"v40_enabled":                  service.Protocol.V40Enabled,
+				"v41_enabled":                  service.Protocol.V41Enabled,
+				"v4_grace_seconds":             service.Protocol.V4GraceSeconds,
+				"v40_features": mapstr.M{
+					"acl_enabled":              service.Protocol.V40Features.ACLEnabled,
+					"read_delegation_enabled":  service.Protocol.V40Features.ReadDelegationEnabled,
+					"write_delegation_enabled": service.Protocol.V40Features.WriteDelegationEnabled,
+					"acl_preserve":             service.Protocol.V40Features.ACLPreserve,
+				},
+				"v41_features": mapstr.M{
+					"acl_enabled":              service.Protocol.V41Features.ACLEnabled,
+					"read_delegation_enabled":  service.Protocol.V41Features.ReadDelegationEnabled,
+					"write_delegation_enabled": service.Protocol.V41Features.WriteDelegationEnabled,
+					"pnfs_enabled":             service.Protocol.V41Features.PnfsEnabled,
+				},
+				"v3_features": mapstr.M{
+					"mount_root_only": service.Protocol.V3Features.MountRootOnly,
+				},
 			},
-			"v3_features": mapstr.M{
-				"mount_root_only": service.Protocol.V3Features.MountRootOnly,
+			"vstorage_enabled":                 service.VstorageEnabled,
+			"rquota_enabled":                   service.RquotaEnabled,
+			"showmount_enabled":                service.ShowmountEnabled,
+			"auth_sys_extended_groups_enabled": service.AuthSysExtendedGroupsEnabled,
+			"extended_groups_limit":            service.ExtendedGroupsLimit,
+			"credential_cache": mapstr.M{
+				"positive_ttl": service.CredentialCache.PositiveTTL,
 			},
-		},
-		"vstorage_enabled":                 service.VstorageEnabled,
-		"rquota_enabled":                   service.RquotaEnabled,
-		"showmount_enabled":                service.ShowmountEnabled,
-		"auth_sys_extended_groups_enabled": service.AuthSysExtendedGroupsEnabled,
-		"extended_groups_limit":            service.ExtendedGroupsLimit,
-		"credential_cache": mapstr.M{
-			"positive_ttl": service.CredentialCache.PositiveTTL,
-		},
-		"qtree": mapstr.M{
-			"export_enabled":  service.Qtree.ExportEnabled,
-			"validate_export": service.Qtree.ValidateExport,
-		},
-		"access_cache_config": mapstr.M{
-			"ttl_positive":       service.AccessCacheConfig.TTLPositive,
-			"ttl_negative":       service.AccessCacheConfig.TTLNegative,
-			"harvest_timeout":    service.AccessCacheConfig.HarvestTimeout,
-			"is_dns_ttl_enabled": service.AccessCacheConfig.IsDnsTTLEnabled,
-		},
-		"file_session_io_grouping_count":    service.FileSessionIOGroupingCount,
-		"file_session_io_grouping_duration": service.FileSessionIOGroupingDuration,
-		"exports": mapstr.M{
-			"name_service_lookup_protocol": service.Exports.NameServiceLookupProtocol,
-		},
-		"security": mapstr.M{
-			"permitted_encryption_types": service.Security.PermittedEncryptionTypes,
-		},
-		"windows": mapstr.M{
-			"v3_ms_dos_client_enabled": service.Windows.V3MsDosClientEnabled,
-		},
-		"metric": mapstr.M{
-			"v3":  netapp.CreateMetricsFields(service.Metric.V3),
-			"v4":  netapp.CreateMetricsFields(service.Metric.V4),
-			"v41": netapp.CreateMetricsFields(service.Metric.V41),
-		},
-		"statistics": mapstr.M{
-			"v3":  netapp.CreateStatisticsFields(service.Statistics.V3),
-			"v4":  netapp.CreateStatisticsFields(service.Statistics.V4),
-			"v41": netapp.CreateStatisticsFields(service.Statistics.V41),
+			"qtree": mapstr.M{
+				"export_enabled":  service.Qtree.ExportEnabled,
+				"validate_export": service.Qtree.ValidateExport,
+			},
+			"access_cache_config": mapstr.M{
+				"ttl_positive":       service.AccessCacheConfig.TTLPositive,
+				"ttl_negative":       service.AccessCacheConfig.TTLNegative,
+				"harvest_timeout":    service.AccessCacheConfig.HarvestTimeout,
+				"is_dns_ttl_enabled": service.AccessCacheConfig.IsDnsTTLEnabled,
+			},
+			"file_session_io_grouping_count":    service.FileSessionIOGroupingCount,
+			"file_session_io_grouping_duration": service.FileSessionIOGroupingDuration,
+			"exports": mapstr.M{
+				"name_service_lookup_protocol": service.Exports.NameServiceLookupProtocol,
+			},
+			"security": mapstr.M{
+				"permitted_encryption_types": service.Security.PermittedEncryptionTypes,
+			},
+			"windows": mapstr.M{
+				"v3_ms_dos_client_enabled": service.Windows.V3MsDosClientEnabled,
+			},
+			"metric": mapstr.M{
+				"v3":  netapp.CreateMetricsFields(service.Metric.V3),
+				"v4":  netapp.CreateMetricsFields(service.Metric.V4),
+				"v41": netapp.CreateMetricsFields(service.Metric.V41),
+			},
+			"statistics": mapstr.M{
+				"v3":  netapp.CreateStatisticsFields(service.Statistics.V3),
+				"v4":  netapp.CreateStatisticsFields(service.Statistics.V4),
+				"v41": netapp.CreateStatisticsFields(service.Statistics.V41),
+			},
 		},
 	}
 }
@@ -566,6 +505,14 @@ func createNFSExportPolicyFields(policy NFSExportPolicy) mapstr.M {
 // endpoint: /api/network/ip/interfaces
 
 func createIPInterfaceFields(iface IPInterface) mapstr.M {
+	rdma_protocols, err := netapp.ToJSONString(iface.RDMAProtocols)
+	if err != nil {
+		rdma_protocols = ""
+	}
+	services, err := netapp.ToJSONString(iface.Services)
+	if err != nil {
+		services = ""
+	}
 	return mapstr.M{
 		"ddns_enabled": iface.DDNSEnabled,
 		"dns_zone":     iface.DNSZone,
@@ -580,41 +527,35 @@ func createIPInterfaceFields(iface IPInterface) mapstr.M {
 			"auto_revert": iface.Location.AutoRevert,
 			"failover":    iface.Location.Failover,
 			"home_node":   netapp.CreateNamedObjectFields(iface.Location.HomeNode),
-			"home_port": mapstr.M{
-				"name": iface.Location.HomePort.Name,
-				"node": func() mapstr.M {
-					if iface.Location.HomePort.Node != nil {
-						return netapp.CreateNamedObjectFields(*iface.Location.HomePort.Node)
-					}
-					return nil
-				}(),
-				"uuid": iface.Location.HomePort.UUID,
-			},
-			"is_home": iface.Location.IsHome,
-			"node":    netapp.CreateNamedObjectFields(iface.Location.Node),
-			"port": mapstr.M{
-				"name": iface.Location.Port.Name,
-				"node": func() mapstr.M {
-					if iface.Location.Port.Node != nil {
-						return netapp.CreateNamedObjectFields(*iface.Location.Port.Node)
-					}
-					return nil
-				}(),
-				"uuid": iface.Location.Port.UUID,
-			},
+			"home_port":   createIPLocationPortFields(iface.Location.HomePort),
+			"is_home":     iface.Location.IsHome,
+			"node":        netapp.CreateNamedObjectFields(iface.Location.Node),
+			"port":        createIPLocationPortFields(iface.Location.Port),
 		},
 		"metric":         netapp.CreateMetricsFields(iface.Metric),
 		"name":           iface.Name,
 		"probe_port":     iface.ProbePort,
-		"rdma_protocols": iface.RDMAProtocols,
+		"rdma_protocols": rdma_protocols,
 		"scope":          iface.Scope,
 		"service_policy": netapp.CreateNamedObjectFields(iface.ServicePolicy),
-		"services":       iface.Services,
+		"services":       services,
 		"state":          iface.State,
 		"statistics":     netapp.CreateStatisticsFields(iface.Statistics),
 		"subnet":         netapp.CreateNamedObjectFields(iface.Subnet),
 		"svm":            netapp.CreateNamedObjectFields(iface.SVM),
 		"uuid":           iface.UUID,
 		"vip":            iface.VIP,
+	}
+}
+
+func createIPLocationPortFields(port IPLocationPort) mapstr.M {
+	var node mapstr.M
+	if port.Node != nil {
+		node = netapp.CreateNamedObjectFields(*port.Node)
+	}
+	return mapstr.M{
+		"name": port.Name,
+		"node": node,
+		"uuid": port.UUID,
 	}
 }

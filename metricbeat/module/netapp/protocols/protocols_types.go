@@ -66,7 +66,6 @@ type CIFSService struct {
 	Enabled                  bool               `json:"enabled"`
 	GroupPolicyObjectEnabled bool               `json:"group_policy_object_enabled"`
 	KeyVaultURI              string             `json:"key_vault_uri"`
-	Metric                   netapp.Metrics     `json:"metric"`
 	Name                     string             `json:"name"`
 	Netbios                  CIFSNetbios        `json:"netbios"`
 	OAuthHost                string             `json:"oauth_host"`
@@ -76,12 +75,13 @@ type CIFSService struct {
 	ProxyType                string             `json:"proxy_type"`
 	ProxyUsername            string             `json:"proxy_username"`
 	Security                 CIFSSecurity       `json:"security"`
-	Statistics               netapp.Statistics  `json:"statistics"`
 	SVM                      netapp.NamedObject `json:"svm"`
 	TenantID                 string             `json:"tenant_id"`
 	Timeout                  int                `json:"timeout"`
 	VerifyHost               bool               `json:"verify_host"`
 	Workgroup                string             `json:"workgroup"`
+	Metric                   netapp.Metrics     `json:"metric"`
+	Statistics               netapp.Statistics  `json:"statistics"`
 }
 
 type CIFSAdDomain struct {
@@ -184,7 +184,7 @@ type CIFSShareACL struct {
 
 type IGroup struct {
 	Comment              string              `json:"comment"`
-	ConnectivityTracking *IGroupConnectivity `json:"connectivity_tracking,omitempty"`
+	ConnectivityTracking IGroupConnectivity  `json:"connectivity_tracking,omitempty"`
 	DeleteOnUnmap        bool                `json:"delete_on_unmap"`
 	Igroups              []IGroupNested      `json:"igroups"`
 	Initiators           []IGroupInitiator   `json:"initiators"`
@@ -230,11 +230,11 @@ type IGroupNested struct {
 }
 
 type IGroupInitiator struct {
-	Comment              string               `json:"comment"`
-	ConnectivityTracking *IGroupInitiatorConn `json:"connectivity_tracking,omitempty"`
-	Igroup               *IGroupNested        `json:"igroup,omitempty"`
-	Name                 string               `json:"name"`
-	Proximity            *IGroupInitiatorProx `json:"proximity,omitempty"`
+	Comment              string                   `json:"comment"`
+	ConnectivityTracking IGroupInitiatorConn      `json:"connectivity_tracking,omitempty"`
+	Igroup               IGroupNested             `json:"igroup,omitempty"`
+	Name                 string                   `json:"name"`
+	Proximity            IGroupInitiatorProximity `json:"proximity,omitempty"`
 }
 
 type IGroupInitiatorLinks struct {
@@ -246,7 +246,7 @@ type IGroupInitiatorConn struct {
 	ConnectionState string `json:"connection_state"`
 }
 
-type IGroupInitiatorProx struct {
+type IGroupInitiatorProximity struct {
 	LocalSVM bool                 `json:"local_svm"`
 	PeerSVMs []netapp.NamedObject `json:"peer_svms"`
 }
@@ -299,15 +299,15 @@ type FCInterface struct {
 	DataProtocol string             `json:"data_protocol"`
 	Enabled      bool               `json:"enabled"`
 	Location     FCLocation         `json:"location"`
-	Metric       netapp.Metrics     `json:"metric,omitempty"`
 	Name         string             `json:"name"`
 	PortAddress  string             `json:"port_address"`
 	State        string             `json:"state"`
-	Statistics   netapp.Statistics  `json:"statistics,omitempty"`
 	SVM          netapp.NamedObject `json:"svm"`
 	UUID         string             `json:"uuid"`
 	WWNN         string             `json:"wwnn"`
 	WWPN         string             `json:"wwpn"`
+	Metric       netapp.Metrics     `json:"metric,omitempty"`
+	Statistics   netapp.Statistics  `json:"statistics,omitempty"`
 }
 
 type FCLocation struct {

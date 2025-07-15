@@ -40,10 +40,7 @@ func init() {
 			Endpoint:    "/api/protocols/san/iscsi/services",
 			QueryFields: ISCSIServiceFields,
 		},
-		ISCSISessions: {Name: ISCSISessions,
-			Endpoint:    "/api/protocols/san/iscsi/sessions",
-			QueryFields: ISCSISessionFields,
-		},
+
 		CIFSServices: {Name: CIFSServices,
 			Endpoint:    "/api/protocols/cifs/services",
 			QueryFields: CIFSServiceFields,
@@ -52,10 +49,7 @@ func init() {
 			Endpoint:    "/api/protocols/cifs/shares",
 			QueryFields: CIFSShareFields,
 		},
-		SANIgroups: {Name: SANIgroups,
-			Endpoint:    "/api/protocols/san/igroups",
-			QueryFields: IGroupFields,
-		},
+
 		FCInterfaces: {Name: FCInterfaces,
 			Endpoint:    "/api/network/fc/interfaces",
 			QueryFields: FCInterfaceFields,
@@ -82,6 +76,18 @@ func init() {
 		},
 	}
 
+	customEndpoints = map[string]netapp.Endpoint{
+		ISCSISessions: {Name: ISCSISessions,
+			Endpoint:    "/api/protocols/san/iscsi/sessions",
+			GetFunc:     getISCSISessions,
+			QueryFields: ISCSISessionFields,
+		},
+		SANIgroups: {Name: SANIgroups,
+			Endpoint:    "/api/protocols/san/igroups",
+			GetFunc:     getIGroups,
+			QueryFields: IGroupFields,
+		},
+	}
 }
 
 // // For processing basic endpoints we need a type-specific function to create the fields.
@@ -90,10 +96,8 @@ func init() {
 
 var endpointDispatchers = map[string]netapp.DispatchFunc{
 	ISCSIServices:     netapp.MakeDispatchFunc(createISCSIServiceFields),
-	ISCSISessions:     netapp.MakeDispatchFunc(createISCSISessionFields),
 	CIFSServices:      netapp.MakeDispatchFunc(createCIFSServicesFields),
 	CIFSShares:        netapp.MakeDispatchFunc(createCIFSShareFields),
-	SANIgroups:        netapp.MakeDispatchFunc(createIGroupFields),
 	FCInterfaces:      netapp.MakeDispatchFunc(createFCInterfaceFields),
 	FCPorts:           netapp.MakeDispatchFunc(createFCPortFields),
 	FCPServices:       netapp.MakeDispatchFunc(createFCPServiceFields),
