@@ -69,6 +69,65 @@ func (c *NetAppRestClient) CreateNetAppRequest(endpoint string, fields []string)
 	return req, nil
 }
 
+func (c *NetAppRestClient) CreateNetAppQueryRequest(endpoint string, fields []string, query map[string][]string) (*http.Request, error) {
+	req, err := http.NewRequest(http.MethodGet, c.baseUrl+endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	q := req.URL.Query()
+	if len(fields) > 0 {
+		q.Add("fields", strings.Join(fields, ","))
+	}
+	q.Add("return_records", "true")
+	q.Add("return_timeout", fmt.Sprintf("%d", c.returnTimeout))
+
+	// Add custom query parameters from the map
+	for key, values := range query {
+		if len(values) > 0 {
+			value := values
+			// If there are multiple values for the same key, join them with commas
+			if len(value) > 1 {
+				q.Add(key, strings.Join(value, ","))
+			} else if len(value) == 1 {
+				q.Add(key, value[0])
+			}
+		}
+	}
+
+	req.URL.RawQuery = q.Encode()
+
+	for key, value := range c.headers {
+		req.Header.Set(key, value)
+	}
+
+	return req, nil
+}
+
+func (c *NetAppRestClient) GetWithQuery(endpoint string, fields []string, query map[string][]string) (string, error) {
+	req, err := c.CreateNetAppQueryRequest(endpoint, fields, query)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("server error: %s (status code: %d)", string(body), resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
 func (c *NetAppRestClient) GetWithFields(endpoint string, fields []string) (string, error) {
 	req, err := c.CreateNetAppRequest(endpoint, fields)
 	if err != nil {

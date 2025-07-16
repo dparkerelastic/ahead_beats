@@ -30,10 +30,10 @@ type ISCSISession struct {
 }
 
 type ISCSIConnection struct {
-	AuthenticationType string         `json:"authentication_type"`
-	CID                int            `json:"cid"`
-	InitiatorAddress   ISCSIAddress   `json:"initiator_address"`
-	Interface          ISCSIInterface `json:"interface"`
+	AuthenticationType string             `json:"authentication_type"`
+	CID                int                `json:"cid"`
+	InitiatorAddress   ISCSIAddress       `json:"initiator_address"`
+	Interface          netapp.IPInterface `json:"interface"`
 }
 
 type ISCSIAddress struct {

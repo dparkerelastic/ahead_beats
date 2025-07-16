@@ -1,9 +1,44 @@
 package cluster
 
-// endpoint: /api/cluster/nodes
-type NodesResponse struct {
-	Records    []Node `json:"records"`
-	NumRecords int    `json:"num_records"`
+import (
+	"time"
+
+	"github.com/elastic/beats/v7/metricbeat/module/netapp"
+)
+
+type Cluster struct {
+	Name                    string                `json:"name"`
+	UUID                    string                `json:"uuid"`
+	Location                string                `json:"location"`
+	Contact                 string                `json:"contact"`
+	Version                 NodeVersion           `json:"version"`
+	DNSDomains              []string              `json:"dns_domains"`
+	NameServers             []string              `json:"name_servers"`
+	NTPServers              []string              `json:"ntp_servers"`
+	ManagementInterfaces    []netapp.IPInterface  `json:"management_interfaces"`
+	Metric                  netapp.Metrics        `json:"metric"`
+	Statistics              netapp.Statistics     `json:"statistics"`
+	Timezone                *ClusterTimezone      `json:"timezone"`
+	Certificate             *ClusterCertificate   `json:"certificate"`
+	SANOptimized            bool                  `json:"san_optimized"`
+	Disaggregated           bool                  `json:"disaggregated"`
+	PeeringPolicy           *ClusterPeeringPolicy `json:"peering_policy"`
+	AutoEnableAnalytics     bool                  `json:"auto_enable_analytics"`
+	AutoEnableActivityTrack bool                  `json:"auto_enable_activity_tracking"`
+}
+
+type ClusterTimezone struct {
+	Name string `json:"name"`
+}
+
+type ClusterCertificate struct {
+	UUID string `json:"uuid"`
+}
+
+type ClusterPeeringPolicy struct {
+	MinimumPassphraseLength int  `json:"minimum_passphrase_length"`
+	AuthenticationRequired  bool `json:"authentication_required"`
+	EncryptionRequired      bool `json:"encryption_required"`
 }
 
 type Node struct {
@@ -15,12 +50,12 @@ type Node struct {
 	Model                 string               `json:"model"`
 	SystemID              string               `json:"system_id"`
 	Version               NodeVersion          `json:"version"`
-	Date                  string               `json:"date"`
+	Date                  time.Time            `json:"date"`
 	Uptime                int64                `json:"uptime"`
 	State                 string               `json:"state"`
 	Membership            string               `json:"membership"`
-	ManagementInterfaces  []NodeInterface      `json:"management_interfaces"`
-	ClusterInterfaces     []NodeInterface      `json:"cluster_interfaces"`
+	ManagementInterfaces  []netapp.IPInterface `json:"management_interfaces"`
+	ClusterInterfaces     []netapp.IPInterface `json:"cluster_interfaces"`
 	StorageConfiguration  string               `json:"storage_configuration"`
 	SystemAggregate       NodeAggregate        `json:"system_aggregate"`
 	Controller            NodeController       `json:"controller"`
@@ -30,6 +65,8 @@ type Node struct {
 	ExternalCache         NodeExternalCache    `json:"external_cache"`
 	HWAssist              NodeHWAssist         `json:"hw_assist"`
 	AntiRansomwareVersion string               `json:"anti_ransomware_version"`
+	Metric                netapp.Metrics       `json:"metric"`
+	Statistics            netapp.Statistics    `json:"statistics"`
 }
 
 type NodeVersion struct {
@@ -37,16 +74,6 @@ type NodeVersion struct {
 	Generation int    `json:"generation"`
 	Major      int    `json:"major"`
 	Minor      int    `json:"minor"`
-}
-
-type NodeInterface struct {
-	UUID string      `json:"uuid"`
-	Name string      `json:"name"`
-	IP   NodeIPField `json:"ip"`
-}
-
-type NodeIPField struct {
-	Address string `json:"address"`
 }
 
 type NodeAggregate struct {
@@ -202,39 +229,23 @@ type NodeHWAssistPartner struct {
 	Port  int    `json:"port"`
 }
 
-// endpoint: /api/cluster/sensors?type=voltage
-// endpoint: /api/cluster/sensors?type=thermal
-// endpoint: /api/cluster/sensors?type=battery-life
-type SensorsResponse struct {
-	Records    []Sensor `json:"records"`
-	NumRecords int      `json:"num_records"`
-}
+// /api/cluster/sensors?type=voltage,thermal,battery-life,fan
 
 type Sensor struct {
-	Node                  SensorNode `json:"node"`
-	Index                 int        `json:"index"`
-	Name                  string     `json:"name"`
-	Type                  string     `json:"type"`
-	Value                 int        `json:"value"`
-	ValueUnits            string     `json:"value_units"`
-	ThresholdState        string     `json:"threshold_state"`
-	CriticalLowThreshold  *int       `json:"critical_low_threshold,omitempty"`
-	WarningLowThreshold   *int       `json:"warning_low_threshold,omitempty"`
-	WarningHighThreshold  *int       `json:"warning_high_threshold,omitempty"`
-	CriticalHighThreshold *int       `json:"critical_high_threshold,omitempty"`
-}
-
-type SensorNode struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
+	Node                  netapp.NamedObject `json:"node"`
+	Index                 int                `json:"index"`
+	Name                  string             `json:"name"`
+	Type                  string             `json:"type"`
+	Value                 int                `json:"value"`
+	ValueUnits            string             `json:"value_units"`
+	ThresholdState        string             `json:"threshold_state"`
+	CriticalLowThreshold  *int               `json:"critical_low_threshold,omitempty"`
+	WarningLowThreshold   *int               `json:"warning_low_threshold,omitempty"`
+	WarningHighThreshold  *int               `json:"warning_high_threshold,omitempty"`
+	CriticalHighThreshold *int               `json:"critical_high_threshold,omitempty"`
 }
 
 // endpoint": "/api/cluster/counter/tables/host_adapter/rows
-
-type CounterTableRowsResponse struct {
-	Records    []CounterTableRow `json:"records"`
-	NumRecords int               `json:"num_records"`
-}
 
 type CounterTableRow struct {
 	CounterTable CounterTableRef   `json:"counter_table"`
@@ -276,4 +287,49 @@ type CounterTable struct {
 	Name           string          `json:"name"`
 	Description    string          `json:"description"`
 	CounterSchemas []CounterSchema `json:"counter_schemas"`
+}
+
+// Peers
+type Authentication struct {
+	ExpiryTime string `json:"expiry_time"`
+	InUse      string `json:"in_use"`
+	Passphrase string `json:"passphrase"`
+	State      string `json:"state"`
+}
+
+type Encryption struct {
+	Proposed string `json:"proposed"`
+	State    string `json:"state"`
+}
+
+type Remote struct {
+	IPAddresses  []string `json:"ip_addresses"`
+	Name         string   `json:"name"`
+	SerialNumber string   `json:"serial_number"`
+}
+
+type Status struct {
+	State      string `json:"state"`
+	UpdateTime string `json:"update_time"`
+}
+
+type Version struct {
+	Full       string `json:"full"`
+	Generation int    `json:"generation"`
+	Major      int    `json:"major"`
+	Minor      int    `json:"minor"`
+}
+
+type ClusterPeer struct {
+	Authentication     Authentication       `json:"authentication"`
+	Encryption         Encryption           `json:"encryption"`
+	InitialAllowedSVMs []netapp.NamedObject `json:"initial_allowed_svms"`
+	IPAddress          string               `json:"ip_address"`
+	Ipspace            netapp.NamedObject   `json:"ipspace"`
+	Name               string               `json:"name"`
+	PeerApplications   []string             `json:"peer_applications"`
+	Remote             Remote               `json:"remote"`
+	Status             Status               `json:"status"`
+	UUID               string               `json:"uuid"`
+	Version            Version              `json:"version"`
 }

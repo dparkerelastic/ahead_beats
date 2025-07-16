@@ -47,3 +47,14 @@ type IOLatency struct {
 type Link struct {
 	Href string `json:"href"`
 }
+
+type IPAddress struct {
+	Address string `json:"address"`
+	Port    int    `json:"port"`
+}
+
+type IPInterface struct {
+	IP   IPAddress `json:"ip"`
+	Name string    `json:"name"`
+	UUID string    `json:"uuid"`
+}
