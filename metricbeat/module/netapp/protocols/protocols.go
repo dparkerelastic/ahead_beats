@@ -69,7 +69,6 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 
 	// basic endpoints can all be processed with the ProcessEndpoint function
 	for _, endpoint := range basicEndpoints {
-		logger.Infof("Calling endpoint %s ....", endpoint.Name)
 
 		dispatch, ok := endpointDispatchers[endpoint.Name]
 		if !ok {
@@ -77,8 +76,24 @@ func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 			continue
 		}
 
-		logger.Infof("Calling endpoint %s ....", endpoint.Name)
+		logger.Infof("Calling basic endpoint %s ....", endpoint.Name)
 		events, err := dispatch(m.netappClient, endpoint)
+		logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
+
+		if err != nil {
+			logger.Errorf("Error getting %s events: %s", endpoint.Name, err)
+			errs = append(errs, err)
+		} else {
+			for _, event := range events {
+				report.Event(event)
+			}
+		}
+	}
+	// custom endpoints are processed with their own GetFunc - mainly to handle unrolling
+	// arrays into individual events
+	for _, endpoint := range customEndpoints {
+		logger.Infof("Calling custom endpoint %s ....", endpoint.Name)
+		events, err := endpoint.GetFunc(m.netappClient, endpoint)
 		logger.Infof("Fetched %d %s events", len(events), endpoint.Name)
 
 		if err != nil {

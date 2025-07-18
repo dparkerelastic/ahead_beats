@@ -41,7 +41,7 @@ type ClusterPeeringPolicy struct {
 	EncryptionRequired      bool `json:"encryption_required"`
 }
 
-type Node struct {
+type ClusterNode struct {
 	UUID                  string               `json:"uuid"`
 	Name                  string               `json:"name"`
 	SerialNumber          string               `json:"serial_number"`
@@ -65,8 +65,22 @@ type Node struct {
 	ExternalCache         NodeExternalCache    `json:"external_cache"`
 	HWAssist              NodeHWAssist         `json:"hw_assist"`
 	AntiRansomwareVersion string               `json:"anti_ransomware_version"`
-	Metric                netapp.Metrics       `json:"metric"`
-	Statistics            netapp.Statistics    `json:"statistics"`
+	Metric                NodeMetric           `json:"metric"`
+	Statistics            NodeStatistics       `json:"statistics"`
+}
+
+type NodeMetric struct {
+	Timestamp            string `json:"timestamp"`
+	Duration             string `json:"duration"`
+	Status               string `json:"status"`
+	ProcessorUtilization int    `json:"processor_utilization"`
+}
+
+type NodeStatistics struct {
+	Timestamp                string `json:"timestamp"`
+	Status                   string `json:"status"`
+	ProcessorUtilizationRaw  int64  `json:"processor_utilization_raw"`
+	ProcessorUtilizationBase int64  `json:"processor_utilization_base"`
 }
 
 type NodeVersion struct {
@@ -107,18 +121,13 @@ type NodeCPU struct {
 }
 
 type NodeHA struct {
-	Enabled      bool               `json:"enabled"`
-	AutoGiveback bool               `json:"auto_giveback"`
-	Partners     []NodeHAPartner    `json:"partners"`
-	Giveback     NodeHAGiveback     `json:"giveback"`
-	Takeover     NodeHATakeover     `json:"takeover"`
-	Interconnect NodeHAInterconnect `json:"interconnect"`
-	Ports        []NodeHAPort       `json:"ports"`
-}
-
-type NodeHAPartner struct {
-	UUID string `json:"uuid"`
-	Name string `json:"name"`
+	Enabled      bool                 `json:"enabled"`
+	AutoGiveback bool                 `json:"auto_giveback"`
+	Partners     []netapp.NamedObject `json:"partners"`
+	Giveback     NodeHAGiveback       `json:"giveback"`
+	Takeover     NodeHATakeover       `json:"takeover"`
+	Interconnect NodeHAInterconnect   `json:"interconnect"`
+	Ports        []NodeHAPort         `json:"ports"`
 }
 
 type NodeHAGiveback struct {
