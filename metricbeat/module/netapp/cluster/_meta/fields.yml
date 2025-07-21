@@ -4,7 +4,756 @@
   description: >
     cluster
   fields:
-    - name: example
+    - name: name
       type: keyword
       description: >
-        Example field
+        Cluster name
+
+    - name: uuid
+      type: keyword
+      description: >
+        Cluster UUID
+
+    - name: location
+      type: keyword
+      description: >
+        Cluster location
+
+    - name: contact
+      type: keyword
+      description: >
+        Cluster contact
+
+    - name: version
+      type: keyword
+      description: >
+        Cluster version
+
+    - name: dns_domains
+      type: keyword
+      description: >
+        List of DNS domains
+
+    - name: name_servers
+      type: keyword
+      description: >
+        List of name servers
+
+    - name: ntp_servers
+      type: keyword
+      description: >
+        List of NTP servers
+
+    - name: management_interfaces
+      type: keyword
+      description: >
+        List of management interfaces
+
+    - name: metric
+      type: object
+      description: >
+        Cluster metric information
+
+    - name: statistics
+      type: object
+      description: >
+        Cluster statistics
+
+    - name: san_optimized
+      type: boolean
+      description: >
+        Whether the cluster is SAN optimized
+
+    - name: disaggregated
+      type: boolean
+      description: >
+        Whether the cluster is disaggregated
+
+    - name: auto_enable_analytics
+      type: boolean
+      description: >
+        Whether analytics are auto-enabled
+
+    - name: auto_enable_activity_tracking
+      type: boolean
+      description: >
+        Whether activity tracking is auto-enabled
+
+    - name: timezone
+      type: group
+      description: >
+        Cluster timezone
+      fields:
+        - name: name
+          type: keyword
+          description: >
+            Timezone name
+
+    - name: certificate
+      type: group
+      description: >
+        Cluster certificate
+      fields:
+        - name: uuid
+          type: keyword
+          description: >
+            Certificate UUID
+
+    - name: peering_policy
+      type: group
+      description: >
+        Cluster peering policy
+      fields:
+        - name: minimum_passphrase_length
+          type: integer
+          description: >
+            Minimum passphrase length
+        - name: authentication_required
+          type: boolean
+          description: >
+            Whether authentication is required
+        - name: encryption_required
+          type: boolean
+          description: >
+            Whether encryption is required
+
+    - name: peer
+      type: group
+      description: >
+        Cluster peer information
+      fields:
+        - name: authentication
+          type: group
+          description: >
+            Authentication details for the peer
+          fields:
+            - name: expiry_time
+              type: keyword
+              description: >
+                Authentication expiry time
+            - name: in_use
+              type: boolean
+              description: >
+                Whether authentication is in use
+            - name: passphrase
+              type: keyword
+              description: >
+                Authentication passphrase
+            - name: state
+              type: keyword
+              description: >
+                Authentication state
+
+        - name: encryption
+          type: group
+          description: >
+            Encryption details for the peer
+          fields:
+            - name: proposed
+              type: boolean
+              description: >
+                Whether encryption is proposed
+            - name: state
+              type: keyword
+              description: >
+                Encryption state
+
+        - name: initial_allowed_svms
+          type: keyword
+          description: >
+            Initial allowed SVMs (as JSON string)
+
+        - name: ip_address
+          type: keyword
+          description: >
+            Peer IP address
+
+        - name: ipspace
+          type: object
+          description: >
+            IPspace information
+
+        - name: name
+          type: keyword
+          description: >
+            Peer name
+
+        - name: peer_applications
+          type: keyword
+          description: >
+            Peer applications (as JSON string)
+
+        - name: remote
+          type: group
+          description: >
+            Remote peer information
+          fields:
+            - name: ip_addresses
+              type: keyword
+              description: >
+                Remote peer IP addresses (as JSON string)
+            - name: name
+              type: keyword
+              description: >
+                Remote peer name
+            - name: serial_number
+              type: keyword
+              description: >
+                Remote peer serial number
+
+        - name: status
+          type: group
+          description: >
+            Peer status information
+          fields:
+            - name: state
+              type: keyword
+              description: >
+                Peer status state
+            - name: update_time
+              type: keyword
+              description: >
+                Peer status update time
+
+        - name: uuid
+          type: keyword
+          description: >
+            Peer UUID
+
+        - name: version
+          type: group
+          description: >
+            Peer version information
+          fields:
+            - name: full
+              type: keyword
+              description: >
+                Full version string
+            - name: generation
+              type: integer
+              description: >
+                Version generation
+            - name: major
+              type: integer
+              description: >
+                Major version
+            - name: minor
+              type: integer
+              description: >
+                Minor version
+    - name: node
+      type: group
+      description: >
+        Cluster node information
+      fields:
+        - name: uuid
+          type: keyword
+          description: >
+            Node UUID
+
+        - name: name
+          type: keyword
+          description: >
+            Node name
+
+        - name: serial_number
+          type: keyword
+          description: >
+            Node serial number
+
+        - name: location
+          type: keyword
+          description: >
+            Node location
+
+        - name: owner
+          type: keyword
+          description: >
+            Node owner
+
+        - name: model
+          type: keyword
+          description: >
+            Node model
+
+        - name: system_id
+          type: keyword
+          description: >
+            Node system ID
+
+        - name: version
+          type: group
+          description: >
+            Node version information
+          fields:
+            - name: full
+              type: keyword
+              description: >
+                Full version string
+            - name: generation
+              type: integer
+              description: >
+                Version generation
+            - name: major
+              type: integer
+              description: >
+                Major version
+            - name: minor
+              type: integer
+              description: >
+                Minor version
+
+        - name: date
+          type: keyword
+          description: >
+            Node date
+
+        - name: uptime
+          type: long
+          description: >
+            Node uptime in seconds
+
+        - name: state
+          type: keyword
+          description: >
+            Node state
+
+        - name: membership
+          type: keyword
+          description: >
+            Node membership
+
+        - name: management_interfaces
+          type: keyword
+          description: >
+            List of management interfaces (as JSON string)
+
+        - name: cluster_interfaces
+          type: keyword
+          description: >
+            List of cluster interfaces (as JSON string)
+
+        - name: storage_configuration
+          type: keyword
+          description: >
+            Node storage configuration
+
+        - name: system_aggregate
+          type: group
+          description: >
+            System aggregate information
+          fields:
+            - name: uuid
+              type: keyword
+              description: >
+                System aggregate UUID
+            - name: name
+              type: keyword
+              description: >
+                System aggregate name
+
+        - name: controller
+          type: group
+          description: >
+            Node controller information
+          fields:
+            - name: board
+              type: keyword
+              description: >
+                Controller board
+            - name: memory_size
+              type: long
+              description: >
+                Controller memory size
+            - name: over_temperature
+              type: boolean
+              description: >
+                Controller over temperature status
+            - name: failed_fan
+              type: group
+              description: >
+                Failed fan information
+              fields:
+                - name: count
+                  type: integer
+                  description: >
+                    Number of failed fans
+                - name: message
+                  type: group
+                  description: >
+                    Failed fan message
+                  fields:
+                    - name: message
+                      type: keyword
+                      description: >
+                        Message text
+                    - name: code
+                      type: keyword
+                      description: >
+                        Message code
+            - name: failed_power_supply
+              type: group
+              description: >
+                Failed power supply information
+              fields:
+                - name: count
+                  type: integer
+                  description: >
+                    Number of failed power supplies
+                - name: message
+                  type: group
+                  description: >
+                    Failed power supply message
+                  fields:
+                    - name: message
+                      type: keyword
+                      description: >
+                        Message text
+                    - name: code
+                      type: keyword
+                      description: >
+                        Message code
+            - name: cpu
+              type: group
+              description: >
+                CPU information
+              fields:
+                - name: firmware_release
+                  type: keyword
+                  description: >
+                    CPU firmware release
+                - name: processor
+                  type: keyword
+                  description: >
+                    CPU processor
+                - name: count
+                  type: integer
+                  description: >
+                    CPU count
+
+        - name: service_processor
+          type: group
+          description: >
+            Node service processor information
+          fields:
+            - name: dhcp_enabled
+              type: boolean
+              description: >
+                DHCP enabled
+            - name: state
+              type: keyword
+              description: >
+                Service processor state
+            - name: mac_address
+              type: keyword
+              description: >
+                MAC address
+            - name: firmware_version
+              type: keyword
+              description: >
+                Firmware version
+            - name: link_status
+              type: keyword
+              description: >
+                Link status
+            - name: type
+              type: keyword
+              description: >
+                Service processor type
+            - name: is_ip_configured
+              type: boolean
+              description: >
+                Is IP configured
+            - name: autoupdate_enabled
+              type: boolean
+              description: >
+                Autoupdate enabled
+            - name: last_update_state
+              type: keyword
+              description: >
+                Last update state
+            - name: ipv4_interface
+              type: group
+              description: >
+                IPv4 interface information
+              fields:
+                - name: address
+                  type: keyword
+                  description: >
+                    IPv4 address
+                - name: netmask
+                  type: keyword
+                  description: >
+                    IPv4 netmask
+                - name: gateway
+                  type: keyword
+                  description: >
+                    IPv4 gateway
+                - name: enabled
+                  type: boolean
+                  description: >
+                    IPv4 enabled
+                - name: setup_state
+                  type: keyword
+                  description: >
+                    IPv4 setup state
+            - name: ipv6_interface
+              type: group
+              description: >
+                IPv6 interface information
+              fields:
+                - name: enabled
+                  type: boolean
+                  description: >
+                    IPv6 enabled
+            - name: ssh_info
+              type: group
+              description: >
+                SSH information
+              fields:
+                - name: allowed_addresses
+                  type: keyword
+                  description: >
+                    Allowed SSH addresses
+            - name: primary
+              type: group
+              description: >
+                Primary service processor information
+              fields:
+                - name: is_current
+                  type: boolean
+                  description: >
+                    Is current
+                - name: state
+                  type: keyword
+                  description: >
+                    Primary state
+                - name: version
+                  type: keyword
+                  description: >
+                    Primary version
+            - name: backup
+              type: group
+              description: >
+                Backup service processor information
+              fields:
+                - name: is_current
+                  type: boolean
+                  description: >
+                    Is current
+                - name: state
+                  type: keyword
+                  description: >
+                    Backup state
+                - name: version
+                  type: keyword
+                  description: >
+                    Backup version
+            - name: api_service
+              type: group
+              description: >
+                API service information
+              fields:
+                - name: enabled
+                  type: boolean
+                  description: >
+                    API service enabled
+                - name: limit_access
+                  type: boolean
+                  description: >
+                    API service limit access
+                - name: port
+                  type: integer
+                  description: >
+                    API service port
+            - name: web_service
+              type: group
+              description: >
+                Web service information
+              fields:
+                - name: enabled
+                  type: boolean
+                  description: >
+                    Web service enabled
+                - name: limit_access
+                  type: boolean
+                  description: >
+                    Web service limit access
+
+        - name: nvram
+          type: group
+          description: >
+            NVRAM information
+          fields:
+            - name: id
+              type: keyword
+              description: >
+                NVRAM ID
+            - name: battery_state
+              type: keyword
+              description: >
+                NVRAM battery state
+
+        - name: external_cache
+          type: group
+          description: >
+            External cache information
+          fields:
+            - name: is_enabled
+              type: boolean
+              description: >
+                External cache enabled
+            - name: is_hya_enabled
+              type: boolean
+              description: >
+                HYA enabled
+            - name: is_rewarm_enabled
+              type: boolean
+              description: >
+                Rewarm enabled
+            - name: pcs_size
+              type: long
+              description: >
+                PCS size
+
+        - name: hw_assist
+          type: group
+          description: >
+            Hardware assist information
+          fields:
+            - name: status
+              type: group
+              description: >
+                Hardware assist status
+              fields:
+                - name: enabled
+                  type: boolean
+                  description: >
+                    Hardware assist enabled
+                - name: local
+                  type: group
+                  description: >
+                    Local hardware assist status
+                  fields:
+                    - name: state
+                      type: keyword
+                      description: >
+                        Local state
+                    - name: ip
+                      type: keyword
+                      description: >
+                        Local IP
+                    - name: port
+                      type: integer
+                      description: >
+                        Local port
+                - name: partner
+                  type: group
+                  description: >
+                    Partner hardware assist status
+                  fields:
+                    - name: state
+                      type: keyword
+                      description: >
+                        Partner state
+                    - name: ip
+                      type: keyword
+                      description: >
+                        Partner IP
+                    - name: port
+                      type: integer
+                      description: >
+                        Partner port
+
+        - name: anti_ransomware_version
+          type: keyword
+          description: >
+            Anti-ransomware version
+
+        - name: metric
+          type: object
+          description: >
+            Node metric information
+
+        - name: statistics
+          type: object
+          description: >
+            Node statistics
+    - name: sensor
+      type: group
+      description: >
+        Node sensor information
+      fields:
+        - name: node
+          type: object
+          description: >
+            Node object associated with the sensor
+        - name: index
+          type: integer
+          description: >
+            Sensor index
+        - name: name
+          type: keyword
+          description: >
+            Sensor name
+        - name: type
+          type: keyword
+          description: >
+            Sensor type
+        - name: value
+          type: double
+          description: >
+            Sensor value
+        - name: value_units
+          type: keyword
+          description: >
+            Units for the sensor value
+        - name: threshold_state
+          type: keyword
+          description: >
+            Sensor threshold state
+        - name: critical_low_threshold
+          type: double
+          description: >
+            Critical low threshold for the sensor
+        - name: warning_low_threshold
+          type: double
+          description: >
+            Warning low threshold for the sensor
+        - name: warning_high_threshold
+          type: double
+          description: >
+            Warning high threshold for the sensor
+        - name: critical_high_threshold
+          type: double
+          description: >
+            Critical high threshold for the sensor
+    - name: counters
+      type: group
+      description: >
+        Counter table events and values
+      fields:
+        - name: counter_table
+          type: keyword
+          description: >
+            Name of the counter table
+        - name: node_name
+          type: keyword
+          description: >
+            Name of the node associated with the counter
+        - name: id
+          type: keyword
+          description: >
+            Unique identifier for the counter event
+        - name: properties
+          type: keyword
+          description: >
+            Additional properties for the counter event (as JSON string)
+        - name: counter_name
+          type: keyword
+          description: >
+            Name of the counter
+        - name: counter_value
+          type: integer
+          description: >
+            Value of the counter

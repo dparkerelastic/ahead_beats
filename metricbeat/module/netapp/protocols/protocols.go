@@ -37,7 +37,7 @@ var logger *logp.Logger
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	cfgwarn.Beta("The netapp protocols metricset is beta.")
 	fullyQualifiedName = base.FullyQualifiedName()
-	logger := logp.NewLogger(fullyQualifiedName)
+	logger = logp.NewLogger(fullyQualifiedName)
 
 	config, err := netapp.NewConfig(base, logger)
 	if err != nil {

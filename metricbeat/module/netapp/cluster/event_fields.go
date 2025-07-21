@@ -83,18 +83,6 @@ func createSensorFields(s Sensor) mapstr.M {
 
 	return fields
 }
-func createCounterFields(c CounterTableRow) mapstr.M {
-	properties, err := netapp.ToJSONString(c.Properties)
-	if err != nil {
-		properties = ""
-	}
-
-	return mapstr.M{
-		"counter_table": c.CounterTable.Name,
-		"id":            c.ID,
-		"properties":    properties,
-	}
-}
 
 func createNodeFields(n ClusterNode) mapstr.M {
 	managementInterfaces, err := netapp.ToJSONString(n.ManagementInterfaces)
