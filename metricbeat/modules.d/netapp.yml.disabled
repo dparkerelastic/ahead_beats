@@ -16,4 +16,6 @@
   return_timeout: 30
   username: ${NETAPP_USERNAME}
   password: ${NETAPP_PASSWORD}
-
+  snmp_base_oid: ${NETAPP_BASE_OID}  
+  snmp_community: ${NETAPP_COMMUNITY}
+  snmp_port: 161

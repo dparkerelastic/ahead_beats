@@ -494,6 +494,7 @@ require (
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/elastic/beats v7.6.2+incompatible
 	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/gosnmp/gosnmp v1.42.1
 	github.com/moby/term v0.5.0 // indirect
 	github.com/yuin/gopher-lua v1.1.1 // indirect
 )

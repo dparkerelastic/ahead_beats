@@ -39,6 +39,9 @@ type Config struct {
 	ReturnTimeout int    `config:"return_timeout" default:"30"`
 	DebugMode     string `config:"api_debug_mode"`
 	HostInfo      HostInfo
+	SnmpBaseOID   string `config:"snmp_base_oid"`
+	SnmpCommunity string `config:"snmp_community"`
+	SnmpPort      uint16 `config:"snmp_port"`
 }
 
 func NewConfig(base mb.BaseMetricSet, logger *logp.Logger) (*Config, error) {
