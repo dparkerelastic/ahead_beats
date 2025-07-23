@@ -4,7 +4,15 @@
   description: >
     interfaces
   fields:
-    - name: example
+    - name: if_name
       type: keyword
       description: >
-        Example field
+        Interface name
+    - name: metric_name
+      type: keyword
+      description: >
+        Metric name
+    - name: value
+      type: long
+      description: >
+        Metric value

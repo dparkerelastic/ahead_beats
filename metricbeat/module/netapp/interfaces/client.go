@@ -29,16 +29,16 @@ type OidField struct {
 }
 
 var OidToName = map[string]OidField{
-	"1.3.6.1.4.1.789.1.22.1.2.1.25": {"1.3.6.1.4.1.789.1.22.1.2.1.25", "InOctets", "in_octets"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.26": {"1.3.6.1.4.1.789.1.22.1.2.1.26", "InUcastPkts", "in_ucast_pkts"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.27": {"1.3.6.1.4.1.789.1.22.1.2.1.27", "InNUcastPkts", "in_nucast_pkts"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.28": {"1.3.6.1.4.1.789.1.22.1.2.1.28", "InDiscards", "in_discards"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.29": {"1.3.6.1.4.1.789.1.22.1.2.1.29", "InErrors", "in_errors"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.31": {"1.3.6.1.4.1.789.1.22.1.2.1.31", "OutOctets", "out_octets"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.32": {"1.3.6.1.4.1.789.1.22.1.2.1.32", "OutUcastPkts", "out_ucast_pkts"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.33": {"1.3.6.1.4.1.789.1.22.1.2.1.33", "OutNUcastPkts", "out_nucast_pkts"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.34": {"1.3.6.1.4.1.789.1.22.1.2.1.34", "OutDiscards", "out_discards"},
-	"1.3.6.1.4.1.789.1.22.1.2.1.35": {"1.3.6.1.4.1.789.1.22.1.2.1.35", "OutErrors", "out_errors"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.25": {"1.3.6.1.4.1.789.1.22.1.2.1.25", "InOctets", "in_octets"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.26": {"1.3.6.1.4.1.789.1.22.1.2.1.26", "InUcastPkts", "in_ucast_pkts"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.27": {"1.3.6.1.4.1.789.1.22.1.2.1.27", "InNUcastPkts", "in_nucast_pkts"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.28": {"1.3.6.1.4.1.789.1.22.1.2.1.28", "InDiscards", "in_discards"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.29": {"1.3.6.1.4.1.789.1.22.1.2.1.29", "InErrors", "in_errors"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.31": {"1.3.6.1.4.1.789.1.22.1.2.1.31", "OutOctets", "out_octets"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.32": {"1.3.6.1.4.1.789.1.22.1.2.1.32", "OutUcastPkts", "out_ucast_pkts"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.33": {"1.3.6.1.4.1.789.1.22.1.2.1.33", "OutNUcastPkts", "out_nucast_pkts"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.34": {"1.3.6.1.4.1.789.1.22.1.2.1.34", "OutDiscards", "out_discards"},
+	".1.3.6.1.4.1.789.1.22.1.2.1.35": {"1.3.6.1.4.1.789.1.22.1.2.1.35", "OutErrors", "out_errors"},
 }
 
 func GetSnmpClient(config *netapp.Config, base mb.BaseMetricSet) (*NetAppSnmpClient, error) {
@@ -75,11 +75,11 @@ func (c *NetAppSnmpClient) Get() ([]SNMPResult, error) {
 		if name == "" {
 			name = "Unknown OID"
 		}
-		value := fmt.Sprintf("%v", variable.Value)
+
+		value := valToString(variable.Value)
 		results = append(results, SNMPResult{
-			OIDName: name,
-			OID:     variable.Name,
-			Value:   value,
+			OID:   variable.Name,
+			Value: value,
 		})
 		return nil
 	})
@@ -98,15 +98,11 @@ func (c *NetAppSnmpClient) GetByOID(oid string) ([]SNMPResult, error) {
 
 	var results []SNMPResult
 	err := c.client.Walk(oid, func(variable gosnmp.SnmpPDU) error {
-		name := OidToName[variable.Name].OIDName
-		if name == "" {
-			name = "Unknown OID"
-		}
-		value := fmt.Sprintf("%v", variable.Value)
+
+		value := valToString(variable.Value)
 		results = append(results, SNMPResult{
-			OIDName: name,
-			OID:     variable.Name,
-			Value:   value,
+			OID:   variable.Name,
+			Value: value,
 		})
 		return nil
 	})

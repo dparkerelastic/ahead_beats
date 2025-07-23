@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/elastic/beats/v7/libbeat/common/cfgwarn"
 	"github.com/elastic/beats/v7/metricbeat/mb"
@@ -11,6 +12,12 @@ import (
 	"github.com/elastic/elastic-agent-libs/logp"
 	"github.com/elastic/elastic-agent-libs/mapstr"
 	"github.com/gosnmp/gosnmp"
+)
+
+var (
+	interfaceDescriptions     map[int]string
+	interfaceDescriptionsErr  error
+	initInterfaceDescriptions sync.Once
 )
 
 // init registers the MetricSet with the central registry as soon as the program
@@ -54,7 +61,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 		return nil, err
 	}
 
-	OidToInterfaceName, err = GetInterfaceDescriptions(snmpClient)
+	OidToInterfaceName, err = loadInterfaceDescriptions(snmpClient)
 	if err != nil {
 		logger.Errorf("Failed to get interface descriptions: %v", err)
 		return nil, err
@@ -73,7 +80,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 func (m *MetricSet) Fetch(report mb.ReporterV2) error {
 
 	var results []SNMPResult
-	for oid, _ := range OidToName {
+	for oid := range OidToName {
 		m.logger.Debugf("Processing OID key: %s", oid)
 		snmpResults, err := m.snmpClient.GetByOID(oid)
 		if err != nil {
@@ -102,7 +109,7 @@ func (m *MetricSet) createEvents(fields []SNMPResult) []mb.Event {
 		for metric, value := range oids {
 			event := mb.Event{
 				MetricSetFields: mapstr.M{
-					"ifName":      ifName,
+					"if_name":     ifName,
 					"metric_name": metric,
 					"value":       value,
 				},
@@ -152,32 +159,6 @@ func loadResults(results []SNMPResult) InterfaceOIDValues {
 	return interfaceData
 }
 
-func GetInterfaceDescriptions(c *NetAppSnmpClient) (map[int]string, error) {
-	results := make(map[int]string)
-
-	// Query only the specific OID for interface descriptions
-	oid := "1.3.6.1.4.1.789.1.22.1.2.1.2"
-	if err := c.client.Connect(); err != nil {
-		return nil, fmt.Errorf("error connecting to SNMP target %s: %v", c.target, err)
-	}
-	defer c.client.Conn.Close()
-
-	// Perform SNMP Walk on the specific OID
-	err := c.client.Walk(oid, func(variable gosnmp.SnmpPDU) error {
-		ifIndex, err := OIDLastElement(variable.Name)
-		if err != nil {
-			return err
-		}
-		results[ifIndex] = fmt.Sprintf("%v", variable.Value)
-		return nil
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error performing SNMP Walk: %v", err)
-	}
-
-	return results, nil
-}
-
 func basePlusIndex(oid string) (string, int, error) {
 	parts := strings.Split(oid, ".")
 	if len(parts) < 2 {
@@ -202,14 +183,61 @@ func OIDLastElement(oid string) (int, error) {
 	return ifIndex, nil
 }
 
-func createECSFields(ms *MetricSet) mapstr.M {
+// We want to load the interface names during startup to avoid doing for every fetch,
+// under the assumption that these values do not change frequently.
+// This function is called once to populate the OidToInterfaceName map.
+// It uses a sync.Once to ensure it is only called once, though New() gets called more than once.
+func loadInterfaceDescriptions(c *NetAppSnmpClient) (map[int]string, error) {
 
-	return mapstr.M{
-		"observer": mapstr.M{
-			"hostname": ms.config.HostInfo.Hostname,
-			"ip":       ms.config.HostInfo.IP,
-			"type":     "storage",
-			"vendor":   "NetApp",
-		},
+	initInterfaceDescriptions.Do(func() {
+		results := make(map[int]string)
+		oid := "1.3.6.1.4.1.789.1.22.1.2.1.2"
+
+		if err := c.client.Connect(); err != nil {
+			interfaceDescriptionsErr = fmt.Errorf("error connecting to SNMP target %s: %v", c.target, err)
+			return
+		}
+		defer c.client.Conn.Close()
+
+		err := c.client.Walk(oid, func(variable gosnmp.SnmpPDU) error {
+			ifIndex, err := OIDLastElement(variable.Name)
+			if err != nil {
+				return err
+			}
+
+			val := valToString(variable.Value)
+			results[ifIndex] = val
+			return nil
+		})
+		if err != nil {
+			interfaceDescriptionsErr = fmt.Errorf("error performing SNMP Walk: %v", err)
+			return
+		}
+
+		interfaceDescriptions = results
+	})
+
+	return interfaceDescriptions, interfaceDescriptionsErr
+}
+
+func valToString(val interface{}) string {
+	var value string
+	switch v := val.(type) {
+	case []byte:
+		value = string(v)
+	case int:
+		value = strconv.Itoa(v)
+	case int64:
+		value = strconv.FormatInt(v, 10)
+	case uint:
+		value = strconv.FormatUint(uint64(v), 10)
+	case uint64:
+		value = strconv.FormatUint(v, 10)
+	case string:
+		value = v
+	default:
+		value = fmt.Sprintf("%v", v) // fallback for unexpected types
 	}
+
+	return value
 }
