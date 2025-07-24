@@ -325,11 +325,13 @@
 
         - name: management_interfaces
           type: keyword
+          ignore_above: 32766
           description: >
             List of management interfaces (as JSON string)
 
         - name: cluster_interfaces
           type: keyword
+          ignore_above: 32766
           description: >
             List of cluster interfaces (as JSON string)
 
@@ -366,9 +368,9 @@
               description: >
                 Controller memory size
             - name: over_temperature
-              type: boolean
+              type: keyword
               description: >
-                Controller over temperature status
+                Controller over-temperature status, e.g. "normal"
             - name: failed_fan
               type: group
               description: >
@@ -747,6 +749,7 @@
             Unique identifier for the counter event
         - name: properties
           type: keyword
+          ignore_above: 32766
           description: >
             Additional properties for the counter event (as JSON string)
         - name: counter_name

@@ -54,7 +54,7 @@ func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M 
 			"last_transfer_network_compression_ratio": record.LastTransferNetworkRatio,
 			"last_transfer_type":                      record.LastTransferType,
 			"master_bias_activated_site":              record.MasterBiasActivatedSite,
-			"policy":                                  record.Policy,
+			"policy":                                  createSnapMirrorPolicyFields(record.Policy),
 			"preferred_site":                          record.PreferredSite,
 			"restore":                                 record.Restore,
 			"source":                                  createSnapMirrorEndpointFields(record.Source),
@@ -63,12 +63,34 @@ func createSnapMirrorRelationshipFields(record SnapMirrorRelationship) mapstr.M 
 			"throttle":                                record.Throttle,
 			"total_transfer_bytes":                    record.TotalTransferBytes,
 			"total_transfer_duration":                 record.TotalTransferDuration,
-			"transfer":                                record.Transfer,
+			"transfer":                                createSnapMirrorTransferFields(record.Transfer),
 			"transfer_schedule":                       record.TransferSchedule,
 			"unhealthy_reason":                        unhealthy_reason,
 			"uuid":                                    record.UUID,
 		},
 	}
+}
+
+func createSnapMirrorPolicyFields(policy Policy) mapstr.M {
+	return mapstr.M{
+		"name": policy.Name,
+		"type": policy.Type,
+		"uuid": policy.UUID,
+	}
+}
+func createSnapMirrorTransferFields(transfer Transfer) mapstr.M {
+	m := mapstr.M{
+		"bytes_transferred": transfer.BytesTransferred,
+		"end_time":          transfer.EndTime,
+		"state":             transfer.State,
+		"total_duration":    transfer.TotalDuration,
+		"type":              transfer.Type,
+		"uuid":              transfer.UUID,
+	}
+	if transfer.LastUpdatedTime != "" {
+		m["last_updated_time"] = transfer.LastUpdatedTime
+	}
+	return m
 }
 
 func createGroupFailoverFields(failover ConsistencyGroupFailover) mapstr.M {
@@ -167,13 +189,23 @@ func createAggregateBlockStorageFields(blockStorage AggregateBlockStorage) mapst
 	return mapstr.M{
 		"uses_partitions": blockStorage.UsesPartitions,
 		"storage_type":    blockStorage.StorageType,
-		"primary":         blockStorage.Primary,
+		"primary":         createBlockStoragePrimaryFields(blockStorage.Primary),
 		"hybrid_cache":    blockStorage.HybridCache,
 		"mirror":          blockStorage.Mirror,
 		"plexes":          blockStorage.Plexes,
 	}
 }
 
+func createBlockStoragePrimaryFields(primary AggregatePrimary) mapstr.M {
+	return mapstr.M{
+		"disk_count":     primary.DiskCount,
+		"disk_class":     primary.DiskClass,
+		"raid_type":      primary.RaidType,
+		"raid_size":      primary.RaidSize,
+		"checksum_style": primary.ChecksumStyle,
+		"disk_type":      primary.DiskType,
+	}
+}
 func createAggregateSnapshotFields(s AggregateSnapshot) mapstr.M {
 	return mapstr.M{
 		"files_total":         s.FilesTotal,
@@ -230,24 +262,6 @@ func createSnapshotSpaceFields(snapshotSpace SnapshotSpace) mapstr.M {
 		"reserve_percent": snapshotSpace.ReservePercent,
 	}
 }
-
-// func createSnapshotFields(snapshot Snapshot) mapstr.M {
-// 	return mapstr.M{
-// 		"volume":            netapp.CreateNamedObjectFields(snapshot.Volume),
-// 		"uuid":              snapshot.UUID,
-// 		"svm":               netapp.CreateNamedObjectFields(snapshot.SVM),
-// 		"name":              snapshot.Name,
-// 		"create_time":       snapshot.CreateTime,
-// 		"snapmirror_label":  snapshot.SnapmirrorLabel,
-// 		"size":              snapshot.Size,
-// 		"version_uuid":      snapshot.VersionUUID,
-// 		"provenance_volume": netapp.CreateNamedObjectFields(snapshot.ProvenanceVolume),
-// 		"logical_size":      snapshot.LogicalSize,
-// 		"compress_savings":  snapshot.CompressSavings,
-// 		"dedup_savings":     snapshot.DedupSavings,
-// 		"vbn0_savings":      snapshot.VBN0Savings,
-// 	}
-// }
 
 func createVolumeAutodeleteInfoFields(info VolumeAutodeleteInfo) mapstr.M {
 	return mapstr.M{
@@ -439,7 +453,6 @@ func createQtreeMetricsFields(q QtreeMetrics) mapstr.M {
 		"qtree":      createQtreeBriefFields(q.Qtree),
 		"status":     q.Status,
 		"svm":        netapp.CreateNamedObjectFields(q.SVM),
-		"timestamp":  q.MetricTimestamp,
 		"volume":     netapp.CreateNamedObjectFields(q.Volume),
 	}
 }
@@ -468,27 +481,29 @@ func createQuotaReportFields(qr QuotaReport) mapstr.M {
 
 	return mapstr.M{
 		"quota_report": mapstr.M{
-			"svm":    netapp.CreateNamedObjectFields(qr.SVM),
-			"volume": netapp.CreateNamedObjectFields(qr.Volume),
-			"qtree":  createQtreeBriefFields(qr.Qtree),
-			"type":   qr.Type,
-			"index":  qr.Index,
-			"group":  netapp.CreateNamedObjectFields(qr.Group),
-			"users":  users,
-			"files": mapstr.M{
-				"hard_limit": qr.Files.HardLimit,
-				"soft_limit": qr.Files.SoftLimit,
-				"used":       qr.Files.Used,
-			},
-			"space": mapstr.M{
-				"hard_limit": qr.Space.HardLimit,
-				"soft_limit": qr.Space.SoftLimit,
-				"used":       qr.Space.Used,
-			},
+			"svm":       netapp.CreateNamedObjectFields(qr.SVM),
+			"volume":    netapp.CreateNamedObjectFields(qr.Volume),
+			"qtree":     createQtreeBriefFields(qr.Qtree),
+			"type":      qr.Type,
+			"index":     qr.Index,
+			"group":     netapp.CreateNamedObjectFields(qr.Group),
+			"users":     users,
+			"used_info": createQuotaUsageFields(qr.Files),
 		},
 	}
 }
 
+func createQuotaUsageFields(qu QuotaUsage) mapstr.M {
+	return mapstr.M{
+		"hard_limit": qu.HardLimit,
+		"soft_limit": qu.SoftLimit,
+		"used": mapstr.M{
+			"hard_limit_percent": qu.Used.HardLimitPercent,
+			"soft_limit_percent": qu.Used.SoftLimitPercent,
+			"total":              qu.Used.Total,
+		},
+	}
+}
 func createQuotaRuleFields(qr QuotaRule) mapstr.M {
 	users, err := netapp.ToJSONString(qr.Users)
 	if err != nil {
@@ -657,7 +672,7 @@ func createTempSensorFields(sensor TemperatureSensor) mapstr.M {
 		"id":          sensor.ID,
 		"location":    sensor.Location,
 		"temperature": sensor.Temperature,
-		"ambient":     sensor.Ambient,
+		"is_ambient":  sensor.Ambient,
 		"state":       sensor.State,
 		"installed":   sensor.Installed,
 		"threshold": mapstr.M{
@@ -818,7 +833,7 @@ func createVolumeFields(record Volume) mapstr.M {
 			"svm":                              netapp.CreateNamedObjectFields(record.SVM),
 			"space":                            createVolumeSpaceFields(record.Space),
 			"metrics":                          createStorageMetricsFields(record.Metrics),
-			"snapmirror":                       record.Snapmirror,
+			"snapmirror":                       createSnapMirrorInfoFields(record.Snapmirror),
 			"activity_tracking":                createActivityTrackingFields(record.ActivityTracking),
 			"granular_data":                    record.GranularData,
 			"granular_data_mode":               record.GranularDataMode,
@@ -827,6 +842,16 @@ func createVolumeFields(record Volume) mapstr.M {
 	}
 
 	return fields
+}
+
+func createSnapMirrorInfoFields(info SnapmirrorInfo) mapstr.M {
+	return mapstr.M{
+		"is_protected": info.IsProtected,
+		"destinations": mapstr.M{
+			"is_ontap": info.Destinations.IsONTAP,
+			"is_cloud": info.Destinations.IsCloud,
+		},
+	}
 }
 
 func createActivityTrackingFields(activity ActivityTracking) mapstr.M {

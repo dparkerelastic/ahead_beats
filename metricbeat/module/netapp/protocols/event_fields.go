@@ -364,14 +364,16 @@ func createLocationPortFields(port HomePort) mapstr.M {
 // endpoint: /api/network/fc/ports
 
 func createFCPortFields(port FCPort) mapstr.M {
-	capabilities := netapp.IntArrayToString(port.Transceiver.Capabilities)
+
 	var transceiver mapstr.M
 	if port.Transceiver != nil {
 		transceiver = mapstr.M{
 			"form_factor":  port.Transceiver.FormFactor,
 			"manufacturer": port.Transceiver.Manufacturer,
-			"capabilities": capabilities,
 			"part_number":  port.Transceiver.PartNumber,
+		}
+		if port.Transceiver.Capabilities != nil {
+			transceiver["capabilities"] = netapp.IntArrayToString(port.Transceiver.Capabilities)
 		}
 	}
 

@@ -133,13 +133,13 @@
           description: >
             Indicates if this is the IO serving copy.
         - name: lag_time
-          type: long
+          type: keyword
           description: >
-            The lag time in seconds.
+            Lag time in ISO 8601 format (e.g. "PT25M5S").
         - name: last_transfer_network_compression_ratio
-          type: float
+          type: keyword
           description: >
-            The network compression ratio of the last transfer.
+            The network compression ratio of the last transfer, e.g "1:1".
         - name: last_transfer_type
           type: keyword
           description: >
@@ -149,9 +149,22 @@
           description: >
             The master bias activated site.
         - name: policy
-          type: keyword
+          type: group
           description: >
             The SnapMirror policy.
+          fields:
+            - name: name
+              type: keyword
+              description: >
+                Name of the SnapMirror policy.
+            - name: type
+              type: keyword
+              description: >
+                Type of the SnapMirror policy.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the SnapMirror policy.
         - name: preferred_site
           type: keyword
           description: >
@@ -229,17 +242,53 @@
           description: >
             Total bytes transferred.
         - name: total_transfer_duration
-          type: long
-          description: >
-            Total duration of transfers in seconds.
-        - name: transfer
           type: keyword
+          description: >
+            Duration in ISO 8601 format (e.g. "PT25M5S").
+        - name: transfer
+          type: group
           description: >
             Transfer information.
+          fields:
+            - name: bytes_transferred
+              type: long
+              description: >
+                Number of bytes transferred.
+            - name: end_time
+              type: date
+              description: >
+                End time of the transfer.
+            - name: last_updated_time
+              type: date
+              description: >
+                Last updated time of the transfer.
+            - name: state
+              type: keyword
+              description: >
+                State of the transfer.
+            - name: total_duration
+              type: keyword
+              description: >
+                Total duration of the transfer.
+            - name: type
+              type: keyword
+              description: >
+                Type of the transfer.
+            - name: uuid
+              type: keyword
+              description: >
+                UUID of the transfer.
         - name: transfer_schedule
-          type: keyword
+          type: group
           description: >
-            Transfer schedule.
+            Transfer schedule information.
+          fields:
+            - name: name
+              type: keyword
+              description: Name of the transfer schedule.
+            - name: uuid
+              type: keyword
+              description: UUID of the transfer schedule.
         - name: unhealthy_reason
           type: keyword
           description: >
@@ -398,10 +447,7 @@
                 - name: total
                   type: long
                   description: >
-                    Total snapshot space in bytes.
-                  type: float
-                  description: >
-                    Percentage of used snapshot space.
+                    Total snapshot space in bytes.                  
             - name: cloud_storage
               type: group
               description: >
@@ -429,19 +475,19 @@
                   description: >
                     Logical used space in bytes.
                 - name: cross_volume_background_dedupe
-                  type: long
+                  type: boolean
                   description: >
                     Cross-volume background deduplication value.
                 - name: cross_volume_inline_dedupe
-                  type: long
+                  type: boolean
                   description: >
-                    Cross-volume inline deduplication value.
+                    Indicates whether cross-volume inline deduplication is enabled on the aggregate.
                 - name: cross_volume_dedupe_savings
-                  type: long
+                  type: boolean
                   description: >
                     Cross-volume deduplication savings in bytes.
                 - name: auto_adaptive_compression_savings
-                  type: long
+                  type: boolean
                   description: >
                     Auto-adaptive compression savings in bytes.
                 - name: enable_workload_informed_tsse
@@ -452,6 +498,7 @@
                   type: float
                   description: >
                     Minimum used capacity percent for WISE TSSE.
+                - name: wise_tsse_space_savings_pct
                   type: float
                   description: >
                     Percentage of space savings.
@@ -534,9 +581,34 @@
             Block storage information for the aggregate.
           fields:
             - name: primary
-              type: boolean
+              type: group
               description: >
-                Indicates if block storage is primary.
+                Primary block storage information.
+              fields:
+                - name: disk_count
+                  type: long
+                  description: >
+                    Number of disks in the primary block storage.
+                - name: disk_class
+                  type: keyword
+                  description: >
+                    Disk class of the primary block storage.
+                - name: raid_type
+                  type: keyword
+                  description: >
+                    RAID type of the primary block storage.
+                - name: raid_size
+                  type: long
+                  description: >
+                    RAID size of the primary block storage.
+                - name: checksum_style
+                  type: keyword
+                  description: >
+                    Checksum style of the primary block storage.
+                - name: disk_type
+                  type: keyword
+                  description: >
+                    Disk type of the primary block storage.
             - name: type
               type: keyword
               description: >
@@ -611,8 +683,8 @@
               type: date
               description: Timestamp of the metric sample.
             - name: duration
-              type: long
-              description: Duration of the metric sample in milliseconds.
+              type: keyword
+              description:  Duration in ISO 8601 format (e.g. "PT25M5S").
             - name: status
               type: keyword
               description: Status of the metric sample.
@@ -1036,8 +1108,8 @@
           description: Metrics for the qtree.
           fields:
             - name: duration
-              type: long
-              description: Duration of the metric sample in milliseconds.
+              type: keyword
+              description: Duration in ISO 8601 format (e.g. "PT25M5S").
             - name: iops
               type: group
               description: IOPS metrics for the qtree.
@@ -1109,9 +1181,6 @@
                 - name: uuid
                   type: keyword
                   description: UUID of the SVM.
-            - name: timestamp
-              type: date
-              description: Timestamp of the metric sample.
             - name: volume
               type: group
               description: Volume information for the metric.
@@ -1394,7 +1463,7 @@
               type: long
               description: Footprint in bytes.
             - name: over_provisioned
-              type: boolean
+              type: integer
               description: Indicates if the volume is over-provisioned.
             - name: metadata
               type: long
@@ -1535,8 +1604,8 @@
                       type: keyword
                       description: Delete order for autodelete.
                     - name: defer_delete
-                      type: boolean
-                      description: Indicates if delete is deferred for autodelete.
+                      type: keyword
+                      description: Type of defer delete for autodelete, e.g. "user_created"
                     - name: commitment
                       type: keyword
                       description: Commitment for autodelete.
@@ -1554,8 +1623,8 @@
               type: date
               description: Timestamp of the metric sample.
             - name: duration
-              type: long
-              description: Duration of the metric sample in milliseconds.
+              type: keyword
+              description: Duration in ISO 8601 format (e.g. "PT25M5S").
             - name: status
               type: keyword
               description: Status of the metric sample.
@@ -1608,8 +1677,22 @@
                   type: float
                   description: Total throughput in bytes per second.
         - name: snapmirror
-          type: keyword
+          type: group
           description: SnapMirror information for the volume.
+          fields:
+            - name: is_protected
+              type: boolean
+              description: Indicates if the volume is protected by SnapMirror.
+            - name: destinations
+              type: group
+              description: SnapMirror destination information.
+              fields:
+                - name: is_ontap
+                  type: boolean
+                  description: Indicates if the destination is ONTAP.
+                - name: is_cloud
+                  type: boolean
+                  description: Indicates if the destination is cloud.
         - name: activity_tracking
           type: group
           description: Activity tracking information for the volume.
@@ -1808,8 +1891,9 @@
         type: long
         description: Retention period for the SVM.
       - name: max_volumes
-        type: long
-        description: Maximum number of volumes for the SVM.
+        type: keyword
+        description: >
+          Maximum number of volumes for the SVM: can be set to a specific value or unlimited.
       - name: anti_ransomware_default_volume_state
         type: keyword
         description: Default anti-ransomware state for volumes in the SVM.
@@ -2116,9 +2200,9 @@
             - name: temperature
               type: float
               description: Temperature value measured by the sensor (in Celsius).
-            - name: ambient
-              type: float
-              description: Ambient temperature value measured by the sensor (in Celsius).
+            - name: is_ambient
+              type: boolean
+              description: Indicates if the temperature sensor is measuring ambient temperature.
             - name: state
               type: keyword
               description: State of the temperature sensor.

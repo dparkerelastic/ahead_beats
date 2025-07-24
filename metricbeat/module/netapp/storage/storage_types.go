@@ -211,7 +211,7 @@ type VolumeSpace struct {
 	BlockStorageInactiveUserData    int64          `json:"block_storage_inactive_user_data"`
 	LocalTierFootprint              int64          `json:"local_tier_footprint"`
 	Footprint                       int64          `json:"footprint"`
-	OverProvisioned                 int64          `json:"over_provisioned"`
+	OverProvisioned                 int            `json:"over_provisioned"`
 	Metadata                        int64          `json:"metadata"`
 	TotalFootprint                  int64          `json:"total_footprint"`
 	DelayedFreeFootprint            int64          `json:"delayed_free_footprint"`

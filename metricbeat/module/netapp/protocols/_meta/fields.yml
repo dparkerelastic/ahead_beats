@@ -98,6 +98,7 @@
             description: Whether NetBIOS is enabled
           - name: wins_servers
             type: keyword
+            ignore_above: 32766
             description: WINS servers (JSON string)
       - name: oauth_host
         type: keyword
@@ -157,6 +158,7 @@
         description: Whether access-based enumeration is enabled
       - name: acls
         type: keyword
+        ignore_above: 32766
         description: ACLs for the CIFS share (JSON string)
       - name: allow_unencrypted_access
         type: boolean
@@ -398,6 +400,7 @@
         description: State of the FC port
       - name: supported_protocols
         type: keyword
+        ignore_above: 32766
         description: Supported protocols (JSON string)
       - name: transceiver
         type: group
@@ -695,7 +698,7 @@
             type: keyword
             description: IP address family (e.g., IPv4, IPv6)
           - name: netmask
-            type: ip
+            type: keyword
             description: Netmask of the IP address
       - name: ipspace
         type: group
@@ -715,8 +718,10 @@
             type: boolean
             description: Whether auto-revert is enabled
           - name: failover
-            type: boolean
-            description: Whether failover is enabled
+            type: keyword
+            description: >
+             failover policy for a logical interface (LIF) — specifically, how it behaves when a failover event occurs 
+             (e.g., node or port failure). Sample values include "disabled", "local_only", "home_port_only", and "home_node_only".
           - name: home_node
             type: group
             description: Home node information
@@ -771,6 +776,7 @@
         description: Probe port of the IP interface
       - name: rdma_protocols
         type: keyword
+        ignore_above: 32766
         description: RDMA protocols (JSON string)
       - name: scope
         type: keyword
@@ -787,6 +793,7 @@
             description: UUID of the service policy
       - name: services
         type: keyword
+        ignore_above: 32766
         description: Services (JSON string)
       - name: state
         type: keyword
@@ -826,6 +833,7 @@
     fields:
       - name: igroups
         type: keyword
+        ignore_above: 32766
         description: ISCSI initiator groups (JSON string)
       - name: initiator
         type: group
@@ -917,6 +925,7 @@
         description: Whether to delete the igroup on unmap
       - name: lun_maps
         type: keyword
+        ignore_above: 32766
         description: LUN maps for the igroup (JSON string)
       - name: name
         type: keyword
@@ -926,6 +935,7 @@
         description: Operating system type for the igroup
       - name: portset
         type: keyword
+        ignore_above: 32766
         description: Portset information for the igroup (JSON string)
       - name: protocol
         type: keyword
